@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MovieApp.Web.Models;
+using MovieCatalogue.Models;
 
 namespace MovieApp.Web.Components.Pages
 {

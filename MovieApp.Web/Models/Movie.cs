@@ -2,20 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MovieApp.Web.Models;
+namespace MovieCatalogue.Models;
 
 [Table("Movie")]
-public class Movie
+public class Movie : IMovie
 {
     public int Id { get; set; }
 
     public required string Title { get; set; }
-
-    [Column(TypeName = "BIGINT")]
-    public required TimeSpan Length { get; set; }
-
-    [Column(TypeName = "BIGINT")]
-    public TimeSpan? LastTimeStamp { get; set; }
 
     public DateTime AddedOn { get; set; }
 
@@ -23,9 +17,9 @@ public class Movie
     public Guid? MovieGuid { get; set; }
     public int? ThumbnailId { get; set; }
 
-    public virtual ICollection<WatchHistory> WatchHistories { get; set; } = new HashSet<WatchHistory>();
+    public virtual ICollection<_WatchHistory> WatchHistories { get; set; } = new HashSet<_WatchHistory>();
 
-    public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+    public virtual ICollection<_Tag> Tags { get; set; } = new HashSet<_Tag>();
 
-    public virtual Thumbnail? Thumbnail { get; set; } = null!;
+    public virtual _Thumbnail? Thumbnail { get; set; } = null!;
 }

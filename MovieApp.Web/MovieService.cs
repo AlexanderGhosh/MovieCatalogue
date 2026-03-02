@@ -1,57 +1,28 @@
 ﻿using BlobStorage;
-using MovieApp.Web.Models;
+using MovieCatalogue;
 
 namespace MovieApp.Web
 {
-    public class MovieService : IMovieService
+    public class MovieService(MovieAppContext context, IBlobStorage blobStorage) : IMovieService
     {
-        private readonly MovieAppContext _db;
-        private readonly LocalBlobStorage _blob;
-        public MovieService(MovieAppContext db, LocalBlobStorage blob)
+        public Task<IEnumerable<IMovie>> GetAllMoviesAsync()
         {
-            _db = db;
-            _blob = blob;
+            throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Movie>> GetAllMoviesAsync()
+        public Task<IMovieContent?> GetMovieContent(int movieId)
         {
-            return Task.FromResult(_db.Movies.AsEnumerable());
+            throw new NotImplementedException();
         }
 
-        public async Task<string?> GetMovieUrlAsync(int id)
+        public Task<IThumbnail?> GetMovieThumbnail(int movieId)
         {
-            Movie? movie = await _db.Movies.FindAsync(id);
-            if (movie is null || movie.MovieGuid is null) return null;
-            if (!(await _blob.ExistsAsync(movie.MovieGuid.Value)))
-                return null;
-
-            string url = _blob.GetBlobFilePath(movie.MovieGuid.Value);
-            string tmpPath = Path.ChangeExtension(url, ".mp4");
-            File.Copy(url, tmpPath, true);
-            return tmpPath;
+            throw new NotImplementedException();
         }
 
-        public async Task UploadMovieAsync(string title, string filePath, string? description = null) 
+        public Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(title, nameof(title));
-            ArgumentNullException.ThrowIfNullOrEmpty(filePath, nameof(filePath));
-
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("The provided file path does not exist.", filePath);
-
-            Guid blobId;
-            using (var stream = File.OpenRead(filePath))
-            {
-                blobId = await _blob.UploadAsync(stream, Path.GetFileName(filePath));
-            }
-            Movie movie = new()
-            {
-                Title = title,
-                Length = TimeSpan.FromSeconds(0),
-                MovieGuid = blobId
-            };
-            _db.Movies.Add(movie);
-            await _db.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

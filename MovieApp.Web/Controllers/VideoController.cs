@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace MovieApp.Web
+namespace MovieApp.Web.Controllers
 {
 
     [ApiController]

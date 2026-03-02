@@ -2,6 +2,7 @@ using BlobStorage.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using MovieApp.Web.Components;
+using MovieCatalogue;
 
 namespace MovieApp.Web
 {
@@ -20,7 +21,7 @@ namespace MovieApp.Web
                 o.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MovieAppContext)));
             });
             builder.Services.AddLocalBlobStorage("C:\\Users\\AGWDW\\Desktop\\Programming\\C#\\MovieCatalogue\\Movies");
-            builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<IMovieService, _MovieService>();
 
             builder.Services.AddControllers();
 

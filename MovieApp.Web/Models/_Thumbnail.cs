@@ -1,6 +1,6 @@
-﻿namespace MovieApp.Web.Models
+﻿namespace MovieCatalogue.Models
 {
-    public class Thumbnail
+    public class _Thumbnail
     {
         public int Id { get; set; }
         public Guid BlobId { get; set; }

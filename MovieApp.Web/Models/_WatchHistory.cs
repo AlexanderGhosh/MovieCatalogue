@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MovieApp.Web.Models;
+namespace MovieCatalogue.Models;
 
-public class WatchHistory
+public class _WatchHistory
 {
     public int Id { get; set; }
 

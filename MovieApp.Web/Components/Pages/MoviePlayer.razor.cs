@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
-using MovieApp.Web.Models;
 
 namespace MovieApp.Web.Components.Pages
 {

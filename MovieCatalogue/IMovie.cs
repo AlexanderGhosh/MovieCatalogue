@@ -1,9 +1,12 @@
-﻿namespace MovieCatalogue
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MovieCatalogue;
+
+public interface IMovie
 {
-    public interface IMovie
-    {
-        public int Id { get; }
-        public string Title { get; set; }
-        public string? Description { get; set; }
-    }
+    int Id { get; }
+    string Title { get; }
+    DateTime AddedOn { get; }
 }

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlobStorage\BlobStorage.csproj" />
+    <ProjectReference Include="..\MovieCatalogue\MovieCatalogue.csproj" />
   </ItemGroup>
 
 </Project>

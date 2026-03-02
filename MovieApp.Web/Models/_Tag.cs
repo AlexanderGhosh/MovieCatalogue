@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MovieApp.Web.Models;
+namespace MovieCatalogue.Models;
 
-public class Tag
+public class _Tag
 {
     public int Id { get; set; }
 
