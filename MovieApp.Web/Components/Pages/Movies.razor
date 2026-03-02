@@ -1,0 +1,30 @@
+﻿@page "/movies"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+
+<PageTitle>Movies</PageTitle>
+
+<h1>Movies</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>AddedOn</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in _movies)
+        {
+            <tr>
+                <td>@movie.Title</td>
+                <td>@movie.AddedOn.ToShortDateString()</td>
+                <td>
+                    <button onclick="@(() => WatchMovie(movie))">Watch</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

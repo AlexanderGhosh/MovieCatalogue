@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Libs/">
+    <Project Path="BlobStorage/BlobStorage.csproj" Id="3861826c-98ce-4cd4-8373-395b51752f5a" />
+  </Folder>
+  <Project Path="MoiveApp/MovieApp.csproj" Id="55731f0e-df7f-410c-b3e0-a893753a36f5" />
+  <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />
+  <Project Path="MovieCatalogue/MovieCatalogue.csproj" Id="df3889b4-0e62-43aa-ba61-24bdd7d76805" />
+  <Project Path="MP4.Parser.NET/MP4.Parser.NET.csproj" Id="19bfcbbc-9c1d-40ed-a029-4fd35d13fdb5" />
+</Solution>
