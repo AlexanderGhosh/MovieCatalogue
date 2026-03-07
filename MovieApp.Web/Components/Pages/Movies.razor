@@ -2,7 +2,6 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 
-
 <PageTitle>Movies</PageTitle>
 
 <h1>Movies</h1>
@@ -13,6 +12,11 @@
         <tr>
             <th>Title</th>
             <th>AddedOn</th>
+            <th>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMovieModal">
+                    Add Movie
+                </button>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -28,3 +32,23 @@
         }
     </tbody>
 </table>
+
+
+
+<div class="modal fade" id="addMovieModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="EditName">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Name</h5>
+                </div>
+                <div class="modal-body">
+                    <input name="name" type="text" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

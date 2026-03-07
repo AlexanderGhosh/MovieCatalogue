@@ -12,9 +12,10 @@ namespace MovieApp.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideo(int id)
         {
-            var url = await _movieSvc.GetMovieUrlAsync(id);
-            if (url is null) return NotFound();
-            return PhysicalFile(url, "video/mp4");
+            return NotFound();
+            //var url = await _movieSvc.GetMovieUrlAsync(id);
+            //if (url is null) return NotFound();
+            //return PhysicalFile(url, "video/mp4");
         }
     }
 }

@@ -14,7 +14,8 @@ namespace MovieApp.Web.Components.Pages
         public Movie? _selectedMovie;
         protected override async Task OnInitializedAsync()
         {
-            _movies = [.. await _movieSvc.GetAllMoviesAsync()];
+            var movies = await _movieSvc.GetAllMoviesAsync();
+            _movies = [.. movies.Cast<Movie>()];
         }
 
         private void WatchMovie(Movie movie)

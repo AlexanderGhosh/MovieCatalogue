@@ -7,16 +7,8 @@ namespace MovieApp.Web;
 
 public class MovieAppContext(DbContextOptions<MovieAppContext> options) : DbContext(options)
 {
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    => optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+
     public DbSet<Movie> Movies { get; set; }
-    public DbSet<_Tag> Tags { get; set; }
-    public DbSet<_WatchHistory> WatchHistories { get; set; }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Movie>(movie =>
-        {
-            movie.HasMany(d => d.Tags)
-                .WithMany(p => p.Movies)
-                .UsingEntity("MovieTag");
-        });
-    }
 }

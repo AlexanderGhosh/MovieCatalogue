@@ -1,13 +1,25 @@
 ﻿using BlobStorage;
+using Microsoft.EntityFrameworkCore;
 using MovieCatalogue;
+using MovieCatalogue.Models;
 
 namespace MovieApp.Web
 {
     public class MovieService(MovieAppContext context, IBlobStorage blobStorage) : IMovieService
     {
-        public Task<IEnumerable<IMovie>> GetAllMoviesAsync()
+        public async Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync()
         {
-            throw new NotImplementedException();
+            return await context.Movies.ToListAsync();
+        }
+
+        public async Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail)
+        {
+            if (movie is not Movie m) 
+                throw new ArgumentException($"Provided movie must be an instance of {nameof(Movie)}", nameof(movie));
+
+            context.Add(m);
+
+            await context.SaveChangesAsync();
         }
 
         public Task<IMovieContent?> GetMovieContent(int movieId)
@@ -16,11 +28,6 @@ namespace MovieApp.Web
         }
 
         public Task<IThumbnail?> GetMovieThumbnail(int movieId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail)
         {
             throw new NotImplementedException();
         }
