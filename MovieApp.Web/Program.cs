@@ -1,4 +1,6 @@
+using Blazored.Modal;
 using BlobStorage.Extensions;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using MovieApp.Web.Components;
@@ -11,6 +13,8 @@ namespace MovieApp.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddBlazoredModal();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

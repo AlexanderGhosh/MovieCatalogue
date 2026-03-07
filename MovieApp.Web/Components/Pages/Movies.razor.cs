@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Modal.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +8,12 @@ using MovieCatalogue.Models;
 
 namespace MovieApp.Web.Components.Pages
 {
-    [StreamRendering]
     public partial class Movies(IMovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
-        public Movie? _selectedMovie;
+        public Movie? _selectedMovie; 
+        [CascadingParameter] 
+        public IModalService Modal { get; set; } = default!;
         protected override async Task OnInitializedAsync()
         {
             var movies = await _movieSvc.GetAllMoviesAsync();
