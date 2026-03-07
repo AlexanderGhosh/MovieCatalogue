@@ -1,4 +1,6 @@
-﻿namespace MovieCatalogue.Models
+﻿using MovieApp.Web.Models;
+
+namespace MovieCatalogue.Models
 {
     public class Thumbnail : IThumbnail
     {

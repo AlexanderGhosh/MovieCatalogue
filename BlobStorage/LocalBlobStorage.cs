@@ -36,7 +36,7 @@ namespace BlobStorage
 
             BlobData result = new() {
                 MetaData = data,
-                Data = File.OpenRead(blobPath)
+                DataStream = File.OpenRead(blobPath)
             };
 
             return Task.FromResult(result);
@@ -109,7 +109,7 @@ namespace BlobStorage
 
         private Task UpdateManifestFile()
         {
-            string json = JsonSerializer.Serialize(_manifest);
+            string json = JsonSerializer.Serialize(_manifest, _serializerOptions);
             return File.WriteAllTextAsync(_manifestFilePath, json);
         }
 

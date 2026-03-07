@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MovieCatalogue;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MovieCatalogue.Models;
+namespace MovieApp.Web.Models;
 
 [Table("Movie")]
 public class Movie : IMovie
@@ -11,5 +12,8 @@ public class Movie : IMovie
 
     public required string Title { get; set; }
 
-    public DateTime AddedOn { get; set; }
+    public DateTime AddedOn { get; } = DateTime.UtcNow;
+
+    [InverseProperty(nameof(MovieContent.Movie))]
+    public MovieContent? Content { get; set; }
 }

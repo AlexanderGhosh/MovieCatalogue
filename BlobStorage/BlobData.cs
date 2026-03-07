@@ -2,9 +2,9 @@
 {
     public sealed class BlobData : IDisposable
     {
-        public Stream? Data { get; set; }
+        public Stream? DataStream { get; set; }
         public required BlobMetaData MetaData { get; set; }
 
-        public void Dispose() => Data?.Dispose();
+        public void Dispose() => DataStream?.Dispose();
     }
 }

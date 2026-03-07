@@ -4,7 +4,7 @@ namespace MovieApp.Web.Controllers
 {
 
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class VideoController(IMovieService movieSvc) : ControllerBase
     {
         private readonly IMovieService _movieSvc = movieSvc;
@@ -12,10 +12,9 @@ namespace MovieApp.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideo(int id)
         {
-            return NotFound();
-            //var url = await _movieSvc.GetMovieUrlAsync(id);
-            //if (url is null) return NotFound();
-            //return PhysicalFile(url, "video/mp4");
+            var content = await _movieSvc.GetMovieContent(id);
+            if (content is null) return NotFound();
+            return File(content.Stream, "video/mp4");
         }
     }
 }
