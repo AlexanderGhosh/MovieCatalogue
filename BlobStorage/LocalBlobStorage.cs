@@ -5,8 +5,8 @@ namespace BlobStorage
 {
     public class LocalBlobStorage : IBlobStorage
     {
-        const string MANIFEST_FILE_NAME = "manifest.json";
-        const string BLOB_EXTENSION = ".blob";
+        private const string MANIFEST_FILE_NAME = "manifest.json";
+        private const string BLOB_EXTENSION = ".blob";
         private readonly string _basePath;
         private string _manifestFilePath { get; }
         private readonly BlobManifest _manifest;
@@ -18,7 +18,7 @@ namespace BlobStorage
                 throw new DirectoryNotFoundException("The provided base path does not exist.");
             _basePath = basePath;
             _manifestFilePath = Path.Combine(_basePath, MANIFEST_FILE_NAME);
-            _manifest = EnsureManifest(); 
+            _manifest = EnsureManifest();
             _serializerOptions = new()
             {
                 WriteIndented = true
@@ -27,14 +27,15 @@ namespace BlobStorage
 
         public Task<BlobData> DownloadAsync(Guid id)
         {
-            if(!_manifest.TryGetMetaData(id, out BlobMetaData? data))
+            if (!_manifest.TryGetMetaData(id, out BlobMetaData? data))
                 throw new ArgumentException($"No blob with id: {id} can be found.", nameof(id));
 
             string blobPath = GetBlobFilePath(id);
-            if(!File.Exists(blobPath))
+            if (!File.Exists(blobPath))
                 throw new FileNotFoundException("The blob file cannot be found.", blobPath);
 
-            BlobData result = new() {
+            BlobData result = new()
+            {
                 MetaData = data,
                 DataStream = File.OpenRead(blobPath)
             };
@@ -42,18 +43,15 @@ namespace BlobStorage
             return Task.FromResult(result);
         }
 
-        public async Task<Guid> UploadAsync(Stream dataStream, string? blobName)
+        public async Task<Guid> UploadAsync(Stream dataStream, BlobMetaData metaData)
         {
+            ArgumentNullException.ThrowIfNull(dataStream);
+            ArgumentNullException.ThrowIfNull(metaData);
+
             if (!dataStream.CanRead)
                 throw new ArgumentException("The provided stream is not readable.", nameof(dataStream));
             if (dataStream.CanSeek)
                 dataStream.Seek(0, SeekOrigin.Begin);
-
-            BlobMetaData metaData = new()
-            {
-                Id = Guid.NewGuid(),
-                FileName = blobName,
-            };
 
             _manifest.MetaData.Add(metaData);
 
@@ -82,9 +80,9 @@ namespace BlobStorage
                 return manifest;
             }
 
-            manifest = new() 
-            { 
-                BlobFiles = _basePath 
+            manifest = new()
+            {
+                BlobFiles = _basePath
             };
             // adds existing blobs to manifest
             DirectoryInfo dir = new(_basePath);
@@ -92,11 +90,12 @@ namespace BlobStorage
             {
                 if (file.Extension == BLOB_EXTENSION)
                 {
-                    if(Guid.TryParse(file.NameWithoutExtension, out Guid id))
+                    if (Guid.TryParse(file.NameWithoutExtension, out Guid id))
                     {
                         manifest.MetaData.Add(new()
                         {
                             Id = id,
+                            ContentType = System.Net.Mime.MediaTypeNames.Text.Plain
                         });
                     }
                 }

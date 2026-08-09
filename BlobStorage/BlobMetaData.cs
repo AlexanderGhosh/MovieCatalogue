@@ -2,11 +2,11 @@
 {
     public class BlobMetaData
     {
-        public required Guid Id { get; set; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public required string ContentType
         {
             get => field;
-            set
+            init
             {
                 ArgumentNullException.ThrowIfNullOrEmpty(value);
                 field = value;

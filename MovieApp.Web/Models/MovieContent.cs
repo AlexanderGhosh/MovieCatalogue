@@ -26,7 +26,7 @@ namespace MovieApp.Web.Models
         {
             get
             {
-                if(_stream is not null) return _stream;
+                if (_stream is not null) return _stream;
                 if (_file is null)
                 {
                     _stream = null;
