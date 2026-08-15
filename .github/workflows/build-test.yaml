@@ -1,0 +1,28 @@
+name: build-test
+on: 
+  push:
+  pull_request:
+    branches: [ main ]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+
+env:
+  DOTNET_VERSION: '10.*.*'
+
+jobs:
+  build-dotnet:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore Solution
+        run: dotnet restore
+      - name: Build Debug Solution
+        run: dotnet build -c Release --no-restore
+      - name: Test Solution
+        run: dotnet test --no-restore --verbosity normal
