@@ -17,10 +17,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v6  
         with:
-          clean: false
+          clean: true
       - name: Restore Solution
         run: dotnet restore
       - name: Build Debug Solution
         run: dotnet build -c Release --no-restore
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal
+      - name: Publish & Deploy Solution
+        run: dotnet publish -c Release -o /var/www/MovieCatalog/
