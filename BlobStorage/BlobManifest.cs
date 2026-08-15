@@ -27,5 +27,12 @@ namespace BlobStorage
             metaData = GetMetaData(id);
             return metaData is not null;
         }
+
+        public void DeleteMetaData(Guid id)
+        {
+            var metaData = GetMetaData(id);
+            if (metaData is null) return;
+            MetaData.Remove(metaData);
+        }
     }
 }

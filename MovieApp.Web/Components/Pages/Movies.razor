@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using MovieApp.Web.Models
 
 <PageTitle>Movies</PageTitle>
 
@@ -21,12 +22,62 @@
         @foreach (var movie in _movies)
         {
             <tr>
-                <td>@movie.Title</td>
+                <td>
+                    @if (ReferenceEquals(_editingMovie, movie))
+                    {
+                        <input @bind="_newTitle" class="form-control form-control-sm d-inline w-auto" />
+
+                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveRename" title="Save">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelRename" title="Cancel">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        @movie.Title
+                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                    }
+                </td>
                 <td>@movie.AddedOn.ToShortDateString()</td>
                 <td>
                     <button @onclick="@(() => WatchMovie(movie))">Watch</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DeleteMovie(movie)" title="Delete">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@code {
+    private Movie? _editingMovie;
+    private string _newTitle = string.Empty;
+
+    private void StartRename(Movie movie)
+    {
+        _editingMovie = movie;
+        _newTitle = movie.Title;
+    }
+
+    private void CancelRename()
+    {
+        _editingMovie = null;
+        _newTitle = string.Empty;
+    }
+
+    private void SaveRename()
+    {
+        if (_editingMovie is null) return;
+        RenameMovie(_editingMovie, _newTitle);
+        _editingMovie = null;
+        _newTitle = string.Empty;
+    }
+}
