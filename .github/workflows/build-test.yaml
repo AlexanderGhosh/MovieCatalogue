@@ -25,4 +25,4 @@ jobs:
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal
       - name: Publish & Deploy Solution
-        run: dotnet publish -c Release -o /var/www/MovieCatalog/
+        run: dotnet publish -c Release -o /var/www/MovieCatalogue/
