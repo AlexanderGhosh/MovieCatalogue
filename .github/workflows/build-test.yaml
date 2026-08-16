@@ -33,7 +33,7 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
       - name: Run EF Core migrations
         env:
-          ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieApp;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+          ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieCatalogue;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
         working-directory: MovieApp.Web
         run: dotnet ef database update --configuration Release --no-build --project . --startup-project .
       - name: Restart Service
