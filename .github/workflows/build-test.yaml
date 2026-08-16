@@ -14,6 +14,8 @@ env:
 jobs:
   build-dotnet:
     runs-on: self-hosted
+    environment:
+      name: OnPremise
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6  
