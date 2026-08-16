@@ -31,13 +31,14 @@ namespace BlobStorage
                 throw new ArgumentException($"No blob with id: {id} can be found.", nameof(id));
 
             string blobPath = GetBlobFilePath(id);
-            if (!File.Exists(blobPath))
+            var blobFile = new FileInfo(blobPath);
+            if (!blobFile.Exists)
                 throw new FileNotFoundException("The blob file cannot be found.", blobPath);
 
             BlobData result = new()
             {
                 MetaData = data,
-                DataStream = File.OpenRead(blobPath)
+                DataStream = blobFile.OpenRead()
             };
 
             return Task.FromResult(result);
@@ -56,7 +57,7 @@ namespace BlobStorage
             _manifest.MetaData.Add(metaData);
 
             string fp = GetBlobFilePath(metaData.Id);
-            var fileStream = File.OpenWrite(fp);
+            using var fileStream = File.OpenWrite(fp);
             await dataStream.CopyToAsync(fileStream);
             await UpdateManifestFile();
 
@@ -113,5 +114,18 @@ namespace BlobStorage
         }
 
         public Task<bool> ExistsAsync(Guid id) => Task.FromResult(_manifest.Exists(id));
+
+        public Task DeleteAsync(Guid id, bool hard)
+        {
+            _manifest.DeleteMetaData(id);
+            if (hard)
+            {
+                string blobPath = GetBlobFilePath(id);
+                if (!File.Exists(blobPath))
+                    throw new FileNotFoundException("The blob file cannot be found.", blobPath);
+                File.Delete(blobPath);
+            }
+            return Task.CompletedTask;
+        }
     }
 }

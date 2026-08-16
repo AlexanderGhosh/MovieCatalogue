@@ -21,7 +21,11 @@ namespace MovieApp.Web
             {
                 o.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MovieAppContext)));
             });
+#if DEBUG
             builder.Services.AddLocalBlobStorage("C:\\Users\\AGWDW\\Desktop\\Programing\\C#\\MovieCatalogue\\Movies");
+#else
+            builder.Services.AddLocalBlobStorage("./Movies");
+#endif
             builder.Services.AddScoped<IMovieService, MovieService>();
 
             builder.Services.AddControllers();

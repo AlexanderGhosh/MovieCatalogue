@@ -8,5 +8,10 @@ namespace MovieApp.Web
         Task<IMovieContent?> GetMovieContent(int movieId);
         Task<IThumbnail?> GetMovieThumbnail(int movieId);
         Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync();
+
+        Task UpdateMovie<TMovie>(int movieId, Action<TMovie> update)
+            where TMovie : class, IMovie;
+
+        Task DeleteMovie(int movieId);
     }
 }

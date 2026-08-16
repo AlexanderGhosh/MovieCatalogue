@@ -47,9 +47,37 @@ namespace MovieApp.Web
         {
             throw new NotImplementedException();
         }
+
         public async Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync()
         {
             return await context.Movies.ToListAsync();
+        }
+
+        public async Task UpdateMovie<TMovie>(int movieId, Action<TMovie> update)
+            where TMovie : class, IMovie
+        {
+            ArgumentNullException.ThrowIfNull(update);
+
+            var movie = await context.Set<TMovie>().FindAsync(movieId);
+            if (movie is null) return;
+            update(movie);
+            context.Set<TMovie>().Update(movie);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteMovie(int movieId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+
+            var content = await context.MovieContent.FirstOrDefaultAsync(mc => mc.MovieId == movieId);
+            if (content is not null)
+            {
+                context.MovieContent.Remove(content);
+                await blobStorage.DeleteAsync(content.BlobGuid);
+            }
+            context.Movies.Remove(movie);
+            await context.SaveChangesAsync();
         }
     }
 }

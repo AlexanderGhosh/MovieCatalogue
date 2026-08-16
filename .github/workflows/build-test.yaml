@@ -1,0 +1,23 @@
+name: build-test
+on:
+  workflow_call:
+  pull_request:
+    branches: [ main ]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+
+jobs:
+  build-test:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6  
+        with:
+          clean: true
+      - name: Restore Solution
+        run: dotnet restore
+      - name: Build Debug Solution
+        run: dotnet build -c Release --no-restore
+      - name: Test Solution
+        run: dotnet test --no-restore --verbosity normal

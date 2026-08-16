@@ -1,9 +1,5 @@
 ﻿using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Models;
 
@@ -12,8 +8,8 @@ namespace MovieApp.Web.Components.Pages
     public partial class Movies(IMovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
-        public Movie? _selectedMovie; 
-        [CascadingParameter] 
+        public Movie? _selectedMovie;
+        [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
         protected override async Task OnInitializedAsync()
         {
@@ -37,6 +33,18 @@ namespace MovieApp.Web.Components.Pages
         private void WatchMovie(Movie movie)
         {
             Navigation.NavigateTo($"/movie/{movie.Id}");
+        }
+
+        private async Task RenameMovie(Movie movie, string newName)
+        {
+            if (movie.Title == newName) return;
+            await _movieSvc.UpdateMovie<Movie>(movie.Id, m => m.Title = newName);
+        }
+
+        private async Task DeleteMovie(Movie movie)
+        {
+            await _movieSvc.DeleteMovie(movie.Id);
+            _movies = await GetMovies();
         }
 
         private async Task<Movie[]> GetMovies()
