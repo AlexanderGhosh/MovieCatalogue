@@ -35,4 +35,4 @@ jobs:
         working-directory: MovieApp.Web
         run: |
           # Ensure dotnet-ef is available
-          dotnet ef database update -c Release --no-build --project . --startup-project .
+          dotnet ef database update --configuration Release --no-build --project . --startup-project .
