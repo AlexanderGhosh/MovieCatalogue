@@ -11,6 +11,7 @@
   <Folder Name="/Solution Items/" />
   <Folder Name="/Solution Items/.github/" />
   <Folder Name="/Solution Items/.github/workflows/">
+    <File Path=".github/workflows/build-test-deploy.yaml" />
     <File Path=".github/workflows/build-test.yaml" />
   </Folder>
   <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />

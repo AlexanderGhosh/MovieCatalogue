@@ -1,0 +1,25 @@
+name: build-test-deploy
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    uses: ./.github/workflows/build-test.yaml
+  deploy:
+    needs: build-test
+    runs-on: self-hosted
+    environment:
+      name: OnPremise
+    steps:
+      - name: Publish & Deploy Solution
+        run: dotnet publish -c Release -o /var/www/MovieCatalogue/
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Run EF Core migrations
+        env:
+          ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieCatalogue;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+        working-directory: MovieApp.Web
+        run: dotnet ef database update --configuration Release --no-build --project . --startup-project .
+      - name: Restart Service
+        run: sudo systemctl restart moviecatalogue
