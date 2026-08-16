@@ -7,12 +7,20 @@
   <Folder Name="/Libs/">
     <Project Path="BlobStorage/BlobStorage.csproj" Id="3861826c-98ce-4cd4-8373-395b51752f5a" />
   </Folder>
-  <Folder Name="/Solution Items/" />
-  <Folder Name="/Solution Items/.github/" />
-  <Folder Name="/Solution Items/.github/workflows/">
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build-test-deploy.yaml" />
     <File Path=".github/workflows/build-test.yaml" />
+  </Folder>  
+  <Folder Name="/deploy/" />  
+  <Folder Name="/deploy/ubuntu/" />  
+  <Folder Name="/deploy/ubuntu/nginx/">
+    <File Path="deploy/ubuntu/nginx/config.conf" />
   </Folder>
+  <Folder Name="/deploy/ubuntu/systemd/">
+    <File Path="deploy/ubuntu/systemd/moviecatalogue.service" />
+  </Folder>
+
   <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />
   <Project Path="MovieCatalogue/MovieCatalogue.csproj" Id="df3889b4-0e62-43aa-ba61-24bdd7d76805" />
 </Solution>
