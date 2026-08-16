@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/var/www/MovieCatalogue
-ExecStart=/usr/bin/dotnet /var/www/MovieCatalogue/MovieCatalogue.Web.dll
+ExecStart=/usr/bin/dotnet /var/www/MovieCatalogue/MovieApp.Web.dll
 Restart=always
 RestartSec=10
 User=alex-admin
