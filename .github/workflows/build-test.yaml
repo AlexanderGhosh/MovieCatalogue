@@ -29,6 +29,8 @@ jobs:
         run: dotnet publish -c Release -o /var/www/MovieCatalogue/
       - name: Add dotnet tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: "test"
+        run: echo ${{ secrets.SQL_SA_PASSWORD }}
       - name: Run EF Core migrations
         env:
           ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieApp;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
