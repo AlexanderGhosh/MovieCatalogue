@@ -26,4 +26,20 @@ jobs:
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal
       - name: Publish & Deploy Solution
-        run: dotnet publish -c Release -o /var/www/MovieCatalogue/
+        run: dotnet publish -c Release -o /var/www/MovieCatalogue/      
+      - name: Wait for SQL Server
+        run: |
+          for i in {1..30}; do
+            /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${{ secrets.SQL_SA_PASSWORD }}" -Q "select 1" && break
+            echo "Waiting for SQL Server..."
+            sleep 2
+          done
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Run EF Core migrations
+        env:
+          ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieApp;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+        working-directory: MovieApp.Web
+        run: |
+          # Ensure dotnet-ef is available
+          dotnet ef database update --no-build --project . --startup-project .
