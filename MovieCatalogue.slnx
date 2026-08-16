@@ -6,7 +6,6 @@
   </Configurations>
   <Folder Name="/Libs/">
     <Project Path="BlobStorage/BlobStorage.csproj" Id="3861826c-98ce-4cd4-8373-395b51752f5a" />
-    <Project Path="MP4.Parser.NET/MP4.Parser.NET.csproj" Id="19bfcbbc-9c1d-40ed-a029-4fd35d13fdb5" />
   </Folder>
   <Folder Name="/Solution Items/" />
   <Folder Name="/Solution Items/.github/" />
