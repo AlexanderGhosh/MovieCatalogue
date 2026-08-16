@@ -14,7 +14,7 @@ namespace MovieApp.Web.Controllers
         {
             var content = await _movieSvc.GetMovieContent(id);
             if (content is null) return NotFound();
-            return File(content.Stream, "video/mp4");
+            return File(content.Stream, "video/mp4", true);
         }
     }
 }
