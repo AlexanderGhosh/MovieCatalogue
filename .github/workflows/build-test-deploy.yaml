@@ -22,7 +22,7 @@ jobs:
         working-directory: MovieApp.Web
         run: dotnet ef database update --configuration Release --no-build --project . --startup-project .
       - name: Deploy .service
-        run: sudo cp ./MovieCatalogue/deploy/ubuntu/systemd/moviecatalogue.service /etc/systemd/system/moviecatalogue.service
+        run: sudo cp ./deploy/ubuntu/systemd/moviecatalogue.service /etc/systemd/system/moviecatalogue.service
       - name: Reload Service Deamon
         run: sudo systemctl daemon-reload
       - name: Restart Service
