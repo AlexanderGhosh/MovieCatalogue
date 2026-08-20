@@ -21,5 +21,9 @@ jobs:
           ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieCatalogue;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
         working-directory: MovieApp.Web
         run: dotnet ef database update --configuration Release --no-build --project . --startup-project .
+      - name: Deploy .service
+        run: sudo cp ./MovieCatalogue/deploy/ubuntu/systemd/moviecatalogue.service /etc/systemd/system/moviecatalogue.service
+      - name: Reload Service Deamon
+        run: sudo systemctl daemon-reload
       - name: Restart Service
         run: sudo systemctl restart moviecatalogue
