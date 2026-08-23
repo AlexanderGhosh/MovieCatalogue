@@ -6,6 +6,8 @@ namespace BlobStorage
     {
         public const string Unknown = "application/?";
         public const string MP4 = "application/mp4";
+        public const string PlainText = "text/plain";
+        public const string Json = "application/json";
     }
 
     public static partial class BlobContentTypes
@@ -18,8 +20,8 @@ namespace BlobStorage
             {
                 if (field.FieldType == typeof(string))
                 {
-                    string? value = field.GetValue(null) as string;
-                    if (value is null) continue;
+                    if (field.GetValue(null) is not string value)
+                        continue;
                     _contentTypes.Add(value);
                 }
 
