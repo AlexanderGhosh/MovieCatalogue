@@ -12,6 +12,10 @@ PRESET="Fast 1080p30"
 OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
 
+log() {
+    [[ VERBOSE == "true" ]] && echo "$1"
+}
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -s|--subtitle|--subtitles)
@@ -19,7 +23,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -v)
-            VERBOSE=false
+            VERBOSE="true"
             shift
             ;;
         -t|--title)
@@ -68,9 +72,11 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
         echo "Error: --tv requires -l/--length and -e/--episode_count" >&2
         exit 1
     fi
+    [[ VERBOSE == "true" ]] && echo 'Is a TV show with total runtime "$TOTAL_RUNTIME" and total episodes "$TOTAL_EPISODES"'
     TITLE_FILE="/tmp/tmp $RANDOM.json"
     ARGS=(-i "$DEVICE" -t 0 --scan --json)
     [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
+    log 'Is a TV show with total runtime "$TOTAL_RUNTIME" and total episodes "$TOTAL_EPISODES"'
     HandBrakeCLI -i "$DEVICE" -t 0 --scan --json 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
     while IFS=$'\t' read -r index name seconds diff; do
