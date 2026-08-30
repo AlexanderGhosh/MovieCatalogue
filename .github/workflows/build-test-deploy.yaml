@@ -12,6 +12,8 @@ jobs:
     environment:
       name: OnPremise
     steps:
+      - name: Deploy Scripts
+        run: sudo cp ./scripts/. /usr/local/bin/
       - name: Publish & Deploy Solution
         run: dotnet publish -c Release -o /var/www/MovieCatalogue/
       - name: Add dotnet tools to PATH
