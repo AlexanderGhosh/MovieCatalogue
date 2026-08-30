@@ -21,6 +21,7 @@
     <File Path="deploy/ubuntu/systemd/moviecatalogue.service" />
   </Folder>
   <Folder Name="/scripts/">
+    <File Path="scripts/episode_splitter.sh" />
     <File Path="scripts/dvd-rip.sh" />
   </Folder>
 
