@@ -13,7 +13,7 @@ OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
 
 log() {
-    [[ VERBOSE == "true" ]] && echo "$1"
+    [[ "$VERBOSE" == "true" ]] && echo "$1"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -69,20 +69,20 @@ done
 
 if [[ "$IS_TV_SHOW" == "true" ]]; then
     if [[ -z "${TOTAL_RUNTIME:-}" || -z "${TOTAL_EPISODES:-}" ]]; then
-        echo "Error: --tv requires -l/--length and -e/--episode_count" >&2
+        echo "Error: --tv requires -l/--length and -e/--episode-count" >&2
         exit 1
     fi
-    [[ VERBOSE == "true" ]] && echo 'Is a TV show with total runtime "$TOTAL_RUNTIME" and total episodes "$TOTAL_EPISODES"'
+    log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
     TITLE_FILE="/tmp/tmp $RANDOM.json"
     ARGS=(-i "$DEVICE" -t 0 --scan --json)
     [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
-    log 'Is a TV show with total runtime "$TOTAL_RUNTIME" and total episodes "$TOTAL_EPISODES"'
-    HandBrakeCLI -i "$DEVICE" -t 0 --scan --json 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
+    log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
+    HandBrakeCLI "${ARGS[@]}" 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
     while IFS=$'\t' read -r index name seconds diff; do
         echo "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
-        "$0" -t "$index" -n "$EPISODE_NAME" -no-eject
+        "$0" -t "$index" -n "$EPISODE_NAME" --no-eject
         (( INDEX++ ))
     done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
