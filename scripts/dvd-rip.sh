@@ -61,6 +61,12 @@ fi
 
 HandBrakeCLI "${ARGS[@]}"
 
+if [[ -z "$DVD_NAME" ]]; then
+    BODY="{\"Path\":\"$OUTPUT\"}"
+else
+    BODY="{\"Path\":\"$OUTPUT\",\"Name\":\"$DVD_NAME\"}"
+fi
+
 curl localhost/api/video/upload/file -d "{\"Path\":\"$OUTPUT\",\"Name\":\"$DVD_NAME\"}" -H "Content-Type: application/json"
 [[ "$KEEP_OUTPUT" != "true" ]] && rm "$OUTPUT"
 eject
