@@ -69,14 +69,17 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
         exit 1
     fi
     TITLE_FILE="/tmp/tmp $RANDOM.json"
+    ARGS=(-i "$DEVICE" -t 0 --scan --json)
+    [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
     HandBrakeCLI -i "$DEVICE" -t 0 --scan --json 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
     while IFS=$'\t' read -r index name seconds diff; do
         echo "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
-        "$0" -t "$index" -n "$EPISODE_NAME"
+        "$0" -t "$index" -n "$EPISODE_NAME" -no-eject
         (( INDEX++ ))
     done < <(find_episodes -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
+    [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
 fi
