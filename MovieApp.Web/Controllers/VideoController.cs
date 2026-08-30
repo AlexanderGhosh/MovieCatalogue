@@ -11,11 +11,24 @@ namespace MovieApp.Web.Controllers
         private readonly IMovieService _movieSvc = movieSvc;
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetVideo(int id)
+        public async Task<IActionResult> GetVideo(int id, [FromQuery] bool download = false)
         {
             var content = await _movieSvc.GetMovieContent(id);
             if (content is null) return NotFound();
-            return File(content.Stream, "video/mp4", true);
+            var stream = content.Stream;
+
+            if (download)
+            {
+                var movie = await _movieSvc.GetMovie(id);
+                var fileName = Path.ChangeExtension(movie!.Title, "mp4");
+
+                Response.Headers.ContentDisposition = $"attachment; filename=\"{fileName}\"; filename*=UTF-8''{Uri.EscapeDataString(fileName)}";
+                Response.Headers.XContentTypeOptions = "nosniff";
+                Response.Headers.AcceptRanges = "bytes";
+            }
+
+
+            return File(stream, "video/mp4", true);
         }
 
         [HttpPost("upload/stream")]

@@ -5,6 +5,7 @@ namespace MovieApp.Web
     public interface IMovieService
     {
         Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail);
+        ValueTask<IMovie?> GetMovie(int movieId);
         Task<IMovieContent?> GetMovieContent(int movieId);
         Task<IThumbnail?> GetMovieThumbnail(int movieId);
         Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync();

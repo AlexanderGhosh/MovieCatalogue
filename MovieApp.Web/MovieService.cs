@@ -34,6 +34,11 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
+        public async ValueTask<IMovie?> GetMovie(int movieId)
+        {
+            return await context.Movies.FindAsync(movieId);
+        }
+
         public async Task<IMovieContent?> GetMovieContent(int movieId)
         {
             var content = await context.MovieContent.FirstOrDefaultAsync(mc => mc.MovieId == movieId);
