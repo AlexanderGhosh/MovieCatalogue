@@ -24,7 +24,7 @@ while [[ $# -gt 0 ]]; do
             VERBOSE=false
             shift
             ;;
-        -t|--title
+        -t|--title)
             BEST_TITLE="$2"
             shift 2
             ;;

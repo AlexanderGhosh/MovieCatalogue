@@ -15,7 +15,6 @@ namespace MovieApp.Web.Controllers
         {
             var content = await _movieSvc.GetMovieContent(id);
             if (content is null) return NotFound();
-            var stream = content.Stream;
 
             if (download)
             {
@@ -28,7 +27,7 @@ namespace MovieApp.Web.Controllers
             }
 
 
-            return File(stream, "video/mp4", true);
+            return File(content.Stream, "video/mp4", true);
         }
 
         public record UploadedFile(string Path, string? Name = null);
