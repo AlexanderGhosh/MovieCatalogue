@@ -12,6 +12,7 @@ PRESET="Fast 1080p30"
 OUTPUT="/tmp/tmp "
 OUTPUT+="$RANDOM.mp4"
 KEEP_OUTPUT="false"
+DVD_NAME=$(lsblk -n -o LABEL /dev/sr0 | tr '[:upper:]' '[:lower:]' | tr '_' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -60,6 +61,6 @@ fi
 
 HandBrakeCLI "${ARGS[@]}"
 
-curl localhost/api/video/upload/file -d "{\"Path\":\"$OUTPUT\"}" -H "Content-Type: application/json"
+curl localhost/api/video/upload/file -d "{\"Path\":\"$OUTPUT\",\"Name\":\"$DVD_NAME\"}" -H "Content-Type: application/json"
 [[ "$KEEP_OUTPUT" != "true" ]] && rm "$OUTPUT"
 eject

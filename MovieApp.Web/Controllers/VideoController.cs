@@ -31,28 +31,21 @@ namespace MovieApp.Web.Controllers
             return File(stream, "video/mp4", true);
         }
 
-        [HttpPost("upload/stream")]
-        public async Task<IActionResult> UploadVideo([FromForm] IFormFile formFile)
-        {
-            await UploadVideo(formFile.OpenReadStream());
-            return Ok();
-        }
-
-        public record UploadedFile(string Path);
+        public record UploadedFile(string Path, string? Name = null);
         [HttpPost("upload/file")]
         public async Task<IActionResult> UploadVideo([FromBody] UploadedFile formFile)
         {
             var stream = System.IO.File.OpenRead(formFile.Path);
-            await UploadVideo(stream);
+            await UploadVideo(stream, formFile.Name);
             return Ok();
         }
 
-        private async Task UploadVideo(Stream stream)
+        private async Task UploadVideo(Stream stream, string? name)
         {
             var id = Convert.ToBase64String(Guid.NewGuid().ToByteArray()); ;
             var movie = new Movie()
             {
-                Title = $"Movie {id}"
+                Title = name ?? $"Movie {id}"
             };
 
             var content = new MovieContent()
