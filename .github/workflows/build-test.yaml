@@ -17,7 +17,7 @@ jobs:
           clean: true
       - name: Restore Solution
         run: dotnet restore
-      - name: Build Debug Solution
+      - name: Build Solution
         run: dotnet build -c Release --no-restore
       - name: Test Solution
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --no-restore --verbosity normal -c Release

@@ -78,7 +78,7 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
         EPISODE_NAME="$DVD_NAME E$INDEX"
         "$0" -t "$index" -n "$EPISODE_NAME" -no-eject
         (( INDEX++ ))
-    done < <(find_episodes.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
+    done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
