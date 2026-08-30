@@ -76,7 +76,6 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     TITLE_FILE="/tmp/tmp $RANDOM.json"
     ARGS=(-i "$DEVICE" -t 0 --scan --json)
     [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
-    log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
     HandBrakeCLI "${ARGS[@]}" 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
     while IFS=$'\t' read -r index name seconds diff; do
