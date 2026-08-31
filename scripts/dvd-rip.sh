@@ -81,7 +81,7 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     while IFS=$'\t' read -r index name seconds diff; do
         echo "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
-        "$0" -t "$index" -n "$EPISODE_NAME" --no-eject
+        "$0" -t "$index" -n "$EPISODE_NAME" --no-eject < /dev/null
         (( INDEX++ ))
     done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
