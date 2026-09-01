@@ -7,7 +7,6 @@
 # sleep 10
 
 DEVICE="/dev/sr0"
-BEST_TITLE="1"
 PRESET="Fast 1080p30"
 OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
