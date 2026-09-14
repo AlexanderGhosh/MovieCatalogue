@@ -27,5 +27,9 @@ jobs:
         run: sudo cp ./deploy/ubuntu/systemd/moviecatalogue.service /etc/systemd/system/moviecatalogue.service
       - name: Reload Service Deamon
         run: sudo systemctl daemon-reload
+      - name: Deploy nginx config
+        run: sudo cp ./deploy/ubuntu/config.conf /etc/nginx/sites-enabled/moviecatalogue
+      - name: Reload nginx
+        run: sudo systemctl reload nginx
       - name: Restart Service
         run: sudo systemctl restart moviecatalogue

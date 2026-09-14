@@ -1,7 +1,7 @@
 [Unit]
 Description=Movie Catalogue Blazor App
 After=network.target
-Required=mssql-server.service
+Requires=mssql-server.service
 
 [Service]
 WorkingDirectory=/var/www/MovieCatalogue

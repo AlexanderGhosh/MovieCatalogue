@@ -21,3 +21,5 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal -c Release
+      - name: Verify nginx
+        run: sudo nginx -t
