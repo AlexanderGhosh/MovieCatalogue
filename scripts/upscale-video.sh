@@ -21,12 +21,12 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ -z "$INPUT" ]]
+if [[ -z "$INPUT" ]]; then
     echo "Error: -i or --input is required"
     exit 1
 fi
 
-if [[ -z "$OUTPUT" ]]
+if [[ -z "$OUTPUT" ]]; then
     echo "Error: -o or --output is required"
     exit 1
 fi
