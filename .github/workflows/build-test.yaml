@@ -22,7 +22,7 @@ jobs:
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal -c Release
       - name: Verify nginx
-        run: sudo nginx -t -c ./deploy/ubuntu/nginx/config.conf
+        run: sudo nginx -t -c "$GITHUB_WORKSPACE/deploy/ubuntu/nginx/config.conf"
       - name: Verify Scripts
         run: |
           for f in scripts/*.sh; do
