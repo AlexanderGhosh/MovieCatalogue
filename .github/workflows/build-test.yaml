@@ -21,8 +21,16 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Test Solution
         run: dotnet test --no-restore --verbosity normal -c Release
+        # this wraps the config in a similar way to the deployed version (prevents having to deploy to validate)
       - name: Verify nginx
-        run: sudo nginx -t -c "$GITHUB_WORKSPACE/deploy/ubuntu/nginx/config.conf"
+        run: |
+          cat <<EOF > /tmp/nginx-test.conf
+          events {}
+          http {
+              include $GITHUB_WORKSPACE/deploy/ubuntu/nginx/config.conf;
+          }
+          EOF
+          sudo nginx -t -c /tmp/nginx-test.conf
       - name: Verify Scripts
         run: |
           for f in scripts/*.sh; do
