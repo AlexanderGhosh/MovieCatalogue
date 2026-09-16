@@ -24,6 +24,7 @@
   <Folder Name="/scripts/">
     <File Path="scripts/episode_splitter.sh" />
     <File Path="scripts/dvd-rip.sh" />
+    <File Path="upscale-video.sh" />
   </Folder>
   <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />
   <Project Path="MovieCatalogue/MovieCatalogue.csproj" Id="df3889b4-0e62-43aa-ba61-24bdd7d76805" />
