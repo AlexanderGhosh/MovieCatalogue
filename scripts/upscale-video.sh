@@ -5,6 +5,7 @@ while [[ $# -gt 0 ]]; do
         -v)
             VERBOSE="true"
             shift
+            ;;
         -i|--input)
             INPUT="$2"
             shift 2
@@ -32,4 +33,4 @@ fi
 
 ffmpeg -i "$INPUT" -vf scale=iw*2:ih*2:flags=neighbor -c:v libx264 -preset slow -crf 18 "$OUTPUT"
 
-# upscale-video -i "/var/www/MovieCatalogue/Movies/80886D21-C041-4363-8746-F39FAF6A1EBD.blob" -o "~/stwk.mp4"
+# upscale-video.sh -i "/var/www/MovieCatalogue/Movies/80886D21-C041-4363-8746-F39FAF6A1EBD.blob" -o "~/stwk.mp4"
