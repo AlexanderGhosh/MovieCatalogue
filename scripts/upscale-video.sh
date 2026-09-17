@@ -31,6 +31,6 @@ if [[ -z "$OUTPUT" ]]; then
     exit 1
 fi
 
-ffmpeg -i "$INPUT" -vf scale=iw*2:ih*2:flags=neighbor -c:v libx264 -preset slow -crf 18 "$OUTPUT"
+ffmpeg -i "$INPUT" -vf scale=iw*2:ih*2:flags=lanczos -c:v libx264 -preset slow -crf 18 "$OUTPUT"
 
-# upscale-video.sh -i "/var/www/MovieCatalogue/Movies/80886D21-C041-4363-8746-F39FAF6A1EBD.blob" -o "~/stwk.mp4"
+# upscale-video.sh -i "/var/www/MovieCatalogue/Movies/80886d21-c041-4363-8746-f39faf6a1ebd.blob" -o "/home/alex-admin/stwk.mp4"
