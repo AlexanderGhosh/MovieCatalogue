@@ -12,6 +12,7 @@ namespace MovieApp.Web
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddBlazoredModal();
+            builder.Services.AddVideoPlayerServices();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

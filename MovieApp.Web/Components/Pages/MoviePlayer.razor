@@ -1,9 +1,33 @@
 ﻿@page "/movie/{MovieId:int}"
+@using BlazorVideoPlayer
 <PageTitle>Movies</PageTitle>
 
 
 @{
-    <video controls>
-        <source src=@($"/api/Video/{MovieId}")>
-    </video>
+    <Player id="advanced"
+        CurrentTimeControl="true"
+        DownloadControl="true"
+        DurationControl="false"
+        FastForwardControl="true"
+        FullscreenControl="true"
+        PIPControl="true"
+        VolumeControl="true"
+        MuteControl="true"
+        SettingsControl="true"
+        RewindControl="true"
+        RestartControl="true"
+        ProgressControl="true"
+        PlayControl="true"
+        CaptionsControl="true"
+        AirplayControl="true"
+        PlayLargeControl="true"
+        Captions="true"
+        Loop="false"
+        Quality="false"
+        Speed="false"
+        Poster="poster.png"
+        Sources="@Sources"
+        OnEndedVideo="OnEndedVideo"
+        OnPlayVideo="OnPlayVideo"
+        OnVideoTimeUpdate="@((e) => OnVideoTimeUpdate(e.currentTime,e.duration))" />
 }
