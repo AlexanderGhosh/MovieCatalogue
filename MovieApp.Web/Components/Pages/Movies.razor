@@ -47,7 +47,7 @@
                 </td>
                 <td>@movie.AddedOn.ToShortDateString()</td>
                 <td>
-                    <button @onclick="@(() => WatchMovie(movie))">Watch</button>
+                    <a href="@($"/movie/{movie.Id}")" class="btn btn-secondary">Watch</a>
                 </td>
                 <td>
                     <a href="@($"/api/Video/{movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
@@ -78,12 +78,6 @@
     {
         _editingMovie = null;
         _newTitle = string.Empty;
-    }
-
-    private async Task DownloadMovie(Movie movie)
-    {
-        var url = $"/api/Video/{movie.Id}?download=true";
-        await JS.InvokeVoidAsync("open", url, "_blank");
     }
 
     private void SaveRename()

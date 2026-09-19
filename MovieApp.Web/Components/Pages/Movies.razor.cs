@@ -30,11 +30,6 @@ namespace MovieApp.Web.Components.Pages
             _movies = await GetMovies();
         }
 
-        private void WatchMovie(Movie movie)
-        {
-            Navigation.NavigateTo($"/movie/{movie.Id}");
-        }
-
         private async Task RenameMovie(Movie movie, string newName)
         {
             if (movie.Title == newName) return;
