@@ -50,9 +50,9 @@
                     <button @onclick="@(() => WatchMovie(movie))">Watch</button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DownloadMovie(movie)" title="Download">
+                    <a href="@($"/api/Video/{movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
                         <i class="bi bi-download"></i>
-                    </button>
+                    </a>
                 </td>
                 <td>
                     <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DeleteMovie(movie)" title="Delete">
