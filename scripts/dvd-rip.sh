@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# if [[ $EUID -ne 0 ]]; then
-    # exec sudo "$0" "$@"
-# fi
-
-# sleep 10
+# dvd-rip.sh 
 
 DEVICE="/dev/sr0"
 PRESET="Fast 1080p30"
