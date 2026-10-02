@@ -3,6 +3,7 @@ on:
   workflow_call:
   pull_request:
     branches: [ main ]
+    types: [ opened, synchronize, reopened, labeled ]
     paths:
     - '**.cs'
     - '**.csproj'
@@ -42,9 +43,9 @@ jobs:
   # environment in GitHub. Reject (or ignore) it and nothing is deployed.
   # Only runs for pull requests; the push-to-main flow has its own deploy job.
   deploy-pr:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'deploy')
     needs: build-test
     uses: ./.github/workflows/deploy.yaml
     with:
-      environment: OnPremise-PR
+      environment: OnPremise
     secrets: inherit
