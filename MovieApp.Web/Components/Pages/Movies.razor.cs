@@ -22,6 +22,18 @@ namespace MovieApp.Web.Components.Pages
             _collections = await GetCollections();
         }
 
+        private sealed record HomeItem(IMovieCollection? Collection, Movie? Movie)
+        {
+            public string Name => Collection?.Name ?? Movie?.Title ?? string.Empty;
+        }
+
+        // Collections and movies that are not in a collection, shown together.
+        // Movies inside a collection only appear on that collection's page.
+        private IEnumerable<HomeItem> Items => _collections
+            .Select(c => new HomeItem(c, null))
+            .Concat(_movies.Where(m => m.CollectionId is null).Select(m => new HomeItem(null, m)))
+            .OrderBy(i => i.Name, StringComparer.CurrentCultureIgnoreCase);
+
         private int CountIn(IMovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
 
         private void StartCreateCollection()

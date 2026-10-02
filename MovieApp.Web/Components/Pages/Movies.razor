@@ -7,8 +7,11 @@
 
 <h1>Movies</h1>
 
-<div class="d-flex align-items-center mb-2">
-    <h2 class="h4 mb-0">Collections</h2>
+<div class="d-flex align-items-center mb-3">
+    <button type="button" class="btn btn-primary" @onclick="@AddMovie">
+        Add Movie
+    </button>
+
     @if (_creatingCollection)
     {
         <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
@@ -22,101 +25,98 @@
     }
     else
     {
-        <button type="button" class="btn btn-primary btn-sm ms-3" @onclick="StartCreateCollection">
+        <button type="button" class="btn btn-outline-primary ms-2" @onclick="StartCreateCollection">
             New Collection
         </button>
     }
 </div>
 
-@if (_collections.Length == 0)
-{
-    <p class="text-muted">No collections yet.</p>
-}
-else
-{
-    <div class="row g-3 mb-4">
-        @foreach (var collection in _collections)
-        {
-            var count = CountIn(collection);
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="@($"/collection/{collection.Id}")" class="card collection-card h-100 text-decoration-none">
-                    <div class="card-body">
-                        <i class="bi bi-collection-fill fs-3"></i>
-                        <h3 class="h6 mt-2 mb-1">@collection.Name</h3>
-                        <span class="text-muted small">@count @(count == 1 ? "movie" : "movies")</span>
-                    </div>
-                </a>
-            </div>
-        }
-    </div>
-}
-
-<h2 class="h4">All Movies</h2>
-
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
             <th>Title</th>
             <th>AddedOn</th>
-            <th>Collection</th>
-            <th>
-                <button type="button" class="btn btn-primary" @onclick="@AddMovie">
-                    Add Movie
-                </button>
-            </th>
+            <th>Add to collection</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var movie in _movies)
+        @foreach (var item in Items)
         {
-            <tr>
-                <td>
-                    @if (ReferenceEquals(_editingMovie, movie))
-                    {
-                        <input @bind="_newTitle" class="form-control form-control-sm d-inline w-auto" />
-
-                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveRename" title="Save">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelRename" title="Cancel">
-                            <i class="bi bi-x-circle-fill"></i>
-                        </button>
-                    }
-                    else
-                    {
-                        <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">@movie.Title</a>
-                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
-                    }
-                </td>
-                <td>@movie.AddedOn.ToShortDateString()</td>
-                <td>
-                    <select class="form-select form-select-sm w-auto"
-                            value="@(movie.CollectionId?.ToString() ?? "")"
-                            @onchange="e => AssignCollection(movie, e.Value?.ToString())">
-                        <option value="">None</option>
-                        @foreach (var collection in _collections)
+            @if (item.Collection is { } collection)
+            {
+                var count = CountIn(collection);
+                <tr class="collection-row">
+                    <td>
+                        <i class="bi bi-collection-fill me-2"></i>
+                        <a href="@($"/collection/{collection.Id}")" class="text-decoration-none fw-semibold">@collection.Name</a>
+                        <span class="text-muted small ms-2">@count @(count == 1 ? "movie" : "movies")</span>
+                    </td>
+                    <td>@collection.AddedOn.ToShortDateString()</td>
+                    <td></td>
+                    <td>
+                        <a href="@($"/collection/{collection.Id}")" class="btn btn-secondary">Open</a>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+            else if (item.Movie is { } movie)
+            {
+                <tr>
+                    <td>
+                        @if (ReferenceEquals(_editingMovie, movie))
                         {
-                            <option value="@collection.Id">@collection.Name</option>
+                            <input @bind="_newTitle" class="form-control form-control-sm d-inline w-auto" />
+
+                            <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveRename" title="Save">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelRename" title="Cancel">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
                         }
-                    </select>
-                </td>
-                <td>
-                    <a href="@($"/movie/{movie.Id}")" class="btn btn-secondary">Watch</a>
-                </td>
-                <td>
-                    <a href="@($"/api/Video/{movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
-                        <i class="bi bi-download"></i>
-                    </a>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DeleteMovie(movie)" title="Delete">
-                        <i class="bi bi-trash-fill"></i>
-                    </button>
-                </td>
-            </tr>
+                        else
+                        {
+                            <i class="bi bi-film me-2"></i>
+                            <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">@movie.Title</a>
+                            <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                        }
+                    </td>
+                    <td>@movie.AddedOn.ToShortDateString()</td>
+                    <td>
+                        @if (_collections.Length > 0)
+                        {
+                            <select class="form-select form-select-sm w-auto"
+                                    @onchange="e => AssignCollection(movie, e.Value?.ToString())">
+                                <option value="">Choose...</option>
+                                @foreach (var c in _collections)
+                                {
+                                    <option value="@c.Id">@c.Name</option>
+                                }
+                            </select>
+                        }
+                    </td>
+                    <td>
+                        <a href="@($"/movie/{movie.Id}")" class="btn btn-secondary">Watch</a>
+                    </td>
+                    <td>
+                        <a href="@($"/api/Video/{movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DeleteMovie(movie)" title="Delete">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
