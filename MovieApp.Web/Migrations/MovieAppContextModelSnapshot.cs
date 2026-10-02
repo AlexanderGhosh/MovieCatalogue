@@ -33,13 +33,38 @@ namespace MovieApp.Web.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CollectionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CollectionId");
+
                     b.ToTable("Movie");
+                });
+
+            modelBuilder.Entity("MovieApp.Web.Models.MovieCollection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MovieCollection");
                 });
 
             modelBuilder.Entity("MovieApp.Web.Models.MovieContent", b =>
@@ -83,7 +108,22 @@ namespace MovieApp.Web.Migrations
 
             modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
                 {
+                    b.HasOne("MovieApp.Web.Models.MovieCollection", "Collection")
+                        .WithMany("Movies")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Collection");
+                });
+
+            modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
+                {
                     b.Navigation("Content");
+                });
+
+            modelBuilder.Entity("MovieApp.Web.Models.MovieCollection", b =>
+                {
+                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }

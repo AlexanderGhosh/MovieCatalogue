@@ -1,19 +1,69 @@
 ﻿using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Models;
+using MovieCatalogue;
 
 namespace MovieApp.Web.Components.Pages
 {
     public partial class Movies(IMovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
+        private IMovieCollection[] _collections = [];
+        private bool _creatingCollection;
+        private string _newCollectionName = string.Empty;
         public Movie? _selectedMovie;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
         protected override async Task OnInitializedAsync()
         {
             _movies = await GetMovies();
+            _collections = await GetCollections();
+        }
+
+        private int CountIn(IMovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
+
+        private void StartCreateCollection()
+        {
+            _creatingCollection = true;
+            _newCollectionName = string.Empty;
+        }
+
+        private void CancelCreateCollection()
+        {
+            _creatingCollection = false;
+            _newCollectionName = string.Empty;
+        }
+
+        private async Task OnCollectionKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter") await SaveCollection();
+            else if (e.Key == "Escape") CancelCreateCollection();
+        }
+
+        private async Task SaveCollection()
+        {
+            var name = _newCollectionName.Trim();
+            if (name.Length > 0)
+            {
+                await _movieSvc.CreateCollection(name);
+                _collections = await GetCollections();
+            }
+            CancelCreateCollection();
+        }
+
+        private async Task AssignCollection(Movie movie, string? value)
+        {
+            int? collectionId = int.TryParse(value, out var id) ? id : null;
+            await _movieSvc.SetMovieCollection(movie.Id, collectionId);
+            _movies = await GetMovies();
+        }
+
+        private async Task<IMovieCollection[]> GetCollections()
+        {
+            var collections = await _movieSvc.GetAllCollectionsAsync();
+            return [.. collections];
         }
 
         private async Task AddMovie()

@@ -14,5 +14,13 @@ namespace MovieApp.Web
             where TMovie : class, IMovie;
 
         Task DeleteMovie(int movieId);
+
+        Task<IReadOnlyCollection<IMovieCollection>> GetAllCollectionsAsync();
+        ValueTask<IMovieCollection?> GetCollection(int collectionId);
+        Task<IReadOnlyCollection<IMovie>> GetMoviesInCollectionAsync(int collectionId);
+        Task<IMovieCollection> CreateCollection(string name);
+        Task RenameCollection(int collectionId, string name);
+        Task DeleteCollection(int collectionId);
+        Task SetMovieCollection(int movieId, int? collectionId);
     }
 }

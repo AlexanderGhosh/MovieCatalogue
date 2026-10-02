@@ -14,4 +14,9 @@ public class Movie : IMovie
 
     [InverseProperty(nameof(MovieContent.Movie))]
     public MovieContent? Content { get; set; }
+
+    public int? CollectionId { get; set; }
+
+    [ForeignKey(nameof(CollectionId))]
+    public MovieCollection? Collection { get; set; }
 }

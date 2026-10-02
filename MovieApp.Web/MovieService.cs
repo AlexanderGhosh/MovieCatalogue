@@ -84,5 +84,65 @@ namespace MovieApp.Web
             context.Movies.Remove(movie);
             await context.SaveChangesAsync();
         }
+
+        public async Task<IReadOnlyCollection<IMovieCollection>> GetAllCollectionsAsync()
+        {
+            return await context.Collections.OrderBy(c => c.Name).ToListAsync();
+        }
+
+        public async ValueTask<IMovieCollection?> GetCollection(int collectionId)
+        {
+            return await context.Collections.FindAsync(collectionId);
+        }
+
+        public async Task<IReadOnlyCollection<IMovie>> GetMoviesInCollectionAsync(int collectionId)
+        {
+            return await context.Movies
+                .Where(m => m.CollectionId == collectionId)
+                .OrderBy(m => m.Title)
+                .ToListAsync();
+        }
+
+        public async Task<IMovieCollection> CreateCollection(string name)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+            var collection = new MovieCollection { Name = name.Trim() };
+            context.Collections.Add(collection);
+            await context.SaveChangesAsync();
+            return collection;
+        }
+
+        public async Task RenameCollection(int collectionId, string name)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+            var collection = await context.Collections.FindAsync(collectionId);
+            if (collection is null) return;
+            collection.Name = name.Trim();
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteCollection(int collectionId)
+        {
+            var collection = await context.Collections.FindAsync(collectionId);
+            if (collection is null) return;
+
+            // Movies are kept; the FK is configured as SET NULL.
+            context.Collections.Remove(collection);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task SetMovieCollection(int movieId, int? collectionId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+
+            if (collectionId is not null && !await context.Collections.AnyAsync(c => c.Id == collectionId))
+                return;
+
+            movie.CollectionId = collectionId;
+            await context.SaveChangesAsync();
+        }
     }
 }
