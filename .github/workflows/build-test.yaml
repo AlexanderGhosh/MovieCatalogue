@@ -37,3 +37,14 @@ jobs:
             echo "Checking $f"
             bash -n "$f"
           done
+
+  # Manual gate: this job waits until a reviewer approves the "OnPremise-PR"
+  # environment in GitHub. Reject (or ignore) it and nothing is deployed.
+  # Only runs for pull requests; the push-to-main flow has its own deploy job.
+  deploy-pr:
+    if: github.event_name == 'pull_request'
+    needs: build-test
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: OnPremise-PR
+    secrets: inherit

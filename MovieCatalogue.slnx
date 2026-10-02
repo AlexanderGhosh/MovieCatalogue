@@ -11,7 +11,8 @@
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build-test-deploy.yaml" />
-    <File Path=".github/workflows/build-test.yaml" />
+    <File Path=".github/workflows/build-test.yaml" />    
+    <File Path=".github/workflows/deploy.yaml" />
   </Folder>  
   <Folder Name="/deploy/" />  
   <Folder Name="/deploy/ubuntu/" />  
