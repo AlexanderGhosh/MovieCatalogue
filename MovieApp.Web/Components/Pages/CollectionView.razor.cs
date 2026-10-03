@@ -37,11 +37,11 @@ namespace MovieApp.Web.Components.Pages
                 return;
             }
 
-            _movies = [.. (await _movieSvc.GetMoviesInCollectionAsync(CollectionId)).Cast<Movie>().OrderBy(x => x.Title)];
+            _movies = [.. (await _movieSvc.GetMoviesInCollectionAsync(CollectionId)).Cast<Movie>().OrderBy(x => x.Title, StringComparer.OrdinalIgnoreCase)];
 
             // Movies that aren't in any collection yet can be added from here.
             var all = await _movieSvc.GetAllMoviesAsync();
-            _available = [.. all.Cast<Movie>().Where(m => m.CollectionId is null).OrderBy(m => m.Title)];
+            _available = [.. all.Cast<Movie>().Where(m => m.CollectionId is null).OrderBy(m => m.Title, StringComparer.OrdinalIgnoreCase)];
             _selectedToAdd = null;
         }
 
