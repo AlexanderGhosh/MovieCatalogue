@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# find_episodes.sh — Given a HandBrake title-scan JSON file, a total
+# episode_splitter.sh — Given a HandBrake title-scan JSON file, a total
 # back-to-back runtime, and an episode count, echo the titles whose
 # individual runtime is within 5 minutes of (total runtime / episode count).
 #
 # Requires: jq
 #
 # Usage:
-#   ./find_episodes.sh -f titles.json -t TOTAL_RUNTIME -e EPISODE_COUNT [-w TOLERANCE_MIN]
+#   episode_splitter.sh -f titles.json -t TOTAL_RUNTIME -e EPISODE_COUNT [-w TOLERANCE_MIN]
 #
 # TOTAL_RUNTIME accepts either:
 #   - plain minutes, e.g. 220
@@ -22,10 +22,10 @@
 #
 #       while IFS=$'\t' read -r index name seconds diff; do
 #           echo "Processing title $index: $name ($seconds s)"
-#       done < <(./find_episodes.sh -f titles.json -t 3:56:00 -e 8 -q)
+#       done < <(episode_splitter.sh -f titles.json -t 3:56:00 -e 8 -q)
 #
 # Example:
-#   ./find_episodes.sh -f titles.json -t 3:56:00 -e 8
+#   episode_splitter.sh -f titles.json -t 3:56:00 -e 8
 
 set -euo pipefail
 
