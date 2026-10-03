@@ -86,7 +86,7 @@ fi
 
 
 
-ARGS=(-i "$DEVICE" -o "$OUTPUT" --preset="$PRESET" --keep-display-aspect --optimize --loose-anamorphic)
+ARGS=(-i "$DEVICE" -o "$OUTPUT" --preset="$PRESET" --keep-display-aspect --optimize --loose-anamorphic --audio-lang-list "eng")
 
 if [[ -z "$BEST_TITLE" ]]; then
     ARGS+=(--main-feature)
