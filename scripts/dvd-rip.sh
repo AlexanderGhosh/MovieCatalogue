@@ -64,7 +64,7 @@ done
 
 if [[ "$IS_TV_SHOW" == "true" ]]; then
     if [[ -z "${TOTAL_RUNTIME:-}" || -z "${TOTAL_EPISODES:-}" ]]; then
-        echo "Error: --tv requires -l/--length and -e/--episode-count" >&2
+        log "Error: --tv requires -l/--length and -e/--episode-count"
         exit 1
     fi
     log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
@@ -74,11 +74,11 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     HandBrakeCLI "${ARGS[@]}" 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
     while IFS=$'\t' read -r index name seconds diff; do
-        echo "Processing title $index: $name (${seconds}s, off by ${diff}s)"
+        log "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
         "$0" -t "$index" -n "$EPISODE_NAME" --no-eject < /dev/null
         (( INDEX++ ))
-    done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
+    done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES")
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
