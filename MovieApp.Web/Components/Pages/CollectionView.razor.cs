@@ -37,7 +37,7 @@ namespace MovieApp.Web.Components.Pages
                 return;
             }
 
-            _movies = [.. (await _movieSvc.GetMoviesInCollectionAsync(CollectionId)).Cast<Movie>()];
+            _movies = [.. (await _movieSvc.GetMoviesInCollectionAsync(CollectionId)).Cast<Movie>().OrderBy(x => x.Title)];
 
             // Movies that aren't in any collection yet can be added from here.
             var all = await _movieSvc.GetAllMoviesAsync();
