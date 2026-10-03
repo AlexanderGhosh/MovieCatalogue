@@ -25,6 +25,7 @@ namespace MovieApp.Web.Components.Pages
         private sealed record HomeItem(IMovieCollection? Collection, Movie? Movie)
         {
             public string Name => Collection?.Name ?? Movie?.Title ?? string.Empty;
+            public DateTime AddedOn => Collection?.AddedOn ?? Movie?.AddedOn ?? default;
         }
 
         // Collections and movies that are not in a collection, shown together.
@@ -32,7 +33,7 @@ namespace MovieApp.Web.Components.Pages
         private IEnumerable<HomeItem> Items => _collections
             .Select(c => new HomeItem(c, null))
             .Concat(_movies.Where(m => m.CollectionId is null).Select(m => new HomeItem(null, m)))
-            .OrderBy(i => i.Name, StringComparer.CurrentCultureIgnoreCase);
+            .OrderByDescending(i => i.AddedOn);
 
         private int CountIn(IMovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
 
