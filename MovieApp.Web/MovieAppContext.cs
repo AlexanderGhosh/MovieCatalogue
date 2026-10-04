@@ -19,8 +19,16 @@ public class MovieAppContext(DbContextOptions<MovieAppContext> options) : DbCont
             .HasConversion<long>();
         modelBuilder.Entity<MovieContent>().Property(p => p.LastTimeStamp)
             .HasConversion<long?>();
+
+        // Deleting a collection keeps its movies; they just become uncollected.
+        modelBuilder.Entity<Movie>()
+            .HasOne(m => m.Collection)
+            .WithMany(c => c.Movies)
+            .HasForeignKey(m => m.CollectionId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public DbSet<Movie> Movies { get; set; }
     public DbSet<MovieContent> MovieContent { get; set; }
+    public DbSet<MovieCollection> Collections { get; set; }
 }

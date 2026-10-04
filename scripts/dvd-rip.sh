@@ -6,6 +6,7 @@ DEVICE="/dev/sr0"
 PRESET="Fast 1080p30"
 OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
+EPISODE_LENGTH_TOLERANCE="5"
 
 log() {
     [[ "$VERBOSE" == "true" ]] && echo "$1"
@@ -45,6 +46,10 @@ while [[ $# -gt 0 ]]; do
             TOTAL_EPISODES="$2"
             shift 2
             ;;
+        -w|--tolerance)
+            EPISODE_LENGTH_TOLERANCE="$2"
+            shift 2
+            ;;
         -n|--name)
             DVD_NAME="$2"
             shift 2
@@ -64,7 +69,7 @@ done
 
 if [[ "$IS_TV_SHOW" == "true" ]]; then
     if [[ -z "${TOTAL_RUNTIME:-}" || -z "${TOTAL_EPISODES:-}" ]]; then
-        echo "Error: --tv requires -l/--length and -e/--episode-count" >&2
+        log "Error: --tv requires -l/--length and -e/--episode-count"
         exit 1
     fi
     log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
@@ -73,12 +78,14 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
     HandBrakeCLI "${ARGS[@]}" 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
     INDEX=1
+    SPLITTER_ARGS=(-f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -w "$EPISODE_LENGTH_TOLERANCE")
+    [[ "$VERBOSE" != "true" ]] && SPLITTER_ARGS+=(-q)
     while IFS=$'\t' read -r index name seconds diff; do
-        echo "Processing title $index: $name (${seconds}s, off by ${diff}s)"
+        log "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
-        "$0" -t "$index" -n "$EPISODE_NAME" --no-eject < /dev/null
+        "$0" -t "$INDEX" -n "$EPISODE_NAME" --no-eject < /dev/null
         (( INDEX++ ))
-    done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q)
+    done < <(episode_splitter.sh -f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -q -w "$EPISODE_LENGTH_TOLERANCE")
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
@@ -86,7 +93,7 @@ fi
 
 
 
-ARGS=(-i "$DEVICE" -o "$OUTPUT" --preset="$PRESET" --keep-display-aspect --optimize --loose-anamorphic)
+ARGS=(-i "$DEVICE" -o "$OUTPUT" --preset="$PRESET" --keep-display-aspect --optimize --loose-anamorphic --audio-lang-list "eng")
 
 if [[ -z "$BEST_TITLE" ]]; then
     ARGS+=(--main-feature)

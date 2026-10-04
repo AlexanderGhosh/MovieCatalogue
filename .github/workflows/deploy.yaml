@@ -1,0 +1,47 @@
+name: deploy
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: GitHub environment to deploy to (controls approvals and secrets)
+        required: true
+        type: string
+
+# Only one deploy at a time, and never cancel one that is half way through.
+concurrency:
+  group: deploy-onpremise
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          clean: true
+      - name: Deploy Scripts
+        run: sudo cp ./scripts/*.sh /usr/local/bin --verbose
+      - name: Publish & Deploy Solution
+        run: dotnet publish -c Release -o /var/www/MovieCatalogue/
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Run EF Core migrations
+        env:
+          ConnectionStrings__MovieAppContext: "Server=127.0.0.1,1433;Database=MovieCatalogue;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+        working-directory: MovieApp.Web
+        run: dotnet ef database update --configuration Release --no-build --project . --startup-project .
+      - name: Deploy .service
+        run: sudo cp ./deploy/ubuntu/systemd/moviecatalogue.service /etc/systemd/system/moviecatalogue.service
+      - name: Reload Service Deamon
+        run: sudo systemctl daemon-reload
+      - name: Deploy nginx config
+        run: |
+          sudo cp ./deploy/ubuntu/nginx/config.conf /etc/nginx/sites-available/moviecatalogue
+          sudo ln -sf /etc/nginx/sites-available/moviecatalogue /etc/nginx/sites-enabled/moviecatalogue
+      - name: Reload nginx
+        run: sudo systemctl reload-or-restart nginx
+      - name: Restart Service
+        run: sudo systemctl restart moviecatalogue
