@@ -7,6 +7,7 @@ PRESET="Fast 1080p30"
 OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
 EPISODE_LENGTH_TOLERANCE="5"
+PICKED_EPISODE=0
 
 log() {
     [[ "$VERBOSE" == "true" ]] && echo "$1"
@@ -50,6 +51,10 @@ while [[ $# -gt 0 ]]; do
             EPISODE_LENGTH_TOLERANCE="$2"
             shift 2
             ;;
+        --pick-episode)
+            PICKED_EPISODE="$2"
+            shift 2
+            ;;
         -n|--name)
             DVD_NAME="$2"
             shift 2
@@ -81,6 +86,10 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     SPLITTER_ARGS=(-f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -w "$EPISODE_LENGTH_TOLERANCE")
     [[ "$VERBOSE" != "true" ]] && SPLITTER_ARGS+=(-q)
     while IFS=$'\t' read -r index name seconds diff; do
+        if [[ "$PICKED_EPISODE" != "0" ]] && [[ "$(( PICKED_EPISODE - 1 ))" != "$index" ]]; then
+            (( INDEX++ ))
+            continue
+        fi
         log "Processing title $index: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
         "$0" -t "$INDEX" -n "$EPISODE_NAME" --no-eject < /dev/null
