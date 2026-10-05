@@ -7,6 +7,7 @@
   <Folder Name="/Libs/">
     <Project Path="BlobStorage/BlobStorage.csproj" Id="3861826c-98ce-4cd4-8373-395b51752f5a" />
     <Project Path="Libs/HandBreakSDK/HandBreakSDK.csproj" Id="6309210f-cf65-4f96-90e9-6640fe3b60b5" />
+    <Project Path="MovieCatalogue/MovieCatalogue.csproj" Id="df3889b4-0e62-43aa-ba61-24bdd7d76805" />
   </Folder>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">
@@ -28,5 +29,4 @@
     <File Path="scripts/upscale-video.sh" />
   </Folder>
   <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />
-  <Project Path="MovieCatalogue/MovieCatalogue.csproj" Id="df3889b4-0e62-43aa-ba61-24bdd7d76805" />
 </Solution>
