@@ -25,7 +25,7 @@ jobs:
       - name: Deploy Scripts
         run: sudo cp ./scripts/*.sh /usr/local/bin --verbose
       - name: Publish & Deploy Solution
-        run: dotnet publish -c Release -o /var/www/MovieCatalogue/
+        run: dotnet publish /p:EnvironmentName=Staging -c Release -o /var/www/MovieCatalogue/
       - name: Add dotnet tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
       - name: Run EF Core migrations
