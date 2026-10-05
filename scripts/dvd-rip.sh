@@ -85,14 +85,14 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
     INDEX=1
     SPLITTER_ARGS=(-f "$TITLE_FILE" -t "$TOTAL_RUNTIME" -e "$TOTAL_EPISODES" -w "$EPISODE_LENGTH_TOLERANCE")
     [[ "$VERBOSE" != "true" ]] && SPLITTER_ARGS+=(-q)
-    while IFS=$'\t' read -r index name seconds diff; do
-        if [[ "$PICKED_EPISODE" != "0" ]] && [[ "$(( PICKED_EPISODE - 1 ))" != "$index" ]]; then
+    while IFS=$'\t' read -r title name seconds diff; do
+        if [[ "$PICKED_EPISODE" != "0" ]] && [[ "$PICKED_EPISODE" != "$INDEX" ]]; then
             (( INDEX++ ))
             continue
         fi
-        log "Processing title $index: $name (${seconds}s, off by ${diff}s)"
+        log "Processing title $title: $name (${seconds}s, off by ${diff}s)"
         EPISODE_NAME="$DVD_NAME E$INDEX"
-        "$0" -t "$INDEX" -n "$EPISODE_NAME" --no-eject < /dev/null
+        "$0" -t "$title" -n "$EPISODE_NAME" --no-eject < /dev/null
         (( INDEX++ ))
     done < <(episode_splitter.sh "${SPLITTER_ARGS[@]}")
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
