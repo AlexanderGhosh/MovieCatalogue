@@ -38,13 +38,28 @@ namespace MovieApp.Web.Components.Pages
             }
 
             var unorderedMovies = (await _movieSvc.GetMoviesInCollectionAsync(CollectionId)).Cast<Movie>();
-            var orderedMovies = unorderedMovies.OrderBy(x => x.Title.Split(' ').FirstOrDefault() ?? x.Title);
+            var orderedMovies = unorderedMovies.OrderBy(x => getEpisodeNumber(x.Title));
             _movies = [.. orderedMovies];
 
             // Movies that aren't in any collection yet can be added from here.
             var all = await _movieSvc.GetAllMoviesAsync();
             _available = [.. all.Cast<Movie>().Where(m => m.CollectionId is null).OrderBy(m => m.Title, StringComparer.OrdinalIgnoreCase)];
             _selectedToAdd = null;
+
+            int getEpisodeNumber(string title)
+            {
+                title = title.Trim();
+                var split = title.Trim().Split(' ');
+                var first = split.FirstOrDefault();
+                if (first is null) return 0;
+                if (!first.StartsWith("E", StringComparison.OrdinalIgnoreCase)) return 0;
+                var numberStr = first[1..];
+                if (int.TryParse(numberStr, out var res))
+                {
+                    return res;
+                }
+                return 0;
+            }
         }
 
         private void StartRename()
