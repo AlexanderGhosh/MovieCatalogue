@@ -87,9 +87,9 @@ namespace MovieApp.Web.Components.Pages
             var res = await resTask;
 
             if (res.Cancelled || res.Data is not AddMovie data) return;
-            var (movie, content, thumbnail) = data;
+            var (movie, content) = data;
 
-            await _movieSvc.UploadMovieAsync(movie, content, thumbnail);
+            await _movieSvc.UploadMovieAsync(movie, content);
             _movies = await GetMovies();
         }
 

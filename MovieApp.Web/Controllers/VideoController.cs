@@ -52,7 +52,7 @@ namespace MovieApp.Web.Controllers
                 Stream = stream
             };
 
-            await _movieSvc.UploadMovieAsync(movie, content, null);
+            await _movieSvc.UploadMovieAsync(movie, content);
         }
     }
 }

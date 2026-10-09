@@ -5,12 +5,11 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using MovieApp.Web.Models;
 using MovieCatalogue;
-using MovieCatalogue.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace MovieApp.Web.Components.Modals
 {
-    public record AddMovie(IMovie Movie, IMovieContent? Content = null, IThumbnail? Thumbnail = null);
+    public record AddMovie(IMovie Movie, IMovieContent? Content = null);
     public partial class AddMovieModal : ComponentBase
     {
         [CascadingParameter] 
