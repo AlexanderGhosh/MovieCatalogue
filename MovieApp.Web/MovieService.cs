@@ -136,5 +136,14 @@ namespace MovieApp.Web
             movie.CollectionId = collectionId;
             await context.SaveChangesAsync();
         }
+
+        public async Task<Stream?> GetThumbnail(int movieId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie?.ThumbnailBlobId is null) return null;
+
+            var thumbnail = await blobStorage.DownloadAsync(movie.ThumbnailBlobId.Value);
+            return thumbnail.DataStream;
+        }
     }
 }

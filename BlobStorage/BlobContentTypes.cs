@@ -8,6 +8,7 @@ namespace BlobStorage
         public const string MP4 = "application/mp4";
         public const string PlainText = "text/plain";
         public const string Json = "application/json";
+        public const string Image = "image/jpeg";
     }
 
     public static partial class BlobContentTypes

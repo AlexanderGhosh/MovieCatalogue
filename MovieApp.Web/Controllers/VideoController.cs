@@ -54,5 +54,15 @@ namespace MovieApp.Web.Controllers
 
             await _movieSvc.UploadMovieAsync(movie, content);
         }
+
+        [HttpGet("{videoId}/thumbnail")]
+        public async Task<IActionResult> GetVideoThumbnail(int videoId)
+        {
+            var stream = await _movieSvc.GetThumbnail(videoId);
+            if (stream is null)
+                return NotFound();
+
+            return File(stream, "image/jpeg");
+        }
     }
 }

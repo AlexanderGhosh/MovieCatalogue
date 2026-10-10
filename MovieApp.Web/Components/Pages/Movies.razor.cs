@@ -16,6 +16,7 @@ namespace MovieApp.Web.Components.Pages
         public Movie? _selectedMovie;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
+
         protected override async Task OnInitializedAsync()
         {
             _movies = await GetMovies();

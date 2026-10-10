@@ -81,8 +81,11 @@
                         }
                         else
                         {
-                            <i class="bi bi-film me-2"></i>
-                            <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">@movie.Title</a>
+                            <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">
+                                <ThumbnailComponent Image="@($"/api/Video/{movie.Id}/thumbnail")" Width="160" Height="90"/>
+                                <i class="bi bi-film me-2"></i>
+                                @movie.Title
+                            </a>
                             <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>

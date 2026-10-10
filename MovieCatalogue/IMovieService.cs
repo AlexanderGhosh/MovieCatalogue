@@ -21,5 +21,7 @@ namespace MovieApp.Web
         Task RenameCollection(int collectionId, string name);
         Task DeleteCollection(int collectionId);
         Task SetMovieCollection(int movieId, int? collectionId);
+
+        Task<Stream?> GetThumbnail(int movieId);
     }
 }

@@ -1,0 +1,20 @@
+﻿<img src="@Image" width="@ScaledWidth" height="@ScaledHeight" />
+
+@code {
+    private const float SCALE = 100.0f;
+
+    [Parameter]
+    public required string Image { get; init; }
+
+    [Parameter]
+    public required uint Width { get; init; }
+
+    [Parameter]
+    public required uint Height { get; init; }
+
+    private float AspectRatio => Width / (float)Height;
+
+    private uint ScaledWidth => (uint)(SCALE * AspectRatio);
+                               
+    private uint ScaledHeight => (uint)(SCALE * AspectRatio);
+}
