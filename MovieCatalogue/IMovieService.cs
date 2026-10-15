@@ -23,5 +23,6 @@ namespace MovieApp.Web
         Task SetMovieCollection(int movieId, int? collectionId);
 
         Task<Stream?> GetThumbnail(int movieId);
+        Task SetThumbnail(int movieId, Stream thumbnail);
     }
 }

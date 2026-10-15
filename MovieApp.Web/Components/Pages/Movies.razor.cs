@@ -94,6 +94,17 @@ namespace MovieApp.Web.Components.Pages
             _movies = await GetMovies();
         }
 
+        private async Task ChangeThumbnail(int movieId)
+        {
+            var resTask = Modal.Show<ChangeThumbnailModal>(new Blazored.Modal.ModalParameters()
+            {
+                {nameof(ChangeThumbnailModal.MovieId), movieId }
+            })?.Result;
+            if (resTask is null) return;
+            await resTask;
+            StateHasChanged();
+        }
+
         private async Task RenameMovie(Movie movie, string newName)
         {
             if (movie.Title == newName) return;

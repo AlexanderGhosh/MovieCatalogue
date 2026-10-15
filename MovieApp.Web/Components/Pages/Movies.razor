@@ -82,8 +82,12 @@
                         else
                         {
                             <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">
-                                <ThumbnailComponent Image="@($"/api/Video/{movie.Id}/thumbnail")" Width="160" Height="90"/>
-                                <i class="bi bi-film me-2"></i>
+                                <ThumbnailComponent Image="@ThumbUrl(movie.Id)" Width="90" AspectRatio="18.0f / 24.0f" />
+                                <a @onclick="() => ChangeThumbnail(movie.Id)"
+                                   @onclick:stopPropagation="true"
+                                   @onclick:preventDefault="true">
+                                    <i class="bi bi-film me-2"></i>
+                                </a>
                                 @movie.Title
                             </a>
                             <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
@@ -125,8 +129,13 @@
 </table>
 
 @code {
+    private Dictionary<int, long> thumbVersions = new();
     private Movie? _editingMovie;
     private string _newTitle = string.Empty;
+
+    private string ThumbUrl(int id) =>
+    $"/api/Video/{id}/thumbnail?v={(thumbVersions.TryGetValue(id, out var v) ? v : 0)}";
+
 
     private void StartRename(Movie movie)
     {
@@ -140,10 +149,10 @@
         _newTitle = string.Empty;
     }
 
-    private void SaveRename()
+    private async Task SaveRename()
     {
         if (_editingMovie is null) return;
-        RenameMovie(_editingMovie, _newTitle);
+        await RenameMovie(_editingMovie, _newTitle);
         _editingMovie = null;
         _newTitle = string.Empty;
     }

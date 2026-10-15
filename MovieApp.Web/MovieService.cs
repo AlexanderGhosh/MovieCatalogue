@@ -145,5 +145,16 @@ namespace MovieApp.Web
             var thumbnail = await blobStorage.DownloadAsync(movie.ThumbnailBlobId.Value);
             return thumbnail.DataStream;
         }
+
+        public async Task SetThumbnail(int movieId, Stream thumbnail)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+            if (movie.ThumbnailBlobId is not null)
+                await blobStorage.DeleteAsync(movie.ThumbnailBlobId.Value);
+            var id = await blobStorage.UploadAsync(thumbnail, new() { ContentType = BlobContentTypes.Jpeg });
+            movie.ThumbnailBlobId = id;
+            await context.SaveChangesAsync();
+        }
     }
 }
