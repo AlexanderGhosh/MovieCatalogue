@@ -1,6 +1,7 @@
-﻿
+﻿@using BlobStorage
+
 <label>Movie Thumbnail</label>
-<InputFile OnChange="MovieThumbnailChange" accept=".jpg,.jpeg,.jfif" />
+<InputFile OnChange="MovieThumbnailChange" accept=".jpg,.jpeg,.jpe,.jfif,.jif,.jfi,.pjpeg,.pjp,.png,.webp" />
 <button type="button" class="btn btn-primary" @onclick="@Close">
     Close
 </button>
@@ -18,7 +19,9 @@
     {
         if (_thumbnail is null) return;
         using var stream = _thumbnail.OpenReadStream();
-        await _movieService.SetThumbnail(MovieId, stream);
+        var extension = Path.GetExtension(_thumbnail.Name);
+        var contentType = BlobContentTypes.GetContentType(extension);
+        await _movieService.SetThumbnail(MovieId, stream, contentType);
         await Close();   
     }
 

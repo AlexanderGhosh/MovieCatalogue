@@ -9,6 +9,26 @@ namespace BlobStorage
         public const string PlainText = "text/plain";
         public const string Json = "application/json";
         public const string Jpeg = "image/jpeg";
+        public const string Png = "image/png";
+        public const string WebP = "image/webp";
+
+        internal static readonly Dictionary<string, BlobContentType> ExtensionMap = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["mp4"] = MP4,
+            ["m4v"] = MP4,
+            ["txt"] = PlainText,
+            ["json"] = Json,
+            ["jpg"] = Jpeg,
+            ["jpeg"] = Jpeg,
+            ["jpe"] = Jpeg,
+            ["jfif"] = Jpeg,
+            ["jif"] = Jpeg,
+            ["jfi"] = Jpeg,
+            ["pjpeg"] = Jpeg,
+            ["pjp"] = Jpeg,
+            ["png"] = Png,
+            ["webp"] = WebP,
+        };
     }
 
     public static partial class BlobContentTypes
@@ -27,6 +47,14 @@ namespace BlobStorage
                 }
 
             }
+        }
+
+        public static BlobContentType GetContentType(string extension)
+        {
+            extension = extension.ToLower().Trim().TrimStart('.');
+            if (ExtensionMap.TryGetValue(extension, out var contentType))
+                return contentType;
+            return Unknown;
         }
 
         public static bool Exists(string contentType) => _contentTypes.Contains(contentType);

@@ -1,4 +1,5 @@
-﻿using MovieCatalogue;
+﻿using BlobStorage;
+using MovieCatalogue;
 
 namespace MovieApp.Web
 {
@@ -23,6 +24,6 @@ namespace MovieApp.Web
         Task SetMovieCollection(int movieId, int? collectionId);
 
         Task<Stream?> GetThumbnail(int movieId);
-        Task SetThumbnail(int movieId, Stream thumbnail);
+        Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);
     }
 }
