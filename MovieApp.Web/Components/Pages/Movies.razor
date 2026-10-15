@@ -82,7 +82,7 @@
                         else
                         {
                             <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">
-                                <ThumbnailComponent Image="@ThumbUrl(movie.Id)" Width="90" AspectRatio="18.0f / 24.0f" />
+                                <ThumbnailComponent Image="@ThumbUrl(movie.Id)" Width="90" AspectRatio="258.0f / 312.0f" />
                                 <a @onclick="() => ChangeThumbnail(movie.Id)"
                                    @onclick:stopPropagation="true"
                                    @onclick:preventDefault="true">
