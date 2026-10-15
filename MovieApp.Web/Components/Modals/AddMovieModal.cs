@@ -32,10 +32,6 @@ namespace MovieApp.Web.Components.Modals
         {
             _movieContent = args.File;
         }
-        private void MovieThumbnailChange(InputFileChangeEventArgs args)
-        {
-            _ = 0;
-        }
 
         private IMovie MakeMovie() => new Movie()
         {
