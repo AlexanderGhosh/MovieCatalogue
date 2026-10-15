@@ -36,6 +36,9 @@ namespace MovieApp.Web.Migrations
                     b.Property<int?>("CollectionId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ThumbnailBlobId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -95,6 +98,16 @@ namespace MovieApp.Web.Migrations
                     b.ToTable("MovieContent");
                 });
 
+            modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
+                {
+                    b.HasOne("MovieApp.Web.Models.MovieCollection", "Collection")
+                        .WithMany("Movies")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Collection");
+                });
+
             modelBuilder.Entity("MovieApp.Web.Models.MovieContent", b =>
                 {
                     b.HasOne("MovieApp.Web.Models.Movie", "Movie")
@@ -104,16 +117,6 @@ namespace MovieApp.Web.Migrations
                         .IsRequired();
 
                     b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
-                {
-                    b.HasOne("MovieApp.Web.Models.MovieCollection", "Collection")
-                        .WithMany("Movies")
-                        .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Collection");
                 });
 
             modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>

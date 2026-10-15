@@ -1,0 +1,35 @@
+﻿@using BlobStorage
+
+<label>Movie Thumbnail</label>
+<InputFile OnChange="MovieThumbnailChange" accept=".jpg,.jpeg,.jpe,.jfif,.jif,.jfi,.pjpeg,.pjp,.png,.webp" />
+<button type="button" class="btn btn-primary" @onclick="@Close">
+    Close
+</button>
+
+@code {
+    [Parameter]
+    public int MovieId { get; set; }
+    [Inject]
+    public IMovieService _movieService { get; set; } = null!;
+    private IBrowserFile? _thumbnail;
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task SaveChange()
+    {
+        if (_thumbnail is null) return;
+        using var stream = _thumbnail.OpenReadStream();
+        var extension = Path.GetExtension(_thumbnail.Name);
+        var contentType = BlobContentTypes.GetContentType(extension);
+        await _movieService.SetThumbnail(MovieId, stream, contentType);
+        await Close();   
+    }
+
+    private async Task MovieThumbnailChange(InputFileChangeEventArgs args)
+    {
+        _thumbnail = args.File;
+        await SaveChange();
+    }
+
+    private Task Close() => BlazoredModal.CancelAsync();
+}

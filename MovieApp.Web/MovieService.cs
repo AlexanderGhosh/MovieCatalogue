@@ -2,20 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Web.Models;
 using MovieCatalogue;
-using MovieCatalogue.Models;
 
 namespace MovieApp.Web
 {
     public class MovieService(MovieAppContext context, IBlobStorage blobStorage) : IMovieService
     {
-        public async Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail)
+        public async Task UploadMovieAsync(IMovie movie, IMovieContent? content)
         {
             if (movie is not Movie m)
                 throw new ArgumentException($"Provided {nameof(movie)} must be an instance of {nameof(Movie)}", nameof(movie));
             if (content is not MovieContent and not null)
                 throw new ArgumentException($"Provided {nameof(content)} must be an instance of {nameof(MovieContent)}", nameof(content));
-            if (thumbnail is not Thumbnail and not null)
-                throw new ArgumentException($"Provided {nameof(thumbnail)} must be an instance of {nameof(Thumbnail)}", nameof(thumbnail));
 
             if (content is not null)
             {
@@ -46,11 +43,6 @@ namespace MovieApp.Web
             var data = await blobStorage.DownloadAsync(content.BlobGuid);
             content.Stream = data.DataStream;
             return content;
-        }
-
-        public Task<IThumbnail?> GetMovieThumbnail(int movieId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync()
@@ -142,6 +134,26 @@ namespace MovieApp.Web
                 return;
 
             movie.CollectionId = collectionId;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<Stream?> GetThumbnail(int movieId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie?.ThumbnailBlobId is null) return null;
+
+            var thumbnail = await blobStorage.DownloadAsync(movie.ThumbnailBlobId.Value);
+            return thumbnail.DataStream;
+        }
+
+        public async Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+            if (movie.ThumbnailBlobId is not null)
+                await blobStorage.DeleteAsync(movie.ThumbnailBlobId.Value);
+            var id = await blobStorage.UploadAsync(thumbnail, new() { ContentType = contentType });
+            movie.ThumbnailBlobId = id;
             await context.SaveChangesAsync();
         }
     }

@@ -1,0 +1,14 @@
+﻿<img src="@Image" width="@Width" height="@Height" />
+
+@code {
+    [Parameter]
+    public required string Image { get; init; }
+
+    [Parameter]
+    public required uint Width { get; init; }
+
+    [Parameter]
+    public required float AspectRatio { get; init; }
+                               
+    private uint Height => (uint)(Width / AspectRatio);
+}

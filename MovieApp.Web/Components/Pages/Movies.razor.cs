@@ -16,6 +16,7 @@ namespace MovieApp.Web.Components.Pages
         public Movie? _selectedMovie;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
+
         protected override async Task OnInitializedAsync()
         {
             _movies = await GetMovies();
@@ -87,10 +88,21 @@ namespace MovieApp.Web.Components.Pages
             var res = await resTask;
 
             if (res.Cancelled || res.Data is not AddMovie data) return;
-            var (movie, content, thumbnail) = data;
+            var (movie, content) = data;
 
-            await _movieSvc.UploadMovieAsync(movie, content, thumbnail);
+            await _movieSvc.UploadMovieAsync(movie, content);
             _movies = await GetMovies();
+        }
+
+        private async Task ChangeThumbnail(int movieId)
+        {
+            var resTask = Modal.Show<ChangeThumbnailModal>(new Blazored.Modal.ModalParameters()
+            {
+                {nameof(ChangeThumbnailModal.MovieId), movieId }
+            })?.Result;
+            if (resTask is null) return;
+            await resTask;
+            StateHasChanged();
         }
 
         private async Task RenameMovie(Movie movie, string newName)

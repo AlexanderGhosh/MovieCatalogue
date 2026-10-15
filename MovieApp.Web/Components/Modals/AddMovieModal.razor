@@ -2,9 +2,7 @@
     <label>Title</label>
     <InputText @bind-Value="MovieTitle" placeholder="Title" class="form-control mb-2" />
     <label>Movie Content</label>
-    <InputFile OnChange="MovieContentChange" />
-    <label>Movie Thumbnail</label>
-    <InputFile OnChange="MovieThumbnailChange" />
+    <InputFile OnChange="MovieContentChange" accept=".mp4,.m4v" />
     <button type="button" class="btn btn-primary" @onclick="@AddMovie">
         Add
     </button>

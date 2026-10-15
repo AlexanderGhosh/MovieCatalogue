@@ -1,13 +1,13 @@
-﻿using MovieCatalogue;
+﻿using BlobStorage;
+using MovieCatalogue;
 
 namespace MovieApp.Web
 {
     public interface IMovieService
     {
-        Task UploadMovieAsync(IMovie movie, IMovieContent? content, IThumbnail? thumbnail);
+        Task UploadMovieAsync(IMovie movie, IMovieContent? content);
         ValueTask<IMovie?> GetMovie(int movieId);
         Task<IMovieContent?> GetMovieContent(int movieId);
-        Task<IThumbnail?> GetMovieThumbnail(int movieId);
         Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync();
 
         Task UpdateMovie<TMovie>(int movieId, Action<TMovie> update)
@@ -22,5 +22,8 @@ namespace MovieApp.Web
         Task RenameCollection(int collectionId, string name);
         Task DeleteCollection(int collectionId);
         Task SetMovieCollection(int movieId, int? collectionId);
+
+        Task<Stream?> GetThumbnail(int movieId);
+        Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);
     }
 }
