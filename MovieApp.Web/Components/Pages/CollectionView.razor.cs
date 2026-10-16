@@ -44,6 +44,7 @@ namespace MovieApp.Web.Components.Pages
             var all = await _movieSvc.GetAllMoviesAsync();
             _available = [.. all.Cast<Movie>().Where(m => m.Collections.Count == 0).OrderBy(m => m.Title, StringComparer.OrdinalIgnoreCase)];
             _selectedToAdd = null;
+            this.StateHasChanged();
 
             int getEpisodeNumber(string title)
             {

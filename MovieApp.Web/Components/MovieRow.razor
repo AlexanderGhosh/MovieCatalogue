@@ -1,0 +1,37 @@
+﻿@using MovieApp.Web.Models;
+<tr @onclick="WatchMovie">
+    <td>
+        <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
+    </td>
+    <td>
+        @Movie.Title
+    </td>
+    <td>
+        @Movie.AddedOn.ToShortDateString()
+    </td>
+    <td @onclick="RemoveMovie_CB"
+        @onclick:stopPropagation="true"
+        @onclick:preventDefault="true">
+        <i class="bi bi-x-circle"></i>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public required Movie Movie { get; init; }
+
+    [Parameter]
+    public Func<int, Task>? RemoveMovie { get; init; }
+
+    void WatchMovie()
+    {
+        Navigation.NavigateTo($"/movie/{Movie.Id}");
+    }
+
+    async Task RemoveMovie_CB()
+    {
+        var task = RemoveMovie?.Invoke(Movie.Id);
+        if (task is not null)
+            await task; 
+    }
+}
