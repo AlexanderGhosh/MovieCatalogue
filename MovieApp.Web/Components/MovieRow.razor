@@ -1,8 +1,11 @@
 ﻿@using MovieApp.Web.Models;
 <tr @onclick="WatchMovie">
-    <td>
-        <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
-    </td>
+    @if (ShowThumbnail)
+    {
+        <td>
+            <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
+        </td>
+    }
     <td>
         @Movie.Title
     </td>
@@ -17,6 +20,8 @@
 </tr>
 
 @code {
+    [Parameter]
+    public bool ShowThumbnail { get; set; } = true;
     [Parameter]
     public required Movie Movie { get; init; }
 

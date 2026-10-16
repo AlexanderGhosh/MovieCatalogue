@@ -58,7 +58,7 @@ else
             <tbody>
                 @foreach (var movie in _movies)
                 {
-                    <MovieRow Movie="movie" RemoveMovie="_ => RemoveMovie(movie)" />
+                    <MovieRow Movie="movie" RemoveMovie="_ => RemoveMovie(movie)" ShowThumbnail=@false/>
                 }
             </tbody>
         </table>
