@@ -102,14 +102,14 @@ namespace MovieApp.Web.Components.Pages
 
         private async Task RemoveMovie(Movie movie)
         {
-            await _movieSvc.SetMovieCollection(movie.Id, null);
+            await _movieSvc.RemoveMovieFromCollection(movie.Id, CollectionId);
             await Load();
         }
 
         private async Task AddSelectedMovie()
         {
             if (!int.TryParse(_selectedToAdd, out var movieId)) return;
-            await _movieSvc.SetMovieCollection(movieId, CollectionId);
+            await _movieSvc.AddMovieToCollection(movieId, CollectionId);
             await Load();
         }
     }

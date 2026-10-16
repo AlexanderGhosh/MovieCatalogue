@@ -99,8 +99,7 @@
                     <td>
                         @if (_collections.Length > 0)
                         {
-                            <select class="form-select form-select-sm w-auto"
-                                    @onchange="e => AssignCollection(movie, e.Value?.ToString())">
+                            <select class="form-select form-select-sm w-auto" @onchange="e => AssignCollection(movie, e.Value?.ToString())">
                                 <option value="">Choose...</option>
                                 @foreach (var c in _collections)
                                 {

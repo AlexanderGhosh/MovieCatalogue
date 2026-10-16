@@ -20,7 +20,8 @@ namespace MovieApp.Web
         Task<MovieCollection> CreateCollection(string name);
         Task RenameCollection(int collectionId, string name);
         Task DeleteCollection(int collectionId);
-        Task SetMovieCollection(int movieId, int? collectionId);
+        Task AddMovieToCollection(int movieId, int collectionId);
+        Task RemoveMovieFromCollection(int movieId, int collectionId);
 
         Task<Stream?> GetThumbnail(int movieId);
         Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);

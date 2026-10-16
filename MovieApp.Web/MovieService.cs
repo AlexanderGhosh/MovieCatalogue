@@ -123,7 +123,7 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
-        public async Task SetMovieCollection(int movieId, int? collectionId)
+        public async Task AddMovieToCollection(int movieId, int collectionId)
         {
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
@@ -133,6 +133,19 @@ namespace MovieApp.Web
                 return;
 
             movie.Collections.Add(collection);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveMovieFromCollection(int movieId, int collectionId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+
+            var collection = await context.Collections.FirstOrDefaultAsync(c => c.Id == collectionId);
+            if (collection is null)
+                return;
+
+            movie.Collections.Remove(collection);
             await context.SaveChangesAsync();
         }
 

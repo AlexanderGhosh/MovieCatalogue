@@ -69,7 +69,8 @@ namespace MovieApp.Web.Components.Pages
         private async Task AssignCollection(Movie movie, string? value)
         {
             int? collectionId = int.TryParse(value, out var id) ? id : null;
-            await _movieSvc.SetMovieCollection(movie.Id, collectionId);
+            if (collectionId is null) return;
+            await _movieSvc.AddMovieToCollection(movie.Id, collectionId.Value);
             _movies = await GetMovies();
         }
 
