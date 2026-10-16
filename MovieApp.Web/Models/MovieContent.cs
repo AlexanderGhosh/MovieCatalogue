@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace MovieApp.Web.Models
 {
-    [Table("MovieContent")]
     public class MovieContent()
     {
         private readonly IBrowserFile? _file;
@@ -18,8 +17,6 @@ namespace MovieApp.Web.Models
         public int Id { get; set; }
         public int MovieId { get; set; }
         public Guid BlobGuid { get; set; }
-        public TimeSpan Length { get; } = default;
-        public TimeSpan? LastTimeStamp { get; }
         [NotMapped, AllowNull, NotNull]
         public Stream Stream
         {

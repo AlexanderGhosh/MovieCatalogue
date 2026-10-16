@@ -1,20 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace MovieApp.Web.Models;
 
-namespace MovieApp.Web.Models;
-
-[Table("Movie")]
 public class Movie
 {
     public int Id { get; set; }
     public required string Title { get; set; }
     public DateTime AddedOn { get; set; } = DateTime.Now;
-
-
-    [InverseProperty(nameof(MovieContent.Movie))]
     public MovieContent? Content { get; set; }
+    private bool ShowThumbnail { get; set; } = false;
     public Guid? ThumbnailBlobId { get; set; }
     public int? CollectionId { get; set; }
-
-    [ForeignKey(nameof(CollectionId))]
-    public MovieCollection? Collection { get; set; }
+    public ICollection<MovieCollection> Collections { get; set; } = new HashSet<MovieCollection>();
 }

@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using MovieApp.Web.Models;
-using System;
-using System.Collections.Generic;
 
 namespace MovieApp.Web;
 
@@ -13,19 +10,42 @@ public class MovieAppContext(DbContextOptions<MovieAppContext> options) : DbCont
         optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<MovieContent>().Property(p => p.Length)
-            .HasConversion<long>();
-        modelBuilder.Entity<MovieContent>().Property(p => p.LastTimeStamp)
-            .HasConversion<long?>();
+        // Movie 1 : 0..1 MovieContent
+        builder.Entity<Movie>()
+            .HasOne(m => m.Content)
+            .WithOne(c => c.Movie)
+            .HasForeignKey<MovieContent>(c => c.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Deleting a collection keeps its movies; they just become uncollected.
-        modelBuilder.Entity<Movie>()
-            .HasOne(m => m.Collection)
+        // Movie <-> MovieCollection (many-to-many via Movie_Collection, composite key)
+        builder.Entity<Movie>()
+            .HasMany(m => m.Collections)
             .WithMany(c => c.Movies)
-            .HasForeignKey(m => m.CollectionId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .UsingEntity<Movie_Collection>(
+                right => right.HasOne<MovieCollection>().WithMany().HasForeignKey(mc => mc.CollectionId),
+                left => left.HasOne<Movie>().WithMany().HasForeignKey(mc => mc.MovieId),
+                join =>
+                {
+                    join.ToTable("Movie_Collection");
+                    join.HasKey(mc => new { mc.MovieId, mc.CollectionId });
+                });
+
+        // MovieCollection <-> MovieCollection (self-referencing many-to-many)
+        builder.Entity<MovieCollection>()
+            .HasMany(c => c.ChildCollections)
+            .WithMany(c => c.ParentCollections)
+            .UsingEntity<Collection_Collection>(
+                right => right.HasOne<MovieCollection>().WithMany()
+                    .HasForeignKey(cc => cc.ChildId).OnDelete(DeleteBehavior.Restrict),
+                left => left.HasOne<MovieCollection>().WithMany()
+                    .HasForeignKey(cc => cc.ParentId).OnDelete(DeleteBehavior.Restrict),
+                join =>
+                {
+                    join.ToTable("Collection_Collection");
+                    join.HasKey(cc => new { cc.ParentId, cc.ChildId });
+                });
     }
 
     public DbSet<Movie> Movies { get; set; }
