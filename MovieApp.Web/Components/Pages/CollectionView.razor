@@ -59,6 +59,7 @@ else
                 @foreach (var movie in _movies)
                 {
                     <tr>
+                        <ThumbnailComponent Image="@($"/api/Video/{movie.Id}/thumbnail")" Width="90" />
                         <td><a href="@($"/movie/{movie.Id}")" class="text-decoration-none">@movie.Title</a></td>
                         <td>@movie.AddedOn.ToShortDateString()</td>
                         <td>

@@ -101,6 +101,7 @@ namespace MovieApp.Web.Components.Pages
             })?.Result;
             if (resTask is null) return;
             await resTask;
+            thumbVersions[movieId] = DateTime.UtcNow.Ticks;
             StateHasChanged();
         }
 
