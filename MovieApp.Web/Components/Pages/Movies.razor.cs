@@ -32,10 +32,10 @@ namespace MovieApp.Web.Components.Pages
         // Movies inside a collection only appear on that collection's page.
         private IEnumerable<HomeItem> Items => _collections
             .Select(c => new HomeItem(c, null))
-            .Concat(_movies.Where(m => m.CollectionId is null).Select(m => new HomeItem(null, m)))
+            .Concat(_movies.Where(m => m.Collections.Count == 0).Select(m => new HomeItem(null, m)))
             .OrderByDescending(i => i.AddedOn);
 
-        private int CountIn(MovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
+        private int CountIn(MovieCollection collection) => collection.Movies.Count;
 
         private void StartCreateCollection()
         {

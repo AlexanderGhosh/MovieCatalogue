@@ -6,8 +6,7 @@ public class Movie
     public required string Title { get; set; }
     public DateTime AddedOn { get; set; } = DateTime.Now;
     public MovieContent? Content { get; set; }
-    private bool ShowThumbnail { get; set; } = false;
+    public bool ShowThumbnail { get; set; } = false;
     public Guid? ThumbnailBlobId { get; set; }
-    public int? CollectionId { get; set; }
     public ICollection<MovieCollection> Collections { get; set; } = new HashSet<MovieCollection>();
 }

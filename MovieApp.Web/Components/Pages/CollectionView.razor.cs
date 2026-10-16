@@ -42,7 +42,7 @@ namespace MovieApp.Web.Components.Pages
 
             // Movies that aren't in any collection yet can be added from here.
             var all = await _movieSvc.GetAllMoviesAsync();
-            _available = [.. all.Cast<Movie>().Where(m => m.CollectionId is null).OrderBy(m => m.Title, StringComparer.OrdinalIgnoreCase)];
+            _available = [.. all.Cast<Movie>().Where(m => m.Collections.Count == 0).OrderBy(m => m.Title, StringComparer.OrdinalIgnoreCase)];
             _selectedToAdd = null;
 
             int getEpisodeNumber(string title)

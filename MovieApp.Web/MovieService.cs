@@ -74,7 +74,10 @@ namespace MovieApp.Web
 
         public async Task<IReadOnlyCollection<MovieCollection>> GetAllCollectionsAsync()
         {
-            return await context.Collections.OrderBy(c => c.Name).ToListAsync();
+            return await context.Collections.OrderBy(c => c.Name)
+                .Include(x => x.Movies)
+                .Include(x => x.ChildCollections)
+                .ToListAsync();
         }
 
         public async ValueTask<MovieCollection?> GetCollection(int collectionId)
@@ -85,7 +88,7 @@ namespace MovieApp.Web
         public async Task<IReadOnlyCollection<Movie>> GetMoviesInCollectionAsync(int collectionId)
         {
             return await context.Movies
-                .Where(m => m.CollectionId == collectionId)
+                .Where(m => m.Collections.Any(x => x.Id == collectionId))
                 .OrderBy(m => m.Title)
                 .ToListAsync();
         }
@@ -125,10 +128,11 @@ namespace MovieApp.Web
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
 
-            if (collectionId is not null && !await context.Collections.AnyAsync(c => c.Id == collectionId))
+            var collection = await context.Collections.FirstOrDefaultAsync(c => c.Id == collectionId);
+            if (collection is null)
                 return;
 
-            movie.CollectionId = collectionId;
+            movie.Collections.Add(collection);
             await context.SaveChangesAsync();
         }
 

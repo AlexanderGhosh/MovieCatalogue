@@ -48,8 +48,8 @@ namespace MovieApp.Web.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CollectionId")
-                        .HasColumnType("int");
+                    b.Property<bool>("ShowThumbnail")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("ThumbnailBlobId")
                         .HasColumnType("uniqueidentifier");
