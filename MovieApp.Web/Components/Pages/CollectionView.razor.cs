@@ -2,16 +2,15 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MovieApp.Web.Models;
-using MovieCatalogue;
 
 namespace MovieApp.Web.Components.Pages
 {
-    public partial class CollectionView(IMovieService _movieSvc, IJSRuntime _js) : ComponentBase()
+    public partial class CollectionView(MovieService _movieSvc, IJSRuntime _js) : ComponentBase()
     {
         [Parameter]
         public int CollectionId { get; set; }
 
-        private IMovieCollection? _collection;
+        private MovieCollection? _collection;
         private Movie[] _movies = [];
         private Movie[] _available = [];
         private bool _loaded;

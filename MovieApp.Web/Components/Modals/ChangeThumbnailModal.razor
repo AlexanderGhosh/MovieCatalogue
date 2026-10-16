@@ -10,7 +10,7 @@
     [Parameter]
     public int MovieId { get; set; }
     [Inject]
-    public IMovieService _movieService { get; set; } = null!;
+    public MovieService _movieService { get; set; } = null!;
     private IBrowserFile? _thumbnail;
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = default!;

@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using MovieCatalogue;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace MovieApp.Web.Models
 {
     [Table("MovieContent")]
-    public class MovieContent() : IMovieContent
+    public class MovieContent()
     {
         private readonly IBrowserFile? _file;
         private Stream? _stream;

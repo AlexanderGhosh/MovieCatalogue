@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using MovieApp.Web.Models;
-using MovieCatalogue;
 using System.Diagnostics.CodeAnalysis;
 
 namespace MovieApp.Web.Components.Modals
 {
-    public record AddMovie(IMovie Movie, IMovieContent? Content = null);
+    public record AddMovie(Movie Movie, MovieContent? Content = null);
     public partial class AddMovieModal : ComponentBase
     {
         [CascadingParameter] 
@@ -33,12 +32,12 @@ namespace MovieApp.Web.Components.Modals
             _movieContent = args.File;
         }
 
-        private IMovie MakeMovie() => new Movie()
+        private Movie MakeMovie() => new Movie()
         {
             Title = MovieTitle ?? "null title"
         };
 
-        private IMovieContent? MakeContent()
+        private MovieContent? MakeContent()
         {
             if (_movieContent is null) return null;
             return new MovieContent(_movieContent);

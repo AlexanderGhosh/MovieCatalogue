@@ -1,10 +1,9 @@
-﻿using MovieCatalogue;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieApp.Web.Models;
 
 [Table("Movie")]
-public class Movie : IMovie
+public class Movie
 {
     public int Id { get; set; }
     public required string Title { get; set; }

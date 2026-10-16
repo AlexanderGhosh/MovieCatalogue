@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Models;
-using MovieCatalogue;
 
 namespace MovieApp.Web.Components.Pages
 {
-    public partial class Movies(IMovieService _movieSvc) : ComponentBase()
+    public partial class Movies(MovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
-        private IMovieCollection[] _collections = [];
+        private MovieCollection[] _collections = [];
         private bool _creatingCollection;
         private string _newCollectionName = string.Empty;
         public Movie? _selectedMovie;
@@ -23,7 +22,7 @@ namespace MovieApp.Web.Components.Pages
             _collections = await GetCollections();
         }
 
-        private sealed record HomeItem(IMovieCollection? Collection, Movie? Movie)
+        private sealed record HomeItem(MovieCollection? Collection, Movie? Movie)
         {
             public string Name => Collection?.Name ?? Movie?.Title ?? string.Empty;
             public DateTime AddedOn => Collection?.AddedOn ?? Movie?.AddedOn ?? default;
@@ -36,7 +35,7 @@ namespace MovieApp.Web.Components.Pages
             .Concat(_movies.Where(m => m.CollectionId is null).Select(m => new HomeItem(null, m)))
             .OrderByDescending(i => i.AddedOn);
 
-        private int CountIn(IMovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
+        private int CountIn(MovieCollection collection) => _movies.Count(m => m.CollectionId == collection.Id);
 
         private void StartCreateCollection()
         {
@@ -74,7 +73,7 @@ namespace MovieApp.Web.Components.Pages
             _movies = await GetMovies();
         }
 
-        private async Task<IMovieCollection[]> GetCollections()
+        private async Task<MovieCollection[]> GetCollections()
         {
             var collections = await _movieSvc.GetAllCollectionsAsync();
             return [.. collections];
@@ -108,7 +107,7 @@ namespace MovieApp.Web.Components.Pages
         private async Task RenameMovie(Movie movie, string newName)
         {
             if (movie.Title == newName) return;
-            await _movieSvc.UpdateMovie<Movie>(movie.Id, m => m.Title = newName);
+            await _movieSvc.UpdateMovie(movie.Id, m => m.Title = newName);
         }
 
         private async Task DeleteMovie(Movie movie)
