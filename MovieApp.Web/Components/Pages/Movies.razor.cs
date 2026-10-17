@@ -116,6 +116,7 @@ namespace MovieApp.Web.Components.Pages
         {
             await _movieSvc.DeleteMovie(movie.Id);
             _movies = await GetMovies();
+            StateHasChanged();
         }
 
         private async Task<Movie[]> GetMovies()

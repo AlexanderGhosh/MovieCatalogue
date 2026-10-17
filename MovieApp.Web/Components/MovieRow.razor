@@ -42,6 +42,14 @@
     <td @onclick="WatchMovie">
         Watch
     </td>
+    @if (Downloadable)
+    {
+        <td>
+            <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
+                <i class="bi bi-download"></i>
+            </a>
+        </td>
+    }
     <td @onclick="RemoveMovie_CB">
         <i class="bi bi-x-circle"></i>
     </td>
@@ -52,18 +60,19 @@
     public IMovieService _movieSvc { get; set; } = null!;
 
     [Parameter]
+    public required Movie Movie { get; init; }
+    [Parameter]
+    public bool Downloadable { get; set; } = true;
+    [Parameter]
     public bool NameEditable { get; set; } = false;
     [Parameter]
     public bool ShowThumbnail { get; set; } = true;
     [Parameter]
-    public required Movie Movie { get; init; }
+    public Func<Movie, Task>? RemoveMovie { get; init; }
 
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
     private bool _mousedOver;
-
-    [Parameter]
-    public Func<Movie, Task>? RemoveMovie { get; init; }
 
     void WatchMovie()
     {

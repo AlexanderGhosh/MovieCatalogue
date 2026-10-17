@@ -65,63 +65,7 @@
             }
             else if (item.Movie is { } movie)
             {
-                <tr>
-                    <td>
-                        @if (ReferenceEquals(_editingMovie, movie))
-                        {
-                            <input @bind="_newTitle" class="form-control form-control-sm d-inline w-auto" />
-
-                            <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveRename" title="Save">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelRename" title="Cancel">
-                                <i class="bi bi-x-circle-fill"></i>
-                            </button>
-                        }
-                        else
-                        {
-                            <a href="@($"/movie/{movie.Id}")" class="text-decoration-none">
-                                <ThumbnailComponent Image="@ThumbUrl(movie.Id)" Width="90"/>
-                                <a @onclick="() => ChangeThumbnail(movie.Id)"
-                                   @onclick:stopPropagation="true"
-                                   @onclick:preventDefault="true">
-                                    <i class="bi bi-film me-2"></i>
-                                </a>
-                                @movie.Title
-                            </a>
-                            <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => StartRename(movie)" title="Rename">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                        }
-                    </td>
-                    <td>@movie.AddedOn.ToShortDateString()</td>
-                    <td>
-                        @if (_collections.Length > 0)
-                        {
-                            <select class="form-select form-select-sm w-auto" @onchange="e => AssignCollection(movie, e.Value?.ToString())">
-                                <option value="">Choose...</option>
-                                @foreach (var c in _collections)
-                                {
-                                    <option value="@c.Id">@c.Name</option>
-                                }
-                            </select>
-                        }
-                    </td>
-                    <td>
-                        <a href="@($"/movie/{movie.Id}")" class="btn btn-secondary">Watch</a>
-                    </td>
-                    <td>
-                        <a href="@($"/api/Video/{movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
-                            <i class="bi bi-download"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-link p-0 ms-2" @onclick="() => DeleteMovie(movie)" title="Delete">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    </td>
-                </tr>
+                <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
             }
         }
     </tbody>
