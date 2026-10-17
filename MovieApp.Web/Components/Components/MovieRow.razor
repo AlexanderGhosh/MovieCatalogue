@@ -6,6 +6,9 @@
     {
         <td>
             <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
+            <a @onclick="ThumbnailEdit">
+                <i class="bi bi-pencil-fill"></i>
+            </a>
         </td>
     }
     <td>
@@ -68,6 +71,7 @@
     [Parameter]
     public Func<Movie, Task>? RemoveMovie { get; init; }
 
+    private readonly IModalService _modalSvc;
     private readonly IMovieService _movieSvc;
     private readonly IDragDropService _dragDropService;
     private string _nameEditValue = string.Empty;
@@ -75,8 +79,9 @@
     private bool _mousedOver;
     private string _moviePath => $"/movieview/{Movie.Id}";
 
-    public MovieRow(IMovieService movieService, IDragDropService dragDropService)
+    public MovieRow(IModalService modalService, IMovieService movieService, IDragDropService dragDropService)
     {
+        _modalSvc = modalService;
         _movieSvc = movieService;
         _dragDropService = dragDropService;
     }
@@ -131,5 +136,16 @@
     void OnDrag()
     {
         _dragDropService.BeginDrag(Movie);
+    }
+
+    async Task ThumbnailEdit()
+    {
+        var parmas = new ModalParameters()
+        {
+            {nameof(ChangeThumbnailModal.MovieId), Movie.Id}
+        };
+        var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas);
+        await modal.Result;
+        StateHasChanged();
     }
 }
