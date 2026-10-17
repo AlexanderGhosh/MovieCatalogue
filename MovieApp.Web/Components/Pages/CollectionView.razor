@@ -17,6 +17,18 @@ else
 {
     <PageTitle>@(_collection.Name)</PageTitle>
     <h1 class="mb-0">@_collection.Name</h1>
+    <div class="d-flex align-items-center mt-4">
+        <select class="form-select form-select-sm w-auto" @bind="_selectedToAdd">
+            <option value="">Add a movie...</option>
+            @foreach (var movie in _available)
+            {
+                <option value="@movie.Id">@movie.Title</option>
+            }
+        </select>
+        <button type="button" class="btn btn-primary btn-sm ms-2" @onclick="AddSelectedMovie" disabled="@(string.IsNullOrEmpty(_selectedToAdd))">
+            Add
+        </button>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -42,6 +54,8 @@ else
 @code {
     [Parameter]
     public required int CollectionId { get; init; }
+    private string? _selectedToAdd;
+    private IEnumerable<Movie> _available;
 
     private MovieCollection? _collection;
     private readonly IMovieService _movieService;
@@ -49,6 +63,13 @@ else
     public CollectionView(IMovieService movieService)
     {
         _movieService = movieService;
+        _available = [];
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _available = await _movieService.GetAllMoviesAsync();
+        await base.OnInitializedAsync();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -66,6 +87,13 @@ else
     private async Task RemoveFromCollection(MovieCollection collection)
     {
         await _movieService.RemoveCollectionFromCollection(collection.Id, CollectionId);
+        StateHasChanged();
+    }
+
+    private async Task AddSelectedMovie()
+    {
+        if (!int.TryParse(_selectedToAdd, out var movieId)) return;
+        await _movieService.AddMovieToCollection(movieId, CollectionId);
         StateHasChanged();
     }
 }
