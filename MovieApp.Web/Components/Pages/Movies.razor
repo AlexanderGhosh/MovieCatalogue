@@ -36,7 +36,6 @@
         <tr>
             <th>Title</th>
             <th>AddedOn</th>
-            <th>Add to collection</th>
             <th></th>
             <th></th>
             <th></th>
@@ -45,11 +44,11 @@
     <tbody>
         @foreach (var item in Items)
         {
-            @if (item.Collection is { } collection)
+            @if (item is MovieCollection collection)
             {
-                <CollectionRow Collection="collection" />
+                <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" />
             }
-            else if (item.Movie is { } movie)
+            else if (item is Movie movie)
             {
                 <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
             }

@@ -12,7 +12,6 @@ namespace MovieApp.Web.Components.Pages
         private MovieCollection[] _collections = [];
         private bool _creatingCollection;
         private string _newCollectionName = string.Empty;
-        public Movie? _selectedMovie;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
 
@@ -22,20 +21,9 @@ namespace MovieApp.Web.Components.Pages
             _collections = await GetCollections();
         }
 
-        private sealed record HomeItem(MovieCollection? Collection, Movie? Movie)
-        {
-            public string Name => Collection?.Name ?? Movie?.Title ?? string.Empty;
-            public DateTime AddedOn => Collection?.AddedOn ?? Movie?.AddedOn ?? default;
-        }
-
-        // Collections and movies that are not in a collection, shown together.
-        // Movies inside a collection only appear on that collection's page.
-        private IEnumerable<HomeItem> Items => _collections
-            .Select(c => new HomeItem(c, null))
-            .Concat(_movies.Where(m => m.Collections.Count == 0).Select(m => new HomeItem(null, m)))
-            .OrderByDescending(i => i.AddedOn);
-
-        private int CountIn(MovieCollection collection) => collection.Movies.Count;
+        private IEnumerable<object> Items => _collections
+            .Cast<object>()
+            .Concat(_movies);
 
         private void StartCreateCollection()
         {
@@ -66,14 +54,6 @@ namespace MovieApp.Web.Components.Pages
             CancelCreateCollection();
         }
 
-        private async Task AssignCollection(Movie movie, string? value)
-        {
-            int? collectionId = int.TryParse(value, out var id) ? id : null;
-            if (collectionId is null) return;
-            await _movieSvc.AddMovieToCollection(movie.Id, collectionId.Value);
-            _movies = await GetMovies();
-        }
-
         private async Task<MovieCollection[]> GetCollections()
         {
             var collections = await _movieSvc.GetAllCollectionsAsync();
@@ -92,18 +72,6 @@ namespace MovieApp.Web.Components.Pages
 
             await _movieSvc.UploadMovieAsync(movie, content);
             _movies = await GetMovies();
-        }
-
-        private async Task ChangeThumbnail(int movieId)
-        {
-            var resTask = Modal.Show<ChangeThumbnailModal>(new Blazored.Modal.ModalParameters()
-            {
-                {nameof(ChangeThumbnailModal.MovieId), movieId }
-            })?.Result;
-            if (resTask is null) return;
-            await resTask;
-            thumbVersions[movieId] = DateTime.UtcNow.Ticks;
-            StateHasChanged();
         }
 
         private async Task RenameMovie(Movie movie, string newName)

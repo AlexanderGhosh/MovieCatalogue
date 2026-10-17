@@ -2,10 +2,11 @@
 <tr draggable="true"
     @onclick="GotoCollection" 
     @ondrag="OnDrag"
-    @ondrop="OnDrop"
+    @ondrop="OnDropEvent"
     @ondragover:preventDefault="true">
     <td>
-        @Collection.Name
+        <h5>@Collection.Name</h5>
+        <p>Movies: @Collection.Movies.Count</p>
     </td>
     <td>
         @Collection.AddedOn.ToShortDateString()
@@ -18,10 +19,13 @@
 @code {
     private readonly IMovieService _movieService;
     private readonly IDragDropService _dragDropService;
+    
     [Parameter]
     public required MovieCollection Collection { get; init; }
     [Parameter]
     public Func<MovieCollection, Task>? RemoveCollection { get; init; }
+    [Parameter]
+    public Action<object>? OnDropped { get; init; }
 
     public CollectionRow(IMovieService service, IDragDropService dragDropService)
     {
@@ -47,7 +51,7 @@
         _dragDropService.BeginDrag(Collection);
     }
 
-    async Task OnDrop()
+    async Task OnDropEvent()
     {
         var dropped = _dragDropService.EndDrag();
         switch (dropped)
@@ -60,5 +64,6 @@
                 await _movieService.AddMovieToCollection(movie.Id, Collection.Id);
                 break;
         }
+        OnDropped?.Invoke(dropped);
     }
 }

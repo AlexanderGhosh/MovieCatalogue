@@ -31,7 +31,7 @@ else
             }
             @foreach (var collection in _collection.ChildCollections)
             {
-                <CollectionRow Collection="collection" RemoveCollection="RemoveFromCollection"/>
+                <CollectionRow Collection="collection" RemoveCollection="RemoveFromCollection" OnDropped="_ => StateHasChanged()"/>
             }
         </tbody>
     </table>
