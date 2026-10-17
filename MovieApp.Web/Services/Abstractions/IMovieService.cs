@@ -1,7 +1,7 @@
 ﻿using BlobStorage;
 using MovieApp.Web.Models;
 
-namespace MovieApp.Web
+namespace MovieApp.Web.Services.Abstractions
 {
     public interface IMovieService
     {

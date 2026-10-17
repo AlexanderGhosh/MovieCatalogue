@@ -1,6 +1,7 @@
 ﻿@using MovieApp.Web.Models
+@using MovieApp.Web.Services.Abstractions
 <tr draggable="true"
-    @onclick="GotoCollection" 
+@onclick="GotoCollection" 
     @ondrag="OnDrag"
     @ondrop="OnDropEvent"
     @ondragover:preventDefault="true">

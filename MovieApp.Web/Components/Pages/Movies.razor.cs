@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Models;
+using MovieApp.Web.Services.Abstractions;
 
 namespace MovieApp.Web.Components.Pages
 {

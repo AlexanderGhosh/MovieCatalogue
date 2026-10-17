@@ -2,6 +2,8 @@ using Blazored.Modal;
 using BlobStorage.Extensions;
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Web.Components;
+using MovieApp.Web.Services.Abstractions;
+using MovieApp.Web.Services.Implementations;
 
 namespace MovieApp.Web
 {

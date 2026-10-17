@@ -1,6 +1,8 @@
 ﻿using BlobStorage;
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Web.Models;
+using MovieApp.Web.Services.Abstractions;
+using MovieApp.Web.Services.Implementations;
 
 namespace MovieApp.Web
 {

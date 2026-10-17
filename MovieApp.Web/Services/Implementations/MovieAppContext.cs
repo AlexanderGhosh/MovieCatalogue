@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieApp.Web.Models;
 
-namespace MovieApp.Web;
+namespace MovieApp.Web.Services.Implementations;
 
 public class MovieAppContext(DbContextOptions<MovieAppContext> options) : DbContext(options)
 {

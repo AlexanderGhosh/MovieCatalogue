@@ -1,4 +1,6 @@
-﻿namespace MovieApp.Web
+﻿using MovieApp.Web.Services.Abstractions;
+
+namespace MovieApp.Web
 {
     public class DragDropService : IDragDropService
     {
