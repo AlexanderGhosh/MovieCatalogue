@@ -12,16 +12,11 @@
         {
             <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" />
 
-            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit"
-               @onclick:stopPropagation="true"
-               @onclick:preventDefault="true" 
-               title="Save">
+            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
 
-            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit"
-               @onclick:stopPropagation="true"
-               @onclick:preventDefault="true" title="Cancel">
+            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit"title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         }
@@ -90,7 +85,7 @@
     {
         var task = RemoveMovie?.Invoke(Movie);
         if (task is not null)
-            await task; 
+            await task;
     }
 
     void BeginNameEdit()

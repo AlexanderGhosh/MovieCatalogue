@@ -1,0 +1,55 @@
+﻿@using MovieApp.Web.Models
+<tr draggable="true"
+    @onclick="GotoCollection" 
+    @ondrag="OnDrag"
+    @ondrop="OnDrop"
+    @ondragover:preventDefault="true">
+    <td>
+        @Collection.Name
+    </td>
+    <td>
+        @Collection.AddedOn.ToShortDateString()
+    </td>
+    <td @onclick="RemoveCB" @onclick:stopPropagation="true">
+        <i class="bi bi-x-circle"></i>
+    </td>
+</tr>
+
+@code {
+    static MovieCollection? _dragging;
+    private readonly IMovieService _movieService;
+    [Parameter]
+    public required MovieCollection Collection { get; init; }
+    [Parameter]
+    public Func<MovieCollection, Task>? RemoveCollection { get; init; }
+
+    public CollectionRow(IMovieService service)
+    {
+        _movieService = service;
+    }
+
+    void GotoCollection()
+    {
+        Navigation.NavigateTo($"/collection/{Collection.Id}");
+        StateHasChanged();
+    }
+
+    async Task RemoveCB()
+    {
+        var task = RemoveCollection?.Invoke(Collection);
+        if (task is not null)
+            await task;
+    }
+
+    void OnDrag()
+    {
+        _dragging = Collection;
+    }
+
+    async Task OnDrop()
+    {
+        if (_dragging is null || _dragging.Id == Collection.Id) return;
+        await _movieService.AddCollectionToCollection(Collection.Id, _dragging.Id);
+        _dragging = null;
+    }
+}

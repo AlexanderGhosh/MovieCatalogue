@@ -47,21 +47,7 @@
         {
             @if (item.Collection is { } collection)
             {
-                var count = CountIn(collection);
-                <tr class="collection-row">
-                    <td>
-                        <i class="bi bi-collection-fill me-2"></i>
-                        <a href="@($"/collection/{collection.Id}")" class="text-decoration-none fw-semibold">@collection.Name</a>
-                        <span class="text-muted small ms-2">@count @(count == 1 ? "movie" : "movies")</span>
-                    </td>
-                    <td>@collection.AddedOn.ToShortDateString()</td>
-                    <td></td>
-                    <td>
-                        <a href="@($"/collection/{collection.Id}")" class="btn btn-secondary">Open</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <CollectionRow Collection="collection" />
             }
             else if (item.Movie is { } movie)
             {

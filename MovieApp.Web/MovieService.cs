@@ -82,7 +82,11 @@ namespace MovieApp.Web
 
         public async ValueTask<MovieCollection?> GetCollection(int collectionId)
         {
-            return await context.Collections.FindAsync(collectionId);
+            return await context.Collections
+                .Include(x => x.Movies)
+                .Include(x => x.ChildCollections)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.Id == collectionId);
         }
 
         public async Task<IReadOnlyCollection<Movie>> GetMoviesInCollectionAsync(int collectionId)
@@ -146,6 +150,25 @@ namespace MovieApp.Web
                 return;
 
             movie.Collections.Remove(collection);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCollectionFromCollection(int childId, int parentId)
+        {
+            var parent = await context.Collections.FindAsync(parentId);
+            var child = await context.Collections.FindAsync(childId);
+            if (parent is null || child is null) return;
+
+            parent.ChildCollections.Remove(child);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task AddCollectionToCollection(int parentId, int childId)
+        {
+            var parent = await context.Collections.FindAsync(parentId);
+            var child = await context.Collections.FindAsync(childId);
+            if (parent is null || child is null) return;
+            parent.ChildCollections.Add(child);
             await context.SaveChangesAsync();
         }
 
