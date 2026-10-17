@@ -23,8 +23,9 @@ namespace MovieApp.Web.Components.Pages
         }
 
         private IEnumerable<object> Items => _collections
+            .Where(x => x.ParentCollections.Count == 0)
             .Cast<object>()
-            .Concat(_movies);
+            .Concat(_movies.Where(x => x.Collections.Count == 0));
 
         private void StartCreateCollection()
         {

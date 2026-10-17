@@ -45,7 +45,9 @@ namespace MovieApp.Web
 
         public async Task<IReadOnlyCollection<Movie>> GetAllMoviesAsync()
         {
-            return await context.Movies.ToListAsync();
+            return await context.Movies
+                .Include(x => x.Collections)
+                .ToListAsync();
         }
 
         public async Task UpdateMovie(int movieId, Action<Movie> update)
