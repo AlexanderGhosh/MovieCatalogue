@@ -6,7 +6,7 @@ using MovieApp.Web.Models;
 
 namespace MovieApp.Web.Components.Pages
 {
-    public partial class Movies(MovieService _movieSvc) : ComponentBase()
+    public partial class Movies(IMovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
         private MovieCollection[] _collections = [];

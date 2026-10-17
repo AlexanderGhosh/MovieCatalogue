@@ -5,7 +5,7 @@ using MovieApp.Web.Models;
 
 namespace MovieApp.Web.Components.Pages
 {
-    public partial class CollectionView(MovieService _movieSvc, IJSRuntime _js) : ComponentBase()
+    public partial class CollectionView(IMovieService _movieSvc, IJSRuntime _js) : ComponentBase()
     {
         [Parameter]
         public int CollectionId { get; set; }

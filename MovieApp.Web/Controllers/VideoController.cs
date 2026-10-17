@@ -6,9 +6,9 @@ namespace MovieApp.Web.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class VideoController(MovieService movieSvc) : ControllerBase
+    public class VideoController(IMovieService movieSvc) : ControllerBase
     {
-        private readonly MovieService _movieSvc = movieSvc;
+        private readonly IMovieService _movieSvc = movieSvc;
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideo(int id, [FromQuery] bool download = false)

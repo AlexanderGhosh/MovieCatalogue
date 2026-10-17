@@ -1,42 +1,114 @@
-﻿@using MovieApp.Web.Models;
-<tr @onclick="WatchMovie">
+﻿@using Microsoft.AspNetCore.Mvc
+@using MovieApp.Web.Models;
+<tr @onmouseover="() => _mousedOver = true">
     @if (ShowThumbnail)
     {
-        <td>
+        <td @onclick="WatchMovie">
             <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
         </td>
     }
     <td>
-        @Movie.Title
+        @if (_nameEditing)
+        {
+            <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" />
+
+            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit"
+               @onclick:stopPropagation="true"
+               @onclick:preventDefault="true" 
+               title="Save">
+                <i class="bi bi-check-circle-fill"></i>
+            </a>
+
+            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit"
+               @onclick:stopPropagation="true"
+               @onclick:preventDefault="true" title="Cancel">
+                <i class="bi bi-x-circle-fill"></i>
+            </a>
+        }
+        else
+        {
+            @Movie.Title
+            @if (NameEditable)
+            {
+                <a @onclick="BeginNameEdit">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            }
+        }
     </td>
     <td>
         @Movie.AddedOn.ToShortDateString()
     </td>
-    <td @onclick="RemoveMovie_CB"
-        @onclick:stopPropagation="true"
-        @onclick:preventDefault="true">
+    <td @onclick="WatchMovie">
+        Watch
+    </td>
+    <td @onclick="RemoveMovie_CB">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>
 
 @code {
+    [Inject]
+    public IMovieService _movieSvc { get; set; } = null!;
+
+    [Parameter]
+    public bool NameEditable { get; set; } = false;
     [Parameter]
     public bool ShowThumbnail { get; set; } = true;
     [Parameter]
     public required Movie Movie { get; init; }
 
+    private string _nameEditValue = string.Empty;
+    private bool _nameEditing;
+    private bool _mousedOver;
+
     [Parameter]
-    public Func<int, Task>? RemoveMovie { get; init; }
+    public Func<Movie, Task>? RemoveMovie { get; init; }
 
     void WatchMovie()
     {
+        if (_nameEditing) return;
         Navigation.NavigateTo($"/movie/{Movie.Id}");
     }
 
     async Task RemoveMovie_CB()
     {
-        var task = RemoveMovie?.Invoke(Movie.Id);
+        var task = RemoveMovie?.Invoke(Movie);
         if (task is not null)
             await task; 
+    }
+
+    void BeginNameEdit()
+    {
+        _nameEditValue = Movie.Title;
+        _nameEditing = true;
+        StateHasChanged();
+    }
+
+    async Task SaveNameEdit()
+    {
+        if (_nameEditValue == Movie.Title) return;
+        Movie.Title = _nameEditValue;
+        await _movieSvc.UpdateMovie(Movie.Id, m => m.Title = _nameEditValue);
+        StateHasChanged();
+        EndNameEdit();
+    }
+
+    void EndNameEdit()
+    {
+        _nameEditing = false;
+    }
+
+    async Task NameEditKeyPress(KeyboardEventArgs args)
+    {
+        switch(args.Key)
+        {
+            case "Enter":
+                await SaveNameEdit();
+                break;
+            case "Escape":
+                EndNameEdit();
+                break;
+        }
     }
 }
