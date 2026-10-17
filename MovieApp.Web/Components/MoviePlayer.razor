@@ -1,0 +1,10 @@
+﻿<video controls preload="metadata" width="@Width" poster="@($"/api/Video/{MovieId}/thumbnail")">
+    <source src=@($"/api/Video/{MovieId}") type="video/mp4">
+</video>
+
+@code {
+    [Parameter]
+    public required int MovieId { get; init; }
+    [Parameter]
+    public uint Width { get; init; } = 400;
+}

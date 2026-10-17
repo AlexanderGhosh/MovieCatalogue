@@ -3,8 +3,8 @@
 <tr @onmouseover="() => _mousedOver = true">
     @if (ShowThumbnail)
     {
-        <td @onclick="WatchMovie">
-            <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
+        <td>
+            <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
         </td>
     }
     <td>
@@ -39,9 +39,14 @@
     <td>
         @Movie.AddedOn.ToShortDateString()
     </td>
-    <td @onclick="WatchMovie">
-        Watch
-    </td>
+    @if (!_nameEditing)
+    {
+        <td>
+            <a href="@_moviePath">
+                Watch    
+            </a>
+        </td>
+    }
     @if (Downloadable)
     {
         <td>
@@ -73,11 +78,12 @@
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
     private bool _mousedOver;
+    private string _moviePath => $"/movieview/{Movie.Id}";
 
     void WatchMovie()
     {
         if (_nameEditing) return;
-        Navigation.NavigateTo($"/movie/{Movie.Id}");
+        Navigation.NavigateTo(_moviePath);
     }
 
     async Task RemoveMovie_CB()

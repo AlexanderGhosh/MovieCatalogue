@@ -1,9 +1,0 @@
-﻿@page "/movie/{MovieId:int}"
-<PageTitle>Movies</PageTitle>
-
-
-@{
-    <video controls>
-        <source src=@($"/api/Video/{MovieId}")>
-    </video>
-}

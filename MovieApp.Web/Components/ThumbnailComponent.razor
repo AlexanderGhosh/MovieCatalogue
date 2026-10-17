@@ -1,4 +1,5 @@
-﻿<img src="@Image" width="@Width" />
+﻿
+<img src="@Image" width="@Width" @onclick="_ => OnClick?.Invoke()" />
 
 @code {
     [Parameter]
@@ -6,4 +7,7 @@
 
     [Parameter]
     public required uint Width { get; init; }
+
+    [Parameter]
+    public Action? OnClick { get; init; }
 }

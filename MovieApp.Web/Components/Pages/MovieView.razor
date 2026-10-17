@@ -1,29 +1,41 @@
 ﻿@using MovieApp.Web.Models;
+@page "/MovieView/{MovieId:int}"
+<PageTitle>@_movie!.Title</PageTitle>
 <style>
     .primary{
         display: grid ;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: repeat(2, 1fr);
         background-color: dodgerblue;
         padding: 10px;
     }
-
-    .container div {
-        background-color: #f1f1f1;
-        border: 1px solid black;
-        padding: 10px;
-        font-size: 30px;
-        text-align: center;
-    }
 </style>
-<div class="container">
-    <div>1</div>
-    <div>2</div>
-    <div>3</div>
-    <div>4</div>
-    <div>5</div>
+<div>
+    <div class="primary">
+        <MoviePlayer MovieId="@MovieId" />
+        <div>
+            <p>@_movie!.Title</p>
+            <p>@_movie!.Description</p>
+        </div>
+    </div>
 </div>
 
 @code {
+    private readonly IMovieService _movieService;
+    private Movie? _movie;
+
     [Parameter]
-    public required Movie Movie { get; init; }
+    public required int MovieId
+    {
+        get;
+        init
+        {
+            field = value;
+            _movie = _movieService.GetMovie(value).GetAwaiter().GetResult();
+        }
+    }
+
+    public MovieView(IMovieService movieService)
+    {
+        _movieService = movieService;
+    }
 }
