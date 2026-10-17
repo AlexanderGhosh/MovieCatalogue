@@ -2,7 +2,7 @@
 @using MovieApp.Web.Services.Abstractions
 <tr @ondrag="OnDrag"
 @onmouseover="() => _mousedOver = true">
-    @if (ShowThumbnail)
+    @if (ShowThumbnail && Movie.ShowThumbnail)
     {
         <td>
             <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
