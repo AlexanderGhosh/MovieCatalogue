@@ -7,16 +7,15 @@
     .primary{
         display: grid ;
         grid-template-columns: repeat(2, 1fr);
-        background-color: dodgerblue;
         padding: 10px;
     }
 </style>
-<div>
+<div style="background-color: black;">
     <div class="primary">
         <MoviePlayer MovieId="@MovieId" />
         <div>
-            <p>@_movie!.Title</p>
-            <p>@_movie!.Description</p>
+            <p style="color: white;">@_movie!.Title</p>
+            <p style="color: mediumpurple;">@_movie!.Description</p>
         </div>
     </div>
 </div>
