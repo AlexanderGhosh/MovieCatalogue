@@ -27,6 +27,7 @@ namespace MovieApp.Web
             builder.Services.AddLocalBlobStorage("./Movies");
 #endif
             builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<IDragDropService, DragDropService>();
 
             builder.Services.AddControllers();
 

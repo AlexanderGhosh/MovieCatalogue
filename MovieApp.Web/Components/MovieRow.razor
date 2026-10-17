@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc
 @using MovieApp.Web.Models;
-<tr @onmouseover="() => _mousedOver = true">
+<tr @ondrag="OnDrag"
+    @onmouseover="() => _mousedOver = true">
     @if (ShowThumbnail)
     {
         <td>
@@ -56,9 +57,6 @@
 </tr>
 
 @code {
-    [Inject]
-    public IMovieService _movieSvc { get; set; } = null!;
-
     [Parameter]
     public required Movie Movie { get; init; }
     [Parameter]
@@ -70,10 +68,18 @@
     [Parameter]
     public Func<Movie, Task>? RemoveMovie { get; init; }
 
+    private readonly IMovieService _movieSvc;
+    private readonly IDragDropService _dragDropService;
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
     private bool _mousedOver;
     private string _moviePath => $"/movieview/{Movie.Id}";
+
+    public MovieRow(IMovieService movieService, IDragDropService dragDropService)
+    {
+        _movieSvc = movieService;
+        _dragDropService = dragDropService;
+    }
 
     void WatchMovie()
     {
@@ -120,5 +126,10 @@
                 EndNameEdit();
                 break;
         }
+    }
+
+    void OnDrag()
+    {
+        _dragDropService.BeginDrag(Movie);
     }
 }

@@ -16,16 +16,17 @@
 </tr>
 
 @code {
-    static MovieCollection? _dragging;
     private readonly IMovieService _movieService;
+    private readonly IDragDropService _dragDropService;
     [Parameter]
     public required MovieCollection Collection { get; init; }
     [Parameter]
     public Func<MovieCollection, Task>? RemoveCollection { get; init; }
 
-    public CollectionRow(IMovieService service)
+    public CollectionRow(IMovieService service, IDragDropService dragDropService)
     {
         _movieService = service;
+        _dragDropService = dragDropService;
     }
 
     void GotoCollection()
@@ -43,13 +44,21 @@
 
     void OnDrag()
     {
-        _dragging = Collection;
+        _dragDropService.BeginDrag(Collection);
     }
 
     async Task OnDrop()
     {
-        if (_dragging is null || _dragging.Id == Collection.Id) return;
-        await _movieService.AddCollectionToCollection(Collection.Id, _dragging.Id);
-        _dragging = null;
+        var dropped = _dragDropService.EndDrag();
+        switch (dropped)
+        {
+            case MovieCollection collection:
+                if (collection.Id == Collection.Id) return;
+                await _movieService.AddCollectionToCollection(Collection.Id, collection.Id);
+                break;
+            case Movie movie:
+                await _movieService.AddMovieToCollection(movie.Id, Collection.Id);
+                break;
+        }
     }
 }
