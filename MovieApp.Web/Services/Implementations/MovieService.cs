@@ -1,42 +1,40 @@
 ﻿using BlobStorage;
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Web.Models;
-using MovieCatalogue;
+using MovieApp.Web.Services.Abstractions;
+using MovieApp.Web.Services.Implementations;
 
 namespace MovieApp.Web
 {
     public class MovieService(MovieAppContext context, IBlobStorage blobStorage) : IMovieService
     {
-        public async Task UploadMovieAsync(IMovie movie, IMovieContent? content)
+        public async Task UploadMovieAsync(Movie movie, MovieContent? content)
         {
-            if (movie is not Movie m)
-                throw new ArgumentException($"Provided {nameof(movie)} must be an instance of {nameof(Movie)}", nameof(movie));
-            if (content is not MovieContent and not null)
-                throw new ArgumentException($"Provided {nameof(content)} must be an instance of {nameof(MovieContent)}", nameof(content));
+            ArgumentNullException.ThrowIfNull(movie);
+            ArgumentNullException.ThrowIfNull(content);
 
             if (content is not null)
             {
-                var mc = (MovieContent)content;
                 using var movieStream = content.Stream;
                 var metaData = new BlobMetaData()
                 {
                     ContentType = BlobContentTypes.MP4
                 };
                 var contentId = await blobStorage.UploadAsync(movieStream, metaData);
-                mc.BlobGuid = contentId;
-                m.Content = content as MovieContent;
+                content.BlobGuid = contentId;
+                movie.Content = content;
             }
 
-            context.Add(m);
+            context.Add(movie);
             await context.SaveChangesAsync();
         }
 
-        public async ValueTask<IMovie?> GetMovie(int movieId)
+        public async ValueTask<Movie?> GetMovie(int movieId)
         {
             return await context.Movies.FindAsync(movieId);
         }
 
-        public async Task<IMovieContent?> GetMovieContent(int movieId)
+        public async Task<MovieContent?> GetMovieContent(int movieId)
         {
             var content = await context.MovieContent.FirstOrDefaultAsync(mc => mc.MovieId == movieId);
             if (content is null) return null;
@@ -45,20 +43,19 @@ namespace MovieApp.Web
             return content;
         }
 
-        public async Task<IReadOnlyCollection<IMovie>> GetAllMoviesAsync()
+        public async Task<IReadOnlyCollection<Movie>> GetAllMoviesAsync()
         {
             return await context.Movies.ToListAsync();
         }
 
-        public async Task UpdateMovie<TMovie>(int movieId, Action<TMovie> update)
-            where TMovie : class, IMovie
+        public async Task UpdateMovie(int movieId, Action<Movie> update)
         {
             ArgumentNullException.ThrowIfNull(update);
 
-            var movie = await context.Set<TMovie>().FindAsync(movieId);
+            var movie = await context.Set<Movie>().FindAsync(movieId);
             if (movie is null) return;
             update(movie);
-            context.Set<TMovie>().Update(movie);
+            context.Set<Movie>().Update(movie);
             await context.SaveChangesAsync();
         }
 
@@ -77,25 +74,32 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
-        public async Task<IReadOnlyCollection<IMovieCollection>> GetAllCollectionsAsync()
+        public async Task<IReadOnlyCollection<MovieCollection>> GetAllCollectionsAsync()
         {
-            return await context.Collections.OrderBy(c => c.Name).ToListAsync();
+            return await context.Collections.OrderBy(c => c.Name)
+                .Include(x => x.Movies)
+                .Include(x => x.ChildCollections)
+                .ToListAsync();
         }
 
-        public async ValueTask<IMovieCollection?> GetCollection(int collectionId)
+        public async ValueTask<MovieCollection?> GetCollection(int collectionId)
         {
-            return await context.Collections.FindAsync(collectionId);
+            return await context.Collections
+                .Include(x => x.Movies)
+                .Include(x => x.ChildCollections)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.Id == collectionId);
         }
 
-        public async Task<IReadOnlyCollection<IMovie>> GetMoviesInCollectionAsync(int collectionId)
+        public async Task<IReadOnlyCollection<Movie>> GetMoviesInCollectionAsync(int collectionId)
         {
             return await context.Movies
-                .Where(m => m.CollectionId == collectionId)
+                .Where(m => m.Collections.Any(x => x.Id == collectionId))
                 .OrderBy(m => m.Title)
                 .ToListAsync();
         }
 
-        public async Task<IMovieCollection> CreateCollection(string name)
+        public async Task<MovieCollection> CreateCollection(string name)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -125,15 +129,48 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
-        public async Task SetMovieCollection(int movieId, int? collectionId)
+        public async Task AddMovieToCollection(int movieId, int collectionId)
         {
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
 
-            if (collectionId is not null && !await context.Collections.AnyAsync(c => c.Id == collectionId))
+            var collection = await context.Collections.FirstOrDefaultAsync(c => c.Id == collectionId);
+            if (collection is null)
                 return;
 
-            movie.CollectionId = collectionId;
+            movie.Collections.Add(collection);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveMovieFromCollection(int movieId, int collectionId)
+        {
+            var movie = await context.Movies.FindAsync(movieId);
+            if (movie is null) return;
+
+            var collection = await context.Collections.FirstOrDefaultAsync(c => c.Id == collectionId);
+            if (collection is null)
+                return;
+
+            movie.Collections.Remove(collection);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCollectionFromCollection(int childId, int parentId)
+        {
+            var parent = await context.Collections.FindAsync(parentId);
+            var child = await context.Collections.FindAsync(childId);
+            if (parent is null || child is null) return;
+
+            parent.ChildCollections.Remove(child);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task AddCollectionToCollection(int parentId, int childId)
+        {
+            var parent = await context.Collections.FindAsync(parentId);
+            var child = await context.Collections.FindAsync(childId);
+            if (parent is null || child is null) return;
+            parent.ChildCollections.Add(child);
             await context.SaveChangesAsync();
         }
 

@@ -1,0 +1,42 @@
+﻿@using MovieApp.Web.Components.Components
+@using MovieApp.Web.Models;
+@using MovieApp.Web.Services.Abstractions
+@page "/MovieView/{MovieId:int}"
+<PageTitle>@_movie!.Title</PageTitle>
+<style>
+    .primary{
+        display: grid ;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 10px;
+    }
+</style>
+<div style="background-color: black;">
+    <div class="primary">
+        <MoviePlayer MovieId="@MovieId" />
+        <div>
+            <p style="color: white;">@_movie!.Title</p>
+            <p style="color: mediumpurple;">@_movie!.Description</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly IMovieService _movieService;
+    private Movie? _movie;
+
+    [Parameter]
+    public required int MovieId
+    {
+        get;
+        init
+        {
+            field = value;
+            _movie = _movieService.GetMovie(value).GetAwaiter().GetResult();
+        }
+    }
+
+    public MovieView(IMovieService movieService)
+    {
+        _movieService = movieService;
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieApp.Web.Models;
+using MovieApp.Web.Services.Abstractions;
 
 namespace MovieApp.Web.Controllers
 {

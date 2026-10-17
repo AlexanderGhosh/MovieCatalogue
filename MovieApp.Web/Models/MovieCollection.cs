@@ -1,10 +1,6 @@
-﻿using MovieCatalogue;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace MovieApp.Web.Models;
 
-namespace MovieApp.Web.Models;
-
-[Table("MovieCollection")]
-public class MovieCollection : IMovieCollection
+public class MovieCollection
 {
     public int Id { get; set; }
 
@@ -12,5 +8,8 @@ public class MovieCollection : IMovieCollection
 
     public DateTime AddedOn { get; set; } = DateTime.Now;
 
-    public ICollection<Movie> Movies { get; set; } = [];
+    public ICollection<Movie> Movies { get; set; } = new HashSet<Movie>();
+
+    public ICollection<MovieCollection> ParentCollections { get; set; } = new HashSet<MovieCollection>();
+    public ICollection<MovieCollection> ChildCollections { get; set; } = new HashSet<MovieCollection>();
 }

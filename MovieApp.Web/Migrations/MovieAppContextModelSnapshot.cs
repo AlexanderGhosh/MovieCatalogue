@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieApp.Web;
+using MovieApp.Web.Services.Implementations;
 
 #nullable disable
 
@@ -17,10 +17,25 @@ namespace MovieApp.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MovieApp.Web.Models.Collection_Collection", b =>
+                {
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChildId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ParentId", "ChildId");
+
+                    b.HasIndex("ChildId");
+
+                    b.ToTable("Collection_Collection", (string)null);
+                });
 
             modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
                 {
@@ -33,8 +48,8 @@ namespace MovieApp.Web.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CollectionId")
-                        .HasColumnType("int");
+                    b.Property<bool>("ShowThumbnail")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("ThumbnailBlobId")
                         .HasColumnType("uniqueidentifier");
@@ -45,9 +60,7 @@ namespace MovieApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CollectionId");
-
-                    b.ToTable("Movie");
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("MovieApp.Web.Models.MovieCollection", b =>
@@ -67,7 +80,7 @@ namespace MovieApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovieCollection");
+                    b.ToTable("Collections");
                 });
 
             modelBuilder.Entity("MovieApp.Web.Models.MovieContent", b =>
@@ -81,12 +94,6 @@ namespace MovieApp.Web.Migrations
                     b.Property<Guid>("BlobGuid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long?>("LastTimeStamp")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Length")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
@@ -98,14 +105,34 @@ namespace MovieApp.Web.Migrations
                     b.ToTable("MovieContent");
                 });
 
-            modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
+            modelBuilder.Entity("MovieApp.Web.Models.Movie_Collection", b =>
                 {
-                    b.HasOne("MovieApp.Web.Models.MovieCollection", "Collection")
-                        .WithMany("Movies")
-                        .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
 
-                    b.Navigation("Collection");
+                    b.Property<int>("CollectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MovieId", "CollectionId");
+
+                    b.HasIndex("CollectionId");
+
+                    b.ToTable("Movie_Collection", (string)null);
+                });
+
+            modelBuilder.Entity("MovieApp.Web.Models.Collection_Collection", b =>
+                {
+                    b.HasOne("MovieApp.Web.Models.MovieCollection", null)
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MovieApp.Web.Models.MovieCollection", null)
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MovieApp.Web.Models.MovieContent", b =>
@@ -119,14 +146,24 @@ namespace MovieApp.Web.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("MovieApp.Web.Models.Movie_Collection", b =>
+                {
+                    b.HasOne("MovieApp.Web.Models.MovieCollection", null)
+                        .WithMany()
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieApp.Web.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MovieApp.Web.Models.Movie", b =>
                 {
                     b.Navigation("Content");
-                });
-
-            modelBuilder.Entity("MovieApp.Web.Models.MovieCollection", b =>
-                {
-                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }

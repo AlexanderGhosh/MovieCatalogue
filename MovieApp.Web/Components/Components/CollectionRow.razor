@@ -1,0 +1,70 @@
+﻿@using MovieApp.Web.Models
+@using MovieApp.Web.Services.Abstractions
+<tr draggable="true"
+@onclick="GotoCollection" 
+    @ondrag="OnDrag"
+    @ondrop="OnDropEvent"
+    @ondragover:preventDefault="true">
+    <td>
+        <h5>@Collection.Name</h5>
+        <p>Movies: @Collection.Movies.Count</p>
+    </td>
+    <td>
+        @Collection.AddedOn.ToShortDateString()
+    </td>
+    <td @onclick="RemoveCB" @onclick:stopPropagation="true">
+        <i class="bi bi-x-circle"></i>
+    </td>
+</tr>
+
+@code {
+    private readonly IMovieService _movieService;
+    private readonly IDragDropService _dragDropService;
+    
+    [Parameter]
+    public required MovieCollection Collection { get; init; }
+    [Parameter]
+    public Func<MovieCollection, Task>? RemoveCollection { get; init; }
+    [Parameter]
+    public Action<object>? OnDropped { get; init; }
+
+    public CollectionRow(IMovieService service, IDragDropService dragDropService)
+    {
+        _movieService = service;
+        _dragDropService = dragDropService;
+    }
+
+    void GotoCollection()
+    {
+        Navigation.NavigateTo($"/collection/{Collection.Id}");
+        StateHasChanged();
+    }
+
+    async Task RemoveCB()
+    {
+        var task = RemoveCollection?.Invoke(Collection);
+        if (task is not null)
+            await task;
+    }
+
+    void OnDrag()
+    {
+        _dragDropService.BeginDrag(Collection);
+    }
+
+    async Task OnDropEvent()
+    {
+        var dropped = _dragDropService.EndDrag();
+        switch (dropped)
+        {
+            case MovieCollection collection:
+                if (collection.Id == Collection.Id) return;
+                await _movieService.AddCollectionToCollection(Collection.Id, collection.Id);
+                break;
+            case Movie movie:
+                await _movieService.AddMovieToCollection(movie.Id, Collection.Id);
+                break;
+        }
+        OnDropped?.Invoke(dropped);
+    }
+}
