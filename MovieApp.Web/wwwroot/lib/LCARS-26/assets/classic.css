@@ -1809,16 +1809,21 @@ th {
 	color: var(--table-head-text-color);
 }
 
-	th:first-child {
-		border-radius: 100vmax 0 0 0;
-		padding-left: calc(var(--table-bar) + 0.75rem);
-	}
+th:first-child {
+	border-radius: 100vmax 0 0 0;
+	padding-left: calc(var(--table-bar) + 0.75rem);
+}
 
-	th:last-child {
-		border-right: none;
-		border-radius: 0 0 0 0;
-		padding-right: 1.5rem;
-	}
+th:last-child {
+	border-right: none;
+	border-radius: 0 0 0 0;
+	padding-right: 1.5rem;
+}
+
+table:not(:has(tbody tr)) th:first-child {
+	border-radius: 100vmax 0 0 100vmax;
+	padding-left: calc(var(--table-bar) + 0.75rem);
+}
 
 td {
 	padding: var(--table-cell-padding);

@@ -1,12 +1,13 @@
 ﻿@using MovieApp.Web.Models;
 @using MovieApp.Web.Services.Abstractions
 <tr @ondrag="OnDrag"
-@onmouseover="() => _mousedOver = true">
+    @onmouseover="() => _mousedOver = true"
+    @onclick="WatchMovie">
     @if (ShowThumbnail && Movie.ShowThumbnail)
     {
         <td>
             <div style="display:flex;">
-                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
+                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
                 <a @onclick="ThumbnailEdit">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
@@ -18,11 +19,11 @@
         {
             <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" />
 
-            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" title="Save">
+            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
 
-            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit"title="Cancel">
+            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         }
@@ -31,7 +32,7 @@
             @Movie.Title
             @if (NameEditable)
             {
-                <a @onclick="BeginNameEdit">
+                <a @onclick="BeginNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
             }
@@ -40,23 +41,15 @@
     <td class="hide-1100">
         @Movie.AddedOn.ToShortDateString()
     </td>
-    @if (!_nameEditing)
-    {
-        <td class="hide-1100">
-            <a href="@_moviePath">
-                Watch    
-            </a>
-        </td>
-    }
     @if (Downloadable)
     {
         <td class="hide-1100">
-            <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
+            <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download @onclick:stopPropagation="true">
                 <i class="bi bi-download"></i>
             </a>
         </td>
     }
-    <td @onclick="RemoveMovie_CB" title="Remove" class="hide-1100">
+    <td @onclick="RemoveMovie_CB" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Remove" class="hide-1100">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>

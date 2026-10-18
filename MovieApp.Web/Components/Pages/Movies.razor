@@ -40,7 +40,6 @@
                     <th>Thumbnail</th>
                     <th>Title</th>
                     <th class="hide-1100">Added on</th>
-                    <th class="hide-1100">Watch</th>
                     <th class="hide-1100">Download</th>
                     <th class="hide-1100">Remove</th>
                 </tr>
@@ -50,7 +49,7 @@
                 {
                     @if (item is MovieCollection collection)
                     {
-                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" />
+                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" RemoveCollection="c => RemoveCollection(c.Id)" />
                     }
                     else if (item is Movie movie)
                     {
@@ -89,5 +88,10 @@
         await RenameMovie(_editingMovie, _newTitle);
         _editingMovie = null;
         _newTitle = string.Empty;
+    }
+
+    async Task RemoveCollection(int id)
+    {
+        await _movieSvc.DeleteCollection(id);
     }
 }
