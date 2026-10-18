@@ -176,7 +176,7 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
-        public async Task<Stream?> GetThumbnail(int movieId)
+        public async Task<Stream?> GetMovieThumbnail(int movieId)
         {
             var movie = await context.Movies.FindAsync(movieId);
             if (movie?.ThumbnailBlobId is null) return null;
@@ -185,7 +185,7 @@ namespace MovieApp.Web
             return thumbnail.DataStream;
         }
 
-        public async Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType)
+        public async Task SetMovieThumbnail(int movieId, Stream thumbnail, BlobContentType contentType)
         {
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
@@ -193,6 +193,26 @@ namespace MovieApp.Web
                 await blobStorage.DeleteAsync(movie.ThumbnailBlobId.Value);
             var id = await blobStorage.UploadAsync(thumbnail, new() { ContentType = contentType });
             movie.ThumbnailBlobId = id;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<Stream?> GetCollectionThumbnail(int collectionId)
+        {
+            var collection = await context.Collections.FindAsync(collectionId);
+            if (collection?.ThumbnailBlobId is null) return null;
+
+            var thumbnail = await blobStorage.DownloadAsync(collection.ThumbnailBlobId.Value);
+            return thumbnail.DataStream;
+        }
+
+        public async Task SetCollectionThumbnail(int collectionId, Stream thumbnail, BlobContentType contentType)
+        {
+            var collection = await context.Collections.FindAsync(collectionId);
+            if (collection is null) return;
+            if (collection.ThumbnailBlobId is not null)
+                await blobStorage.DeleteAsync(collection.ThumbnailBlobId.Value);
+            var id = await blobStorage.UploadAsync(thumbnail, new() { ContentType = contentType });
+            collection.ThumbnailBlobId = id;
             await context.SaveChangesAsync();
         }
     }

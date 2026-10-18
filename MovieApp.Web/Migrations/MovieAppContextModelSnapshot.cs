@@ -78,6 +78,12 @@ namespace MovieApp.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("ShowThumbnail")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ThumbnailBlobId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.ToTable("Collections");

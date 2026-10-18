@@ -57,9 +57,12 @@ namespace MovieApp.Web.Controllers
         }
 
         [HttpGet("{videoId}/thumbnail")]
-        public async Task<IActionResult> GetVideoThumbnail(int videoId)
+        public async Task<IActionResult> GetVideoThumbnail(int videoId, [FromQuery] bool isCollection = false)
         {
-            var stream = await _movieSvc.GetThumbnail(videoId);
+            var stream = isCollection
+                ? await _movieSvc.GetCollectionThumbnail(videoId)
+                : await _movieSvc.GetMovieThumbnail(videoId);
+
             if (stream is null)
                 return NotFound();
 

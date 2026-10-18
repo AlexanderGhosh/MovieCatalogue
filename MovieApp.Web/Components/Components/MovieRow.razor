@@ -1,14 +1,13 @@
 ﻿@using MovieApp.Web.Models;
 @using MovieApp.Web.Services.Abstractions
 <tr @ondrag="OnDrag"
-    @onmouseover="() => _mousedOver = true"
     @onclick="WatchMovie">
     @if (ShowThumbnail && Movie.ShowThumbnail)
     {
         <td>
             <div style="display:flex;">
                 <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
-                <a @onclick="ThumbnailEdit">
+                <a @onclick="ThumbnailEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
             </div>
@@ -71,8 +70,7 @@
     private readonly IDragDropService _dragDropService;
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
-    private bool _mousedOver;
-    private string _moviePath => $"/movieview/{Movie.Id}";
+    private string _moviePath => $"/movie/{Movie.Id}";
 
     public MovieRow(IModalService modalService, IMovieService movieService, IDragDropService dragDropService)
     {
@@ -137,7 +135,8 @@
     {
         var parmas = new ModalParameters()
         {
-            {nameof(ChangeThumbnailModal.MovieId), Movie.Id}
+            {nameof(ChangeThumbnailModal.Id), Movie.Id},
+            {nameof(ChangeThumbnailModal.Mode), ChangeThumbnailModal.ItemMode.Movie}
         };
         var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas);
         await modal.Result;
