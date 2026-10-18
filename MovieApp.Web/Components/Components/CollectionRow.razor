@@ -7,11 +7,14 @@
     @ondragover:preventDefault="true">
     <td>
         <h5>@Collection.Name</h5>
-        <p>Movies: @Collection.Movies.Count</p>
+        <p>Items: @(Collection.Movies.Count + Collection.ChildCollections.Count)</p>
     </td>
+    <td/>
     <td>
         @Collection.AddedOn.ToShortDateString()
     </td>
+    <td />
+    <td />
     <td @onclick="RemoveCB" @onclick:stopPropagation="true">
         <i class="bi bi-x-circle"></i>
     </td>
