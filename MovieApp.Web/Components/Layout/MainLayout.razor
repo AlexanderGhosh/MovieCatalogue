@@ -1,33 +1,28 @@
 ﻿@inherits LayoutComponentBase
 
 <div style="flex: 1; min-width: 0;">
-	<script type="text/javascript" src="LCARS-26/assets/lcars.js"></script>
-	<audio id="audio1" src="LCARS-26/assets/beep1.mp3" preload="auto"></audio>
-	<audio id="audio1" src="LCARS-26/assets/beep1.mp3" preload="auto"></audio>
-	<audio id="audio2" src="LCARS-26/assets/beep2.mp3" preload="auto"></audio>
-	<audio id="audio3" src="LCARS-26/assets/beep3.mp3" preload="auto"></audio>
-	<audio id="audio4" src="LCARS-26/assets/beep4.mp3" preload="auto"></audio>
+	<script type="text/javascript" src="@Assets["lib/LCARS-26/assets/lcars.js"]"></script>
+	<audio id="audio2" src="@Assets["lib/LCARS-26/assets/beep2.mp3"]" preload="auto"></audio>
 	<section class="wrap-standard" id="column-3">
 		<div class="wrap" id="gap">
 			<div class="left-frame">
-				<button onclick="topFunction(); playSound()" id="topBtn"><span class="hop">screen</span> top</button>
 				<div>
-					<button onclick="playSoundAndRedirect('audio2', '')" class="panel-3">
+					<button onclick="playSound('audio2'); redirect('/')" class="panel-3">
 						03<span class="hop">-111968</span>
 					</button>
-					<button onclick="playSoundAndRedirect('audio2', '')" class="panel-4">
+					<button onclick="playSound('audio2')" class="panel-4">
 						04<span class="hop">-041969</span>
 					</button>
-					<button onclick="playSoundAndRedirect('audio2', '')" class="panel-5">
+					<button onclick="playSound('audio2')" class="panel-5">
 						05<span class="hop">-1701D</span>
 					</button>
-					<button onclick="playSoundAndRedirect('audio2', '')" class="panel-6">
+					<button onclick="playSound('audio2')" class="panel-6">
 						06<span class="hop">-071984</span>
 					</button>
 					<div class="panel-spacer"></div>
 				</div>
 				<div>
-					<button onclick="playSoundAndRedirect('audio2', '')" class="panel-7">
+					<button onclick="playSound('audio2')" class="panel-7">
 						07<span class="hop">-081940</span>
 					</button>
 				</div>
@@ -39,6 +34,10 @@
 					<div class="bar-8"></div>
 					<div class="bar-9"></div>
 					<div class="bar-10"></div>
+					<div class="bar-11"></div>
+					<div class="bar-12"></div>
+					<div class="bar-13"></div>
+					<div class="bar-14"></div>
 				</div>
 				<main>
 					@Body

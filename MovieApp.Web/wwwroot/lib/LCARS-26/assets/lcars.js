@@ -1,19 +1,6 @@
 // Modified 2026 Jun 20
 
 document.addEventListener("touchstart", function() {},false);
-let mybutton = document.getElementById("topBtn");
-window.onscroll = function() {scrollFunction()};
-function scrollFunction() {
-  if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-    mybutton.style.display = "block";
-  } else {
-    mybutton.style.display = "none";
-  }
-}
-function topFunction() {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-}
 function playSoundAndRedirect(audioId, url) {
     var audio = document.getElementById(audioId);
     audio.play();
@@ -23,10 +10,15 @@ function playSoundAndRedirect(audioId, url) {
     };
 }
 function goToAnchor(anchorId) {
-  window.location.hash = anchorId;
+    window.location.hash = anchorId;
 }
-function playSound() {
-    document.getElementById("audio4").play();
+function redirect(url) {
+    if (location.pathname != '/')
+        window.location.href = url;
+}
+
+function playSound(audioId) {
+    document.getElementById(audioId).play();
 }
 // Accordion drop-down
 var acc = document.getElementsByClassName("accordion");

@@ -4,58 +4,62 @@
 @using MovieApp.Web.Models
 @inject IJSRuntime JS
 
-<PageTitle>Movies</PageTitle>
+<div>
+    <PageTitle>Movies</PageTitle>
 
-<h1>Movies</h1>
+    <h1>Movies</h1>
 
-<div class="d-flex align-items-center mb-3">
-    <button type="button" class="btn btn-primary" @onclick="@AddMovie">
-        Add Movie
-    </button>
-
-    @if (_creatingCollection)
-    {
-        <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
-               class="form-control form-control-sm d-inline w-auto ms-3" placeholder="Collection name" />
-        <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveCollection" title="Create">
-            <i class="bi bi-check-circle-fill"></i>
+    <div class="d-flex align-items-center mb-3">
+        <button type="button" class="btn btn-primary" @onclick="@AddMovie">
+            Add Movie
         </button>
-        <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelCreateCollection" title="Cancel">
-            <i class="bi bi-x-circle-fill"></i>
-        </button>
-    }
-    else
-    {
-        <button type="button" class="btn btn-outline-primary ms-2" @onclick="StartCreateCollection">
-            New Collection
-        </button>
-    }
-</div>
 
-<table class="table align-middle">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>AddedOn</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Items)
+        @if (_creatingCollection)
         {
-            @if (item is MovieCollection collection)
-            {
-                <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" />
-            }
-            else if (item is Movie movie)
-            {
-                <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
-            }
+            <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
+                   class="form-control form-control-sm d-inline w-auto ms-3" placeholder="Collection name" />
+            <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveCollection" title="Create">
+                <i class="bi bi-check-circle-fill"></i>
+            </button>
+            <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelCreateCollection" title="Cancel">
+                <i class="bi bi-x-circle-fill"></i>
+            </button>
         }
-    </tbody>
-</table>
+        else
+        {
+            <button type="button" class="btn btn-outline-primary ms-2" @onclick="StartCreateCollection">
+                New Collection
+            </button>
+        }
+    </div>
+
+    <div class="table-scroll">
+        <table class="table-bluey">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>AddedOn</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    @if (item is MovieCollection collection)
+                    {
+                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" />
+                    }
+                    else if (item is Movie movie)
+                    {
+                        <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @code {
     private Dictionary<int, long> thumbVersions = new();
