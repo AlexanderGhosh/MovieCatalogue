@@ -1,9 +1,4 @@
 @charset "utf-8";
-@media (width <= 700px) {
-	.hide-700 {
-		display: none !important;
-	}
-}
 /*
 
 	CSS Document
@@ -1910,6 +1905,12 @@ tfoot td {
 
 @media (width <= 900px) {
 	.hide-900 {
+		display: none !important;
+	}
+}
+
+@media (width <= 700px) {
+	.hide-700 {
 		display: none !important;
 	}
 }

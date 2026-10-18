@@ -37,12 +37,12 @@
             }
         }
     </td>
-    <td class="hide-700">
+    <td class="hide-900">
         @Movie.AddedOn.ToShortDateString()
     </td>
     @if (!_nameEditing)
     {
-        <td class="hide-700">
+        <td class="hide-900">
             <a href="@_moviePath">
                 Watch    
             </a>
@@ -50,13 +50,13 @@
     }
     @if (Downloadable)
     {
-        <td class="hide-700">
+        <td class="hide-900">
             <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
                 <i class="bi bi-download"></i>
             </a>
         </td>
     }
-    <td @onclick="RemoveMovie_CB" title="Remove" class="hide-700">
+    <td @onclick="RemoveMovie_CB" title="Remove" class="hide-900">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>
