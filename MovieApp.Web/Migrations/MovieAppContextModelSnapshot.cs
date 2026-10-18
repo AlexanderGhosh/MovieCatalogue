@@ -48,6 +48,9 @@ namespace MovieApp.Web.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("ShowThumbnail")
                         .HasColumnType("bit");
 
