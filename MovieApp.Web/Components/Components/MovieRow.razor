@@ -5,10 +5,12 @@
     @if (ShowThumbnail && Movie.ShowThumbnail)
     {
         <td>
-            <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
-            <a @onclick="ThumbnailEdit">
-                <i class="bi bi-pencil-fill"></i>
-            </a>
+            <div style="display:flex;">
+                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
+                <a @onclick="ThumbnailEdit">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </div>
         </td>
     }
     <td>
@@ -54,7 +56,7 @@
             </a>
         </td>
     }
-    <td @onclick="RemoveMovie_CB">
+    <td @onclick="RemoveMovie_CB" title="Remove">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>

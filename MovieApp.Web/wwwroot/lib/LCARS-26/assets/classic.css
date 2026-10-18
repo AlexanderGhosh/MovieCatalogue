@@ -1817,7 +1817,7 @@ th {
 
 	th:last-child {
 		border-right: none;
-		border-radius: 0 100vmax 100vmax 0;
+		border-radius: 0 0 0 0;
 		padding-right: 1.5rem;
 	}
 
@@ -1841,17 +1841,17 @@ tbody tr:first-child td:first-child {
 	border-left-color: var(--table-head-color);
 }
 
-	tbody tr:first-child td:first-child::before {
-		content: '';
-		display: block;
-		width: calc(var(--table-bar) + var(--table-curl));
-		height: calc(var(--table-curl) + 1px);
-		position: absolute;
-		top: calc(var(--table-gap) * -1 - 1px);
-		left: calc(var(--table-bar) * -1);
-		z-index: -1;
-		background: radial-gradient( circle at 100% 100%, transparent calc(var(--table-curl) - 0.5px), var(--table-head-color) calc(var(--table-curl) + 0.5px) ) right bottom / var(--table-curl) var(--table-curl) no-repeat, linear-gradient(var(--table-head-color), var(--table-head-color)) left top / var(--table-bar) 100% no-repeat, linear-gradient(var(--table-head-color), var(--table-head-color)) left top / 100% 1px no-repeat;
-	}
+tbody tr:first-child td:first-child::before {
+	content: '';
+	display: block;
+	width: calc(var(--table-bar) + var(--table-curl));
+	height: calc(var(--table-curl) + 1px);
+	position: absolute;
+	top: calc(var(--table-gap) * -1 - 1px);
+	left: calc(var(--table-bar) * -1);
+	z-index: -1;
+	background: radial-gradient( circle at 100% 100%, transparent calc(var(--table-curl) - 0.5px), var(--table-head-color) calc(var(--table-curl) + 0.5px) ) right bottom / var(--table-curl) var(--table-curl) no-repeat, linear-gradient(var(--table-head-color), var(--table-head-color)) left top / var(--table-bar) 100% no-repeat, linear-gradient(var(--table-head-color), var(--table-head-color)) left top / 100% 1px no-repeat;
+}
 
 tbody tr:hover td {
 	background-color: var(--table-hover);

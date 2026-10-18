@@ -29,26 +29,30 @@ else
             Add
         </button>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>AddedOn</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var movie in _collection.Movies)
-            {
-                <MovieRow Movie="movie" ShowThumbnail=@true NameEditable="@true" RemoveMovie="RemoveFromCollection" />
-            }
-            @foreach (var collection in _collection.ChildCollections)
-            {
-                <CollectionRow Collection="collection" RemoveCollection="RemoveFromCollection" OnDropped="_ => StateHasChanged()"/>
-            }
-        </tbody>
-    </table>
+    <div class="table-scroll">
+        <table class="table-bluey">
+            <thead>
+                <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th>Added on</th>
+                    <th>Watch</th>
+                    <th>Download</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in _collection.Movies)
+                {
+                    <MovieRow Movie="movie" ShowThumbnail=@true NameEditable="@true" RemoveMovie="RemoveFromCollection" />
+                }
+                @foreach (var collection in _collection.ChildCollections)
+                {
+                    <CollectionRow Collection="collection" RemoveCollection="RemoveFromCollection" OnDropped="_ => StateHasChanged()" />
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
