@@ -137,8 +137,13 @@
         {
             {nameof(ChangeThumbnailModal.Id), Movie.Id},
             {nameof(ChangeThumbnailModal.Mode), ChangeThumbnailModal.ItemMode.Movie}
+        }; 
+        var options = new ModalOptions()
+        {
+            Class = "lcars-modal",
+            Position = ModalPosition.TopCenter
         };
-        var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas);
+        var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas, options);
         await modal.Result;
         StateHasChanged();
     }

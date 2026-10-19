@@ -1,4 +1,5 @@
-﻿using Blazored.Modal.Services;
+﻿using Blazored.Modal;
+using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Modals;
@@ -64,12 +65,17 @@ namespace MovieApp.Web.Components.Pages
 
         private async Task AddMovie()
         {
-            var resTask = Modal.Show<AddMovieModal>()?.Result;
+            var options = new ModalOptions()
+            {
+                Class = "lcars-modal",
+                Position = ModalPosition.TopCenter
+            };
+            var resTask = Modal.Show<AddMovieModal>(options)?.Result;
 
             if (resTask is null) return;
             var res = await resTask;
 
-            if (res.Cancelled || res.Data is not AddMovie data) return;
+            if (res.Cancelled || res.Data is not AddMovieModal.AddMovie data) return;
             var (movie, content) = data;
 
             await _movieSvc.UploadMovieAsync(movie, content);

@@ -959,6 +959,10 @@ nav button {
 	display: inline-flex;
 }
 
+.lcars-button-centered {
+	align-items: safe center;
+}
+
 .buttons {
 	display: flex;
 	flex-wrap: wrap;
@@ -2524,3 +2528,128 @@ footer {
 		}
 }
 
+/* LCARS modal */
+
+.lcars-modal {
+	--m-color: var(--butterscotch);
+	--m-accent: var(--african-violet);
+	--m-border: var(--bluey);
+	--m-bar: 2.5rem;
+	--m-top: 1.75rem;
+	--m-curl: 1.5rem;
+	--m-gap: 0.35rem;
+	--m-end: 7rem;
+	width: min(36rem, 92vw);
+	padding: calc(var(--m-top) + 1.25rem) 1.5rem 1.5rem calc(var(--m-bar) + 1.5rem);
+	border: 2px solid var(--m-border);
+	border-radius: 2.5rem calc(var(--m-top) / 2) 2.5rem 0;
+	background:
+	/* inner elbow curve */
+	radial-gradient(circle at 100% 100%, transparent calc(var(--m-curl) - 0.5px), var(--m-color) calc(var(--m-curl) + 0.5px)) var(--m-bar) var(--m-top) / var(--m-curl) var(--m-curl) no-repeat,
+	/* top bar with an accent end segment */
+	linear-gradient(to right, var(--m-color) calc(100% - var(--m-end)), black calc(100% - var(--m-end)) calc(100% - var(--m-end) + var(--m-gap)), var(--m-accent) calc(100% - var(--m-end) + var(--m-gap))) 0 0 / 100% var(--m-top) no-repeat,
+	/* left bar, two segments split by a black gap */
+	linear-gradient(to bottom, var(--m-color) 60%, black 60% calc(60% + var(--m-gap)), var(--m-accent) calc(60% + var(--m-gap))) 0 0 / var(--m-bar) 100% no-repeat, black;
+	color: var(--font-color);
+	font-family: inherit;
+
+	@media (width <= 540px) {
+		--m-bar: 1.5rem;
+		--m-top: 1.25rem;
+		--m-curl: 1rem;
+		--m-end: 4rem;
+		padding: calc(var(--m-top) + 1rem) 1rem 1rem calc(var(--m-bar) + 1rem);
+	}
+
+	position: fixed;
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+	max-height: 90vh;
+	overflow-y: auto;
+}
+
+	/* Headings */
+	.lcars-modal :is(h1, h2, h3, h4) {
+		margin-block: 0 1rem;
+		text-transform: uppercase;
+		line-height: 1.2;
+		color: var(--almond-creme);
+	}
+
+	/* Form fields */
+	.lcars-modal :is(input, select, textarea) {
+		width: 100%;
+		padding: 0.4rem 1rem;
+		background: black;
+		border: 2px solid var(--m-color);
+		border-radius: 100vmax;
+		color: var(--font-color);
+	}
+
+	.lcars-modal textarea {
+		border-radius: 1rem;
+	}
+
+	.lcars-modal :is(input, select, textarea):focus {
+		outline: none;
+		border-color: var(--m-accent);
+	}
+
+	/* Buttons in the modal */
+	.lcars-modal .lcars-button {
+		width: auto;
+		height: 3.25rem;
+		margin-block: 1rem 0;
+		margin-right: 0.5rem;
+	}
+
+/* Colour variants: Class = "lcars-modal lcars-modal-red" */
+.lcars-modal-red {
+	--m-color: var(--red);
+	--m-accent: var(--butterscotch);
+}
+
+.lcars-modal-orange {
+	--m-color: var(--orange);
+	--m-accent: var(--african-violet);
+}
+
+.lcars-modal-violet {
+	--m-color: var(--african-violet);
+	--m-accent: var(--bluey);
+}
+
+/* File input */
+
+input[type="file"] {
+	padding: 0.25rem;
+	color: var(--font-color);
+	cursor: pointer;
+}
+
+	input[type="file"]::file-selector-button {
+		margin-right: 1rem;
+		padding: 0.4rem 1.5rem;
+		border: none;
+		border-radius: 100vmax;
+		background-color: var(--button-color);
+		font: inherit;
+		font-weight: bold;
+		text-transform: uppercase;
+		color: black;
+		cursor: pointer;
+	}
+
+		input[type="file"]::file-selector-button:hover {
+			filter: brightness(115%);
+		}
+
+		input[type="file"]::file-selector-button:active {
+			filter: brightness(85%);
+		}
+
+/* Inside the modal, use the modal's accent colour */
+.lcars-modal input[type="file"]::file-selector-button {
+	background-color: var(--m-accent);
+}

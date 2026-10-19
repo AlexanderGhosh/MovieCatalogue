@@ -20,7 +20,6 @@
         <h5>@Collection.Name</h5>
         <p>Items: @(Collection.Movies.Count + Collection.ChildCollections.Count)</p>
     </td>
-    <td/>
     <td class="hide-1100">
         @Collection.AddedOn.ToShortDateString()
     </td>
@@ -92,7 +91,12 @@
             {nameof(ChangeThumbnailModal.Id), Collection.Id},
             {nameof(ChangeThumbnailModal.Mode), ChangeThumbnailModal.ItemMode.Collection}
         };
-        var modal = _modalService.Show<ChangeThumbnailModal>(parmas);
+        var options = new ModalOptions()
+        {
+            Class = "lcars-modal",
+            Position = ModalPosition.TopCenter
+        };
+        var modal = _modalService.Show<ChangeThumbnailModal>(parmas, options);
         await modal.Result;
         StateHasChanged();
     }
