@@ -1,28 +1,27 @@
 ﻿@inherits LayoutComponentBase
 
-<div style="flex: 1; min-width: 0;">
+<div style="flex: 1; min-width: 0;" @onclick="PlayRandomAudio">
 	<script type="text/javascript" src="@Assets["lib/LCARS-26/assets/lcars.js"]"></script>
-	<audio id="audio2" src="@Assets["lib/LCARS-26/assets/beep2.mp3"]" preload="auto"></audio>
 	<section class="wrap-standard" id="column-3">
 		<div class="wrap" id="gap">
 			<div class="left-frame">
 				<div>
-					<button @onclick="PlayRandomAudio" class="panel-3">
+					<button class="panel-3">
 						01<span class="hop">-LIBRARY</span>
 					</button>
-					<button @onclick="PlayRandomAudio" class="panel-4">
+					<button class="panel-4">
 						04<span class="hop">-041969</span>
 					</button>
-					<button @onclick="PlayRandomAudio" class="panel-5">
+					<button class="panel-5">
 						05<span class="hop">-1701D</span>
 					</button>
-					<button @onclick="PlayRandomAudio" class="panel-6">
+					<button class="panel-6">
 						06<span class="hop">-071984</span>
 					</button>
 					<div class="panel-spacer"></div>
 				</div>
 				<div>
-					<button @onclick="PlayRandomAudio" class="panel-7">
+					<button class="panel-7">
 						07<span class="hop">-081940</span>
 					</button>
 				</div>

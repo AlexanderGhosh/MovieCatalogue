@@ -1,25 +1,7 @@
 // Modified 2026 Jun 20
 
-document.addEventListener("touchstart", function() {},false);
-function playSoundAndRedirect(audioId, url) {
-    var audio = document.getElementById(audioId);
-    audio.play();
+document.addEventListener("touchstart", function () { }, false);
 
-    audio.onended = function() {
-        window.location.href = url;
-    };
-}
-function goToAnchor(anchorId) {
-    window.location.hash = anchorId;
-}
-function redirect(url) {
-    if (location.pathname != '/')
-        window.location.href = url;
-}
-
-function playSound(audioId) {
-    document.getElementById(audioId).play();
-}
 // Accordion drop-down
 var acc = document.getElementsByClassName("accordion");
 var i;

@@ -9,5 +9,10 @@ namespace MovieApp.Web.Components.Layout
             var rand = Random.Shared.Next(0, audioPlayer.Count);
             await audioPlayer.PlayAudio(rand);
         }
+
+        public async Task PlayAudio(int id)
+        {
+            await audioPlayer.PlayAudio(id);
+        }
     }
 }
