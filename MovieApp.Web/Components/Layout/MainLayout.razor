@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using MovieApp.Web.Services.Abstractions
+@inherits LayoutComponentBase
 
 <div style="flex: 1; min-width: 0;" @onclick="PlayRandomAudio">
 	<script type="text/javascript" src="@Assets["lib/LCARS-26/assets/lcars.js"]"></script>
@@ -54,3 +55,22 @@
 	<div class="headtrim"> </div>
 	<div class="baseboard"> </div>
 </div>
+
+@code{
+	private readonly IAudioPlayer _audioPlayer;
+	public MainLayout(IAudioPlayer audioPlayer)
+	{
+		_audioPlayer = audioPlayer;
+	}
+
+	public async Task PlayRandomAudio()
+	{
+		var rand = Random.Shared.Next(0, _audioPlayer.Count);
+		await _audioPlayer.PlayAudio(rand);
+	}
+
+	public async Task PlayAudio(int id)
+	{
+		await _audioPlayer.PlayAudio(id);
+	}
+}

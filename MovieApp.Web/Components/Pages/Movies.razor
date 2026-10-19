@@ -9,11 +9,11 @@
 
     <h1>Movies</h1>
 
-    <div class="d-flex align-items-center mb-3">
-        <button type="button" class="btn btn-primary" @onclick="@AddMovie">
+    <div>
+        <button type="button" @onclick="@AddMovie" class="lcars-button lcars-button-inline">
             Add Movie
         </button>
-
+        <span class="hop"/>
         @if (_creatingCollection)
         {
             <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
@@ -27,7 +27,7 @@
         }
         else
         {
-            <button type="button" class="btn btn-outline-primary ms-2" @onclick="StartCreateCollection">
+            <button type="button" @onclick="StartCreateCollection" class="lcars-button lcars-button-inline">
                 New Collection
             </button>
         }

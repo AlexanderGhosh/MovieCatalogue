@@ -955,6 +955,10 @@ nav button {
 	user-select: none;
 }
 
+.lcars-button-inline {
+	display: inline-flex;
+}
+
 .buttons {
 	display: flex;
 	flex-wrap: wrap;
