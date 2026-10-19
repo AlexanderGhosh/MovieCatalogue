@@ -39,7 +39,6 @@
                 await _movieService.SetCollectionThumbnail(Id, stream, contentType);
                 break;
         }
-        await _movieService.SetMovieThumbnail(Id, stream, contentType);
         await Close();   
     }
 
