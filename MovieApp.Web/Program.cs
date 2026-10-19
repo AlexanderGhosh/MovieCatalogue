@@ -30,6 +30,7 @@ namespace MovieApp.Web
 #endif
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IDragDropService, DragDropService>();
+            builder.Services.AddScoped<IAudioPlayer, AudioPlayer>();
 
             builder.Services.AddControllers();
 
