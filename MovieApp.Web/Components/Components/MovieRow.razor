@@ -1,14 +1,16 @@
 ﻿@using MovieApp.Web.Models;
 @using MovieApp.Web.Services.Abstractions
 <tr @ondrag="OnDrag"
-@onmouseover="() => _mousedOver = true">
+    @onclick="WatchMovie">
     @if (ShowThumbnail && Movie.ShowThumbnail)
     {
         <td>
-            <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" OnClick="WatchMovie" />
-            <a @onclick="ThumbnailEdit">
-                <i class="bi bi-pencil-fill"></i>
-            </a>
+            <div style="display:flex;">
+                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail?t={Movie.ThumbnailBlobId}")" Width="90" />
+                <a @onclick="ThumbnailEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </div>
         </td>
     }
     <td>
@@ -16,11 +18,11 @@
         {
             <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" />
 
-            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" title="Save">
+            <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Save">
                 <i class="bi bi-check-circle-fill"></i>
             </a>
 
-            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit"title="Cancel">
+            <a class="btn btn-link p-0 ms-1 text-danger" @onclick="EndNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Cancel">
                 <i class="bi bi-x-circle-fill"></i>
             </a>
         }
@@ -29,32 +31,24 @@
             @Movie.Title
             @if (NameEditable)
             {
-                <a @onclick="BeginNameEdit">
+                <a @onclick="BeginNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
             }
         }
     </td>
-    <td>
+    <td class="hide-1100">
         @Movie.AddedOn.ToShortDateString()
     </td>
-    @if (!_nameEditing)
-    {
-        <td>
-            <a href="@_moviePath">
-                Watch    
-            </a>
-        </td>
-    }
     @if (Downloadable)
     {
-        <td>
-            <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download>
+        <td class="hide-1100">
+            <a href="@($"/api/Video/{Movie.Id}?download=true")" class="btn btn-link p-0 ms-2" title="Download" download @onclick:stopPropagation="true">
                 <i class="bi bi-download"></i>
             </a>
         </td>
     }
-    <td @onclick="RemoveMovie_CB">
+    <td @onclick="RemoveMovie_CB" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Remove" class="hide-1100">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>
@@ -72,17 +66,16 @@
     public Func<Movie, Task>? RemoveMovie { get; init; }
 
     private readonly IModalService _modalSvc;
-    private readonly IMovieService _movieSvc;
+    private readonly IMovieService _movieService;
     private readonly IDragDropService _dragDropService;
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
-    private bool _mousedOver;
-    private string _moviePath => $"/movieview/{Movie.Id}";
+    private string _moviePath => $"/movie/{Movie.Id}";
 
     public MovieRow(IModalService modalService, IMovieService movieService, IDragDropService dragDropService)
     {
         _modalSvc = modalService;
-        _movieSvc = movieService;
+        _movieService = movieService;
         _dragDropService = dragDropService;
     }
 
@@ -110,7 +103,7 @@
     {
         if (_nameEditValue == Movie.Title) return;
         Movie.Title = _nameEditValue;
-        await _movieSvc.UpdateMovie(Movie.Id, m => m.Title = _nameEditValue);
+        await _movieService.UpdateMovie(Movie.Id, m => m.Title = _nameEditValue);
         StateHasChanged();
         EndNameEdit();
     }
@@ -142,9 +135,15 @@
     {
         var parmas = new ModalParameters()
         {
-            {nameof(ChangeThumbnailModal.MovieId), Movie.Id}
+            {nameof(ChangeThumbnailModal.Id), Movie.Id},
+            {nameof(ChangeThumbnailModal.Mode), ChangeThumbnailModal.ItemMode.Movie}
+        }; 
+        var options = new ModalOptions()
+        {
+            Class = "lcars-modal",
+            Position = ModalPosition.TopCenter
         };
-        var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas);
+        var modal = _modalSvc.Show<ChangeThumbnailModal>(parmas, options);
         await modal.Result;
         StateHasChanged();
     }

@@ -2,14 +2,22 @@
 @using MovieApp.Web.Services.Abstractions
 
 <label>Movie Thumbnail</label>
-<InputFile OnChange="MovieThumbnailChange" accept=".jpg,.jpeg,.jpe,.jfif,.jif,.jfi,.pjpeg,.pjp,.png,.webp" />
-<button type="button" class="btn btn-primary" @onclick="@Close">
+<InputFile OnChange="ThumbnailChange" accept=".jpg,.jpeg,.jpe,.jfif,.jif,.jfi,.pjpeg,.pjp,.png,.webp" />
+<button type="button" class="lcars-button lcars-button-inline lcars-button-centered" @onclick="@Close">
     Close
 </button>
 
 @code {
+    public enum ItemMode
+    {
+        Movie,
+        Collection
+    }
     [Parameter]
-    public int MovieId { get; set; }
+    public int Id { get; set; }
+    [Parameter]
+    public ItemMode Mode { get; set; } = ItemMode.Movie;
+
     [Inject]
     public IMovieService _movieService { get; set; } = null!;
     private IBrowserFile? _thumbnail;
@@ -22,11 +30,19 @@
         using var stream = _thumbnail.OpenReadStream();
         var extension = Path.GetExtension(_thumbnail.Name);
         var contentType = BlobContentTypes.GetContentType(extension);
-        await _movieService.SetThumbnail(MovieId, stream, contentType);
+        switch(Mode)
+        {
+            case ItemMode.Movie:
+                await _movieService.SetMovieThumbnail(Id, stream, contentType);
+                break;
+            case ItemMode.Collection:
+                await _movieService.SetCollectionThumbnail(Id, stream, contentType);
+                break;
+        }
         await Close();   
     }
 
-    private async Task MovieThumbnailChange(InputFileChangeEventArgs args)
+    private async Task ThumbnailChange(InputFileChangeEventArgs args)
     {
         _thumbnail = args.File;
         await SaveChange();

@@ -1,23 +1,82 @@
-﻿@inherits LayoutComponentBase
+﻿@using MovieApp.Web.Services.Abstractions
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<div style="flex: 1; min-width: 0;" @onclick="PlayRandomAudio">
+	<script type="text/javascript" src="@Assets["lib/LCARS-26/assets/lcars.js"]"></script>
+	<section class="wrap-standard" id="column-3">
+		<div class="wrap" id="gap">
+			<div class="left-frame">
+				<div>
+					<button class="panel-3" @onclick="@(() => Navigation.NavigateTo("/"))">
+						01<span class="hop">-LIBRARY</span>
+					</button>
+					<button class="panel-4" @onclick="args => OnClickButton1?.Invoke(args)">
+						04<span class="hop">-1701D</span>
+					</button>
+					<button class="panel-5" @onclick="args => OnClickButton2?.Invoke(args)">
+						47<span class="hop">-DESIG</span>
+					</button>
+					<button class="panel-6" @onclick="args => OnClickButton3?.Invoke(args)">
+						06<span class="hop">-STARDATE</span>
+					</button>
+					<div class="panel-spacer"></div>
+				</div>
+				<div>
+					<button class="panel-7">
+						07<span class="hop">-081940</span>
+					</button>
+				</div>
+			</div>
+			<div class="right-frame">
+				<div class="bar-panel">
+					<div class="bar-6"></div>
+					<div class="bar-7"></div>
+					<div class="bar-8"></div>
+					<div class="bar-9"></div>
+					<div class="bar-10"></div>
+					<div class="bar-11"></div>
+					<div class="bar-12"></div>
+					<div class="bar-13"></div>
+					<div class="bar-14"></div>
+				</div>
+				<CascadingValue Value="this">
+					<main>
+						@Body
+					</main>
+				</CascadingValue>
+				<footer>
+					<!-- Your copyright information is only a suggestion and you can choose to delete it. -->
+					Content &copy; 2026 Movie Catalogue <br>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+					<!-- The following attribution must not be removed: -->
+					LCARS Inspired Website Template by <a href="https://www.thelcars.com">www.TheLCARS.com</a>.
+				</footer>
+			</div>
+		</div>
+	</section>
+	<div class="headtrim"> </div>
+	<div class="baseboard"> </div>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code{
+	public Action<EventArgs>? OnClickButton1 { get; set; }
+	public Action<EventArgs>? OnClickButton2 { get; set; }
+	public Action<EventArgs>? OnClickButton3 { get; set; }
+
+	private readonly IAudioPlayer _audioPlayer;
+	public MainLayout(IAudioPlayer audioPlayer)
+	{
+		_audioPlayer = audioPlayer;
+	}
+
+	public async Task PlayRandomAudio()
+	{
+		var rand = Random.Shared.Next(0, _audioPlayer.Count);
+		await _audioPlayer.PlayAudio(rand);
+	}
+
+	public async Task PlayAudio(int id)
+	{
+		await _audioPlayer.PlayAudio(id);
+	}
+}

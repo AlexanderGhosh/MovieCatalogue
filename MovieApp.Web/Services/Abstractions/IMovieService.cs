@@ -25,7 +25,9 @@ namespace MovieApp.Web.Services.Abstractions
         Task RemoveCollectionFromCollection(int childId, int parentId);
         Task AddCollectionToCollection(int parentId, int childId);
 
-        Task<Stream?> GetThumbnail(int movieId);
-        Task SetThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);
+        Task<Stream?> GetMovieThumbnail(int movieId);
+        Task SetCollectionThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);
+        Task<Stream?> GetCollectionThumbnail(int collectionId);
+        Task SetMovieThumbnail(int collectionId, Stream thumbnail, BlobContentType contentType);
     }
 }

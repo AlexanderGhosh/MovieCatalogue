@@ -1,12 +1,52 @@
-﻿<div>
+﻿@using System.Diagnostics.CodeAnalysis
+@using Microsoft.AspNetCore.Mvc
+@using MovieApp.Web.Models
+<div>
     <label>Title</label>
     <InputText @bind-Value="MovieTitle" placeholder="Title" class="form-control mb-2" />
     <label>Movie Content</label>
     <InputFile OnChange="MovieContentChange" accept=".mp4,.m4v" />
-    <button type="button" class="btn btn-primary" @onclick="@AddMovie">
+    <button type="button" class="lcars-button lcars-button-inline lcars-button-centered" @onclick="@AddMovieCB">
         Add
     </button>
-    <button type="button" class="btn btn-primary" @onclick="@Close">
+    <button type="button" class="lcars-button lcars-button-inline lcars-button-centered" @onclick="@Close">
         Close
     </button>
 </div>
+
+
+@code {
+    public record AddMovie(Movie Movie, MovieContent? Content = null);
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+    [BindProperty]
+    public string? MovieTitle { get; set; }
+    private IBrowserFile? _movieContent;
+
+    private async Task AddMovieCB()
+    {
+        AddMovie data = new(MakeMovie(), MakeContent());
+        ModalResult res = ModalResult.Ok(data);
+        await BlazoredModal.CloseAsync(res);
+    }
+
+    private Task Close() => BlazoredModal.CancelAsync();
+
+    [MemberNotNull(nameof(_movieContent))]
+    private void MovieContentChange(InputFileChangeEventArgs args)
+    {
+        _movieContent = args.File;
+    }
+
+    private Movie MakeMovie() => new Movie()
+    {
+        Title = MovieTitle ?? "null title"
+    };
+
+    private MovieContent? MakeContent()
+    {
+        if (_movieContent is null) return null;
+        return new MovieContent(_movieContent);
+    }
+}

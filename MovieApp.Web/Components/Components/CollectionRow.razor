@@ -1,18 +1,30 @@
 ﻿@using MovieApp.Web.Models
 @using MovieApp.Web.Services.Abstractions
 <tr draggable="true"
-@onclick="GotoCollection" 
+    @onclick="GotoCollection" 
     @ondrag="OnDrag"
     @ondrop="OnDropEvent"
     @ondragover:preventDefault="true">
+    @if (ShowThumbnail && Collection.ShowThumbnail)
+    {
+        <td>
+            <div style="display:flex;">
+                <ThumbnailComponent Image="@($"/api/Video/{Collection.Id}/thumbnail?isCollection=true&t={Collection.ThumbnailBlobId}")" Width="90" />
+                <a @onclick="ThumbnailEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </div>
+        </td>
+    }
     <td>
         <h5>@Collection.Name</h5>
-        <p>Movies: @Collection.Movies.Count</p>
+        <p>Items: @(Collection.Movies.Count + Collection.ChildCollections.Count)</p>
     </td>
-    <td>
+    <td class="hide-1100">
         @Collection.AddedOn.ToShortDateString()
     </td>
-    <td @onclick="RemoveCB" @onclick:stopPropagation="true">
+    <td class="hide-1100" />
+    <td @onclick="RemoveCB" @onclick:stopPropagation="true" class="hide-1100">
         <i class="bi bi-x-circle"></i>
     </td>
 </tr>
@@ -20,16 +32,20 @@
 @code {
     private readonly IMovieService _movieService;
     private readonly IDragDropService _dragDropService;
-    
+    private readonly IModalService _modalService;
+
     [Parameter]
     public required MovieCollection Collection { get; init; }
     [Parameter]
     public Func<MovieCollection, Task>? RemoveCollection { get; init; }
     [Parameter]
+    public bool ShowThumbnail { get; set; } = true;
+    [Parameter]
     public Action<object>? OnDropped { get; init; }
 
-    public CollectionRow(IMovieService service, IDragDropService dragDropService)
+    public CollectionRow(IModalService modalService, IMovieService service, IDragDropService dragDropService)
     {
+        _modalService = modalService;
         _movieService = service;
         _dragDropService = dragDropService;
     }
@@ -66,5 +82,22 @@
                 break;
         }
         OnDropped?.Invoke(dropped);
+    }
+
+    async Task ThumbnailEdit()
+    {
+        var parmas = new ModalParameters()
+        {
+            {nameof(ChangeThumbnailModal.Id), Collection.Id},
+            {nameof(ChangeThumbnailModal.Mode), ChangeThumbnailModal.ItemMode.Collection}
+        };
+        var options = new ModalOptions()
+        {
+            Class = "lcars-modal",
+            Position = ModalPosition.TopCenter
+        };
+        var modal = _modalService.Show<ChangeThumbnailModal>(parmas, options);
+        await modal.Result;
+        StateHasChanged();
     }
 }

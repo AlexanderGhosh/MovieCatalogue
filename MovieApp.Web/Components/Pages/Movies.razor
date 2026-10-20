@@ -4,85 +4,66 @@
 @using MovieApp.Web.Models
 @inject IJSRuntime JS
 
-<PageTitle>Movies</PageTitle>
+<div>
+    <PageTitle>Movies</PageTitle>
 
-<h1>Movies</h1>
+    <h1>Movies</h1>
 
-<div class="d-flex align-items-center mb-3">
-    <button type="button" class="btn btn-primary" @onclick="@AddMovie">
-        Add Movie
-    </button>
+    <div>
+        <button type="button" @onclick="@AddMovie" class="lcars-button lcars-button-inline">
+            Add Movie
+        </button>
+        <span class="hop"/>
+        @if (_creatingCollection)
+        {
+            <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
+                   class="form-control form-control-sm d-inline w-auto ms-3" placeholder="Collection name" />
+            <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveCollection" title="Create">
+                <i class="bi bi-check-circle-fill"></i>
+            </button>
+            <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelCreateCollection" title="Cancel">
+                <i class="bi bi-x-circle-fill"></i>
+            </button>
+        }
+        else
+        {
+            <button type="button" @onclick="StartCreateCollection" class="lcars-button lcars-button-inline">
+                New Collection
+            </button>
+        }
+    </div>
 
-    @if (_creatingCollection)
-    {
-        <input @bind="_newCollectionName" @bind:event="oninput" @onkeydown="OnCollectionKeyDown"
-               class="form-control form-control-sm d-inline w-auto ms-3" placeholder="Collection name" />
-        <button type="button" class="btn btn-link p-0 ms-2" @onclick="SaveCollection" title="Create">
-            <i class="bi bi-check-circle-fill"></i>
-        </button>
-        <button type="button" class="btn btn-link p-0 ms-1 text-danger" @onclick="CancelCreateCollection" title="Cancel">
-            <i class="bi bi-x-circle-fill"></i>
-        </button>
-    }
-    else
-    {
-        <button type="button" class="btn btn-outline-primary ms-2" @onclick="StartCreateCollection">
-            New Collection
-        </button>
-    }
+    <div class="table-scroll">
+        <table class="table-bluey">
+            <thead>
+                <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th class="hide-1100">Added on</th>
+                    <th class="hide-1100">Download</th>
+                    <th class="hide-1100">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    @if (item is MovieCollection collection)
+                    {
+                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" RemoveCollection="RemoveCollection" />
+                    }
+                    else if (item is Movie movie)
+                    {
+                        <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<table class="table align-middle">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>AddedOn</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Items)
-        {
-            @if (item is MovieCollection collection)
-            {
-                <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" />
-            }
-            else if (item is Movie movie)
-            {
-                <MovieRow Movie="movie" RemoveMovie="DeleteMovie" />
-            }
-        }
-    </tbody>
-</table>
-
 @code {
-    private Dictionary<int, long> thumbVersions = new();
-    private Movie? _editingMovie;
-    private string _newTitle = string.Empty;
-
-    private string ThumbUrl(int id) =>
-    $"/api/Video/{id}/thumbnail?v={(thumbVersions.TryGetValue(id, out var v) ? v : 0)}";
-
-
-    private void StartRename(Movie movie)
+    async Task RemoveCollection(MovieCollection collection)
     {
-        _editingMovie = movie;
-        _newTitle = movie.Title;
-    }
-
-    private void CancelRename()
-    {
-        _editingMovie = null;
-        _newTitle = string.Empty;
-    }
-
-    private async Task SaveRename()
-    {
-        if (_editingMovie is null) return;
-        await RenameMovie(_editingMovie, _newTitle);
-        _editingMovie = null;
-        _newTitle = string.Empty;
+        await _movieSvc.DeleteCollection(collection.Id);
     }
 }
