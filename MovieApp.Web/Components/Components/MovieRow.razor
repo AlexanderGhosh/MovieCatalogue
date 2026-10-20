@@ -1,6 +1,7 @@
 ﻿@using MovieApp.Web.Models;
 @using MovieApp.Web.Services.Abstractions
-<tr @ondrag="OnDrag"
+<tr draggable="true"
+    @ondrag="OnDrag"
     @onclick="WatchMovie">
     @if (ShowThumbnail && Movie.ShowThumbnail)
     {
