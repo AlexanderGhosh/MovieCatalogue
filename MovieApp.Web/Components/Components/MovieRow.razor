@@ -17,7 +17,7 @@
     <td>
         @if (_nameEditing)
         {
-            <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" />
+            <input @bind="_nameEditValue" class="form-control form-control-sm d-inline w-auto" @onkeypress="NameEditKeyPress" @onclick:stopPropagation="true" @onclick:preventDefault="true" />
 
             <a class="btn btn-link p-0 ms-2" @onclick="SaveNameEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true" title="Save">
                 <i class="bi bi-check-circle-fill"></i>

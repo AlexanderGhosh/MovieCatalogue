@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # dvd-rip.sh 
+# dvd-rip.sh --tv -e 4 --l 174
+# dvd-rip.sh --titles "2,3,4,5"
 
 DEVICE="/dev/sr0"
 PRESET="Fast 1080p30"
@@ -63,6 +65,8 @@ while [[ $# -gt 0 ]]; do
             NO_EJECT="true"
             shift
             ;;
+        --titles)
+            TITLE_LIST="$2"
         *)
             echo "Unknown option: $1"
             exit 1
@@ -95,6 +99,17 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
         "$0" -t "$title" -n "$EPISODE_NAME" --no-eject < /dev/null
         (( INDEX++ ))
     done < <(episode_splitter.sh "${SPLITTER_ARGS[@]}")
+    [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
+    [[ "$NO_EJECT" != "true" ]] && eject
+    exit 0
+fi
+
+if [[ -n "$TITLE_LIST" ]]; then
+    IFS="," read -r -a titles <<< "$TITLE_LIST"
+
+    for t in "${numbers[@]}"; do
+      "$0" -t "$t" -n "Title: $EPISODE_NAME" --no-eject < /dev/null
+    done
     [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
