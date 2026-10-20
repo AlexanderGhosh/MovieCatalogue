@@ -109,10 +109,9 @@ fi
 if [[ -n "$TITLE_LIST" ]]; then
     IFS="," read -r -a titles <<< "$TITLE_LIST"
 
-    for t in "${numbers[@]}"; do
+    for t in "${titles[@]}"; do
       "$0" -t "$t" -n "Title: $EPISODE_NAME" --no-eject < /dev/null
     done
-    [[ "$KEEP_OUTPUT" != "true" ]] && rm "$TITLE_FILE"
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
 fi
