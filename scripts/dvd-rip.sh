@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --titles)
             TITLE_LIST="$2"
-            shift
+            shift 2
             ;;
         *)
             echo "Unknown option: $1"
