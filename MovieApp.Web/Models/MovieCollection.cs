@@ -1,6 +1,6 @@
 ﻿namespace MovieApp.Web.Models;
 
-public class MovieCollection
+public class MovieCollection : IMovieItem
 {
     public int Id { get; set; }
 

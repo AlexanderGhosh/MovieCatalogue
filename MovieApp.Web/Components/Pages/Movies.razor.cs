@@ -2,12 +2,21 @@
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using MovieApp.Web.Components.Layout;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
 
 namespace MovieApp.Web.Components.Pages
 {
+    public enum SortOptions
+    {
+        Default,
+        CollectionsOnly,
+        MoviesOnly,
+        AddedOn,
+        Name
+    }
     public partial class Movies(IMovieService _movieSvc) : ComponentBase()
     {
         private Movie[] _movies = [];
@@ -16,17 +25,38 @@ namespace MovieApp.Web.Components.Pages
         private string _newCollectionName = string.Empty;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
+        [CascadingParameter]
+        public MainLayout Layout { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
             _movies = await GetMovies();
             _collections = await GetCollections();
+            Layout.OnClickButton1 = _ => _sortOptions = SortOptions.Default;
+            Layout.OnClickButton2 = _ => _sortOptions = SortOptions.Name;
+            Layout.OnClickButton3 = _ => _sortOptions = SortOptions.AddedOn;
         }
 
-        private IEnumerable<object> Items => _collections
-            .Where(x => x.ParentCollections.Count == 0)
-            .Cast<object>()
-            .Concat(_movies.Where(x => x.Collections.Count == 0));
+        private SortOptions _sortOptions = SortOptions.Default;
+
+        private IEnumerable<IMovieItem> Items
+        {
+            get
+            {
+                var topLevelCollections = (IEnumerable<IMovieItem>)_collections.Where(x => x.ParentCollections.Count == 0);
+                var topLevelMovies = _movies.Where(x => x.Collections.Count == 0);
+                var defaultSort = topLevelCollections.Concat(topLevelMovies);
+                return _sortOptions switch
+                {
+                    SortOptions.Default => defaultSort,
+                    SortOptions.CollectionsOnly => topLevelCollections,
+                    SortOptions.MoviesOnly => topLevelMovies,
+                    SortOptions.AddedOn => defaultSort.OrderBy(x => x.AddedOn),
+                    SortOptions.Name => defaultSort.OrderBy(x => x.Name),
+                    _ => defaultSort,
+                };
+            }
+        }
 
         private void StartCreateCollection()
         {
@@ -80,12 +110,6 @@ namespace MovieApp.Web.Components.Pages
 
             await _movieSvc.UploadMovieAsync(movie, content);
             _movies = await GetMovies();
-        }
-
-        private async Task RenameMovie(Movie movie, string newName)
-        {
-            if (movie.Title == newName) return;
-            await _movieSvc.UpdateMovie(movie.Id, m => m.Title = newName);
         }
 
         private async Task DeleteMovie(Movie movie)

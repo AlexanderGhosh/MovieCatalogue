@@ -10,13 +10,13 @@
 					<button class="panel-3" @onclick="@(() => Navigation.NavigateTo("/"))">
 						01<span class="hop">-LIBRARY</span>
 					</button>
-					<button class="panel-4">
+					<button class="panel-4" @onclick="args => OnClickButton1?.Invoke(args)">
 						04<span class="hop">-041969</span>
 					</button>
-					<button class="panel-5">
+					<button class="panel-5" " @onclick="args => OnClickButton2?.Invoke(args)">
 						05<span class="hop">-1701D</span>
 					</button>
-					<button class="panel-6">
+					<button class="panel-6" " @onclick="args => OnClickButton3?.Invoke(args)">
 						06<span class="hop">-071984</span>
 					</button>
 					<div class="panel-spacer"></div>
@@ -39,9 +39,11 @@
 					<div class="bar-13"></div>
 					<div class="bar-14"></div>
 				</div>
-				<main>
-					@Body
-				</main>
+				<CascadingValue Value="this">
+					<main>
+						@Body
+					</main>
+				</CascadingValue>
 				<footer>
 					<!-- Your copyright information is only a suggestion and you can choose to delete it. -->
 					Content &copy; 2026 Movie Catalogue <br>
@@ -57,6 +59,10 @@
 </div>
 
 @code{
+	public Action<EventArgs>? OnClickButton1 { get; set; }
+	public Action<EventArgs>? OnClickButton2 { get; set; }
+	public Action<EventArgs>? OnClickButton3 { get; set; }
+
 	private readonly IAudioPlayer _audioPlayer;
 	public MainLayout(IAudioPlayer audioPlayer)
 	{

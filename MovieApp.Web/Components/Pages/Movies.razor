@@ -49,7 +49,7 @@
                 {
                     @if (item is MovieCollection collection)
                     {
-                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" RemoveCollection="c => RemoveCollection(c.Id)" />
+                        <CollectionRow Collection="collection" OnDropped="_ => StateHasChanged()" RemoveCollection="RemoveCollection" />
                     }
                     else if (item is Movie movie)
                     {
@@ -62,36 +62,8 @@
 </div>
 
 @code {
-    private Dictionary<int, long> thumbVersions = new();
-    private Movie? _editingMovie;
-    private string _newTitle = string.Empty;
-
-    private string ThumbUrl(int id) =>
-    $"/api/Video/{id}/thumbnail?v={(thumbVersions.TryGetValue(id, out var v) ? v : 0)}";
-
-
-    private void StartRename(Movie movie)
+    async Task RemoveCollection(MovieCollection collection)
     {
-        _editingMovie = movie;
-        _newTitle = movie.Title;
-    }
-
-    private void CancelRename()
-    {
-        _editingMovie = null;
-        _newTitle = string.Empty;
-    }
-
-    private async Task SaveRename()
-    {
-        if (_editingMovie is null) return;
-        await RenameMovie(_editingMovie, _newTitle);
-        _editingMovie = null;
-        _newTitle = string.Empty;
-    }
-
-    async Task RemoveCollection(int id)
-    {
-        await _movieSvc.DeleteCollection(id);
+        await _movieSvc.DeleteCollection(collection.Id);
     }
 }

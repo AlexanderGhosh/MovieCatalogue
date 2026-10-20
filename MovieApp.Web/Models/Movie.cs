@@ -1,6 +1,8 @@
-﻿namespace MovieApp.Web.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public class Movie
+namespace MovieApp.Web.Models;
+
+public class Movie : IMovieItem
 {
     public int Id { get; set; }
     public required string Title { get; set; }
@@ -10,4 +12,6 @@ public class Movie
     public bool ShowThumbnail { get; set; } = false;
     public Guid? ThumbnailBlobId { get; set; }
     public ICollection<MovieCollection> Collections { get; set; } = new HashSet<MovieCollection>();
+    [NotMapped]
+    public string Name => Title;
 }
