@@ -6,7 +6,7 @@
     {
         <td>
             <div style="display:flex;">
-                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail")" Width="90" />
+                <ThumbnailComponent Image="@($"/api/Video/{Movie.Id}/thumbnail?t={Movie.ThumbnailBlobId}")" Width="90" />
                 <a @onclick="ThumbnailEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
@@ -66,7 +66,7 @@
     public Func<Movie, Task>? RemoveMovie { get; init; }
 
     private readonly IModalService _modalSvc;
-    private readonly IMovieService _movieSvc;
+    private readonly IMovieService _movieService;
     private readonly IDragDropService _dragDropService;
     private string _nameEditValue = string.Empty;
     private bool _nameEditing;
@@ -75,7 +75,7 @@
     public MovieRow(IModalService modalService, IMovieService movieService, IDragDropService dragDropService)
     {
         _modalSvc = modalService;
-        _movieSvc = movieService;
+        _movieService = movieService;
         _dragDropService = dragDropService;
     }
 
@@ -103,7 +103,7 @@
     {
         if (_nameEditValue == Movie.Title) return;
         Movie.Title = _nameEditValue;
-        await _movieSvc.UpdateMovie(Movie.Id, m => m.Title = _nameEditValue);
+        await _movieService.UpdateMovie(Movie.Id, m => m.Title = _nameEditValue);
         StateHasChanged();
         EndNameEdit();
     }

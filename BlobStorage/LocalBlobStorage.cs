@@ -35,10 +35,18 @@ namespace BlobStorage
             if (!blobFile.Exists)
                 throw new FileNotFoundException("The blob file cannot be found.", blobPath);
 
+            var stream = new FileStream(
+                blobPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 81920,
+                options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+
             BlobData result = new()
             {
                 MetaData = data,
-                DataStream = blobFile.OpenRead()
+                DataStream = stream
             };
 
             return Task.FromResult(result);

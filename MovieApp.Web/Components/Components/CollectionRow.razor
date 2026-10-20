@@ -9,7 +9,7 @@
     {
         <td>
             <div style="display:flex;">
-                <ThumbnailComponent Image="@($"/api/Video/{Collection.Id}/thumbnail?isCollection=true")" Width="90" />
+                <ThumbnailComponent Image="@($"/api/Video/{Collection.Id}/thumbnail?isCollection=true&t={Collection.ThumbnailBlobId}")" Width="90" />
                 <a @onclick="ThumbnailEdit" @onclick:stopPropagation="true" @onclick:preventDefault="true">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
@@ -33,7 +33,7 @@
     private readonly IMovieService _movieService;
     private readonly IDragDropService _dragDropService;
     private readonly IModalService _modalService;
-    
+
     [Parameter]
     public required MovieCollection Collection { get; init; }
     [Parameter]
