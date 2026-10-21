@@ -19,6 +19,9 @@
 					<button class="panel-6" @onclick="args => OnClickButton3?.Invoke(args)">
 						06<span class="hop">-STARDATE</span>
 					</button>
+					<button class="panel-8" @onclick="args => OnClickButton4?.Invoke(args)">
+						09<span class="hop">-ABOUT</span>
+					</button>
 					<div class="panel-spacer"></div>
 				</div>
 				<div>
@@ -62,6 +65,7 @@
 	public Action<EventArgs>? OnClickButton1 { get; set; }
 	public Action<EventArgs>? OnClickButton2 { get; set; }
 	public Action<EventArgs>? OnClickButton3 { get; set; }
+	public Action<EventArgs>? OnClickButton4 { get; set; }
 
 	private readonly IAudioPlayer _audioPlayer;
 	public MainLayout(IAudioPlayer audioPlayer)

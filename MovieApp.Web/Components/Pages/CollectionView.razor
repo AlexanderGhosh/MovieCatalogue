@@ -41,7 +41,13 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var movie in _collection.Movies)
+                @foreach (var movie in _collection.Movies.OrderBy(x => {
+                    var s = x.Name.Split(" ");
+                    var a = s.FirstOrDefault();
+                    if (a is null) return 1;
+                    var nums = a[1..];
+                    return int.TryParse(nums, out var n) ? n : 1;
+                }))
                 {
                     <MovieRow Movie="movie" ShowThumbnail=@true NameEditable="@true" RemoveMovie="RemoveFromCollection" />
                 }

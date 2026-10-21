@@ -1,0 +1,21 @@
+﻿<input type="text"
+       id="@Id"
+       class="lcars-search lcars-search-inline @CssClass"
+       placeholder="@Placeholder"
+       autocomplete="off"
+       style="@Style"
+       value="@Value"
+       @oninput="OnInput" />
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter] public string Id { get; set; } = "movie-search";
+    [Parameter] public string Placeholder { get; set; } = "SEARCH LIBRARY...";
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Style { get; set; } = "float: right;";
+
+    private Task OnInput(ChangeEventArgs e)
+        => ValueChanged.InvokeAsync(e.Value?.ToString());
+}

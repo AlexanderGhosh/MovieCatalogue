@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Layout;
 using MovieApp.Web.Components.Modals;
+using MovieApp.Web.Extensions;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
 
@@ -23,6 +24,9 @@ namespace MovieApp.Web.Components.Pages
         private MovieCollection[] _collections = [];
         private bool _creatingCollection;
         private string _newCollectionName = string.Empty;
+        private SortOptions _sortOptions = SortOptions.Default;
+        private bool _reverseOrder = false;
+        private string _searchString = string.Empty;
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
         [CascadingParameter]
@@ -35,9 +39,9 @@ namespace MovieApp.Web.Components.Pages
             Layout.OnClickButton1 = _ => _sortOptions = SortOptions.Default;
             Layout.OnClickButton2 = _ => _sortOptions = SortOptions.Name;
             Layout.OnClickButton3 = _ => _sortOptions = SortOptions.AddedOn;
+            Layout.OnClickButton4 = _ => _reverseOrder ^= true;
         }
 
-        private SortOptions _sortOptions = SortOptions.Default;
 
         private IEnumerable<IMovieItem> Items
         {
@@ -45,14 +49,16 @@ namespace MovieApp.Web.Components.Pages
             {
                 var topLevelCollections = (IEnumerable<IMovieItem>)_collections.Where(x => x.ParentCollections.Count == 0);
                 var topLevelMovies = _movies.Where(x => x.Collections.Count == 0);
-                var defaultSort = topLevelCollections.Concat(topLevelMovies);
+                var defaultSort = _reverseOrder
+                    ? topLevelMovies.Concat(topLevelCollections)
+                    : topLevelCollections.Concat(topLevelMovies);
                 return _sortOptions switch
                 {
                     SortOptions.Default => defaultSort,
                     SortOptions.CollectionsOnly => topLevelCollections,
                     SortOptions.MoviesOnly => topLevelMovies,
-                    SortOptions.AddedOn => defaultSort.OrderBy(x => x.AddedOn),
-                    SortOptions.Name => defaultSort.OrderBy(x => x.Name),
+                    SortOptions.AddedOn => defaultSort.OrderBy(x => x.AddedOn, _reverseOrder),
+                    SortOptions.Name => defaultSort.OrderBy(x => x.Name, _reverseOrder),
                     _ => defaultSort,
                 };
             }

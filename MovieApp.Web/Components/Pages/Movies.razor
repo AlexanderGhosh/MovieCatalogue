@@ -31,6 +31,14 @@
                 New Collection
             </button>
         }
+        <input 
+            type="text" id="movie-search" 
+            class="lcars-search lcars-search-inline"
+            placeholder="SEARCH LIBRARY..." 
+            autocomplete="off" 
+               style="float: right;"
+            @bind="_searchString" 
+            @bind:event="oninput">
     </div>
 
     <div class="table-scroll">
@@ -45,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Items)
+                @foreach (var item in string.IsNullOrWhiteSpace(_searchString) ? Items : Items.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase)))
                 {
                     @if (item is MovieCollection collection)
                     {
