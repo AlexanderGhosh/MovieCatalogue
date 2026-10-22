@@ -31,14 +31,9 @@
                 New Collection
             </button>
         }
-        <input 
-            type="text" id="movie-search" 
-            class="lcars-search lcars-search-inline"
-            placeholder="SEARCH LIBRARY..." 
-            autocomplete="off" 
-               style="float: right;"
-            @bind="_searchString" 
-            @bind:event="oninput">
+        <SearchBar 
+            Placeholder="SEARCH LIBRARY..."
+            @bind-Value="_searchString"/>
     </div>
 
     <div class="table-scroll">

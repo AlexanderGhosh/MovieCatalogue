@@ -1,5 +1,6 @@
 ﻿@using MovieApp.Web.Models
 @using MovieApp.Web.Services.Abstractions
+@inject IJSRuntime JS
 <tr draggable="true"
     @onclick="GotoCollection" 
     @ondrag="OnDrag"
@@ -23,7 +24,16 @@
     <td class="hide-1100">
         @Collection.AddedOn.ToShortDateString()
     </td>
-    <td class="hide-1100" />
+    @if(Collection.Movies.Count == 0)
+    {
+        <td class="hide-1100"/>
+    }
+    else
+    {
+        <td class="hide-1100" @onclick="DownloadCollectionMovies" @onclick:stopPropagation="true">
+            <i class="bi bi-download"></i>
+        </td>
+    }
     <td @onclick="RemoveCB" @onclick:stopPropagation="true" class="hide-1100">
         <i class="bi bi-x-circle"></i>
     </td>
@@ -99,5 +109,19 @@
         var modal = _modalService.Show<ChangeThumbnailModal>(parmas, options);
         await modal.Result;
         StateHasChanged();
+    }
+
+    async Task DownloadCollectionMovies()
+    {
+        foreach (var movie in Collection.Movies)
+        {
+            var content = await _movieService.GetMovieContent(movie.Id);
+            if (content is null) continue;
+            using var stream = content.Stream;
+            using var streamRef = new DotNetStreamReference(stream);
+
+            var fileName = Path.ChangeExtension(movie!.Title, "mp4");
+            await JS.InvokeVoidAsync("fileHelper.downloadFromStream", fileName, streamRef);
+        }
     }
 }

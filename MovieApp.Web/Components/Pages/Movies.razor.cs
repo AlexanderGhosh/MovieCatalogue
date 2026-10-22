@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MovieApp.Web.Components.Layout;
 using MovieApp.Web.Components.Modals;
 using MovieApp.Web.Extensions;
+using MovieApp.Web.Helpers;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
 
@@ -48,7 +49,7 @@ namespace MovieApp.Web.Components.Pages
             get
             {
                 var topLevelCollections = (IEnumerable<IMovieItem>)_collections.Where(x => x.ParentCollections.Count == 0);
-                var topLevelMovies = _movies.Where(x => x.Collections.Count == 0);
+                var topLevelMovies = _movies.Where(x => x.Collections.Count == 0).OrderBy(SortingOperations.OrderByEpisode);
                 var defaultSort = _reverseOrder
                     ? topLevelMovies.Concat(topLevelCollections)
                     : topLevelCollections.Concat(topLevelMovies);
