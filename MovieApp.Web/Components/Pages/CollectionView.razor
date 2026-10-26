@@ -81,7 +81,16 @@ else
     private SortOptions _sortOptions = SortOptions.Default;
     private bool _reverseOrder = false;
 
-    private MovieCollection? _collection;
+    private MovieCollection? _collection{
+        get
+        {
+            lock (_movieService)
+            {
+                field ??= _movieService.GetCollection(CollectionId).GetAwaiter().GetResult()!;
+            }
+            return field;
+        }
+    }
     private readonly IMovieService _movieService;
 
     private IEnumerable<IMovieItem> Items
@@ -119,12 +128,6 @@ else
         Layout.OnClickButton2 = _ => _sortOptions = SortOptions.Name;
         Layout.OnClickButton3 = _ => _sortOptions = SortOptions.AddedOn;
         Layout.OnClickButton4 = _ => _reverseOrder ^= true;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        _collection = (await _movieService.GetCollection(CollectionId))!;
-        await base.OnParametersSetAsync();
     }
 
     private async Task RemoveFromCollection(Movie movie)

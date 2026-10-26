@@ -19,7 +19,7 @@ namespace MovieApp.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddDbContext<MovieAppContext>(o =>
+            builder.Services.AddDbContextFactory<MovieAppContext>(o =>
             {
                 o.UseSqlServer(builder.Configuration.GetConnectionString(nameof(MovieAppContext)));
             });
