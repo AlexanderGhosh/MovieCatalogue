@@ -2,7 +2,12 @@
 @using MovieApp.Web.Models;
 @using MovieApp.Web.Services.Abstractions
 @page "/Movie/{MovieId:int}"
-<PageTitle>@_movie!.Title</PageTitle>
+@if(_movie is null)
+{
+    <Loading/>
+}
+
+<PageTitle>@_movie?.Title</PageTitle>
 <style>
     .primary{
         display: grid ;
@@ -14,8 +19,8 @@
     <div class="primary">
         <MoviePlayer MovieId="@MovieId" />
         <div>
-            <p style="color: white;">@_movie!.Title</p>
-            <p style="color: mediumpurple;">@_movie!.Description</p>
+            <p style="color: white;">@_movie?.Title</p>
+            <p style="color: mediumpurple;">@_movie?.Description</p>
         </div>
     </div>
 </div>
@@ -25,18 +30,16 @@
     private Movie? _movie;
 
     [Parameter]
-    public required int MovieId
-    {
-        get;
-        init
-        {
-            field = value;
-            _movie = _movieService.GetMovie(value).GetAwaiter().GetResult();
-        }
-    }
+    public required int MovieId { get; set; }
 
     public MovieView(IMovieService movieService)
     {
         _movieService = movieService;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _movie = await _movieService.GetMovie(MovieId);
+        await base.OnInitializedAsync();
     }
 }

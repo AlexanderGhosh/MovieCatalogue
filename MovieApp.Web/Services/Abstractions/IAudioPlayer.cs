@@ -7,8 +7,8 @@ namespace MovieApp.Web.Services.Abstractions
     {
         Task LoadAudio();
         Task<int> PlayAudio(int audioId);
+        Task<int> PlayRandomAudio();
         Task StopAudio(int playId);
         Task<IEnumerable<AudioFileInfo>> GetAllAudioFiles();
-        int Count { get; }
     }
 }

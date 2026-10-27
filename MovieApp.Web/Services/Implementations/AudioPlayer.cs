@@ -20,14 +20,6 @@ namespace MovieApp.Web.Services.Implementations
         private readonly IJSRuntime _jsRuntime = jsRuntime;
         private readonly IWebHostEnvironment _env = env;
         private bool _loaded = false;
-        public int Count
-        {
-            get
-            {
-                TryLoad().GetAwaiter().GetResult();
-                return _audioElements.Count;
-            }
-        }
 
         // Scans wwwroot/audio for .mp3 and .wav files (top-level only) and registers them.
         public async Task LoadAudio()
@@ -68,6 +60,13 @@ namespace MovieApp.Web.Services.Implementations
             var playId = Interlocked.Increment(ref _playCounter);
             _audioPlays.Add(new(playId, audio));
             return playId;
+        }
+
+        public async Task<int> PlayRandomAudio()
+        {
+            await TryLoad();
+            var rand = Random.Shared.Next(0, _audioElements.Count);
+            return await PlayAudio(rand);
         }
 
         public async Task StopAudio(int playId)

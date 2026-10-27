@@ -12,8 +12,7 @@
 
 @if(_collection is null)
 {
-    <PageTitle>Loading...</PageTitle>
-    <p>Loading...</p>
+    <Loading />
 }
 else
 {
@@ -31,8 +30,8 @@ else
             Add
         </button>
 
-        <SearchBar Placeholder="SEARCH LIBRARY..."
-                   @bind-Value="_searchString" />
+      @*   <SearchBar Placeholder="SEARCH LIBRARY..."
+                   @bind-Value="_searchString" /> *@
     </div>
     <div class="table-scroll">
         <table class="table-bluey">
@@ -46,7 +45,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in string.IsNullOrWhiteSpace(_searchString) ? Items : Items.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase)))
+@*                 @foreach (var item in string.IsNullOrWhiteSpace(_searchString) ? Items : Items.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase)))
                 {
                     @if (item is MovieCollection collection)
                     {
@@ -56,7 +55,7 @@ else
                     {
                         <MovieRow Movie="movie" RemoveMovie="RemoveFromCollection" NameEditable="true" />
                     }
-                }
+                } *@
                 @foreach (var movie in _collection.Movies.OrderBy(SortingOperations.OrderByEpisode))
                 {
                     <MovieRow Movie="movie" ShowThumbnail=@true NameEditable="@true" RemoveMovie="RemoveFromCollection" />
@@ -81,32 +80,22 @@ else
     private SortOptions _sortOptions = SortOptions.Default;
     private bool _reverseOrder = false;
 
-    private MovieCollection? _collection{
-        get
-        {
-            lock (_movieService)
-            {
-                field ??= _movieService.GetCollection(CollectionId).GetAwaiter().GetResult()!;
-            }
-            return field;
-        }
-    }
+    private MovieCollection? _collection;
     private readonly IMovieService _movieService;
-
+    private IEnumerable<IMovieItem> _topLevelMovies;
+    private IEnumerable<IMovieItem> _topLevelCollections;
     private IEnumerable<IMovieItem> Items
     {
         get
         {
-            var topLevelCollections = (IEnumerable<IMovieItem>)_movieService.GetAllCollectionsAsync().GetAwaiter().GetResult().Where(x => x.ParentCollections.Count == 0);
-            var topLevelMovies = _movieService.GetAllMoviesAsync().GetAwaiter().GetResult().Where(x => x.Collections.Count == 0).OrderBy(SortingOperations.OrderByEpisode);
             var defaultSort = _reverseOrder
-                ? topLevelMovies.Concat(topLevelCollections)
-                : topLevelCollections.Concat(topLevelMovies);
+                ? _topLevelMovies.Concat(_topLevelCollections)
+                : _topLevelCollections.Concat(_topLevelMovies);
             return _sortOptions switch
             {
                 SortOptions.Default => defaultSort,
-                SortOptions.CollectionsOnly => topLevelCollections,
-                SortOptions.MoviesOnly => topLevelMovies,
+                SortOptions.CollectionsOnly => _topLevelCollections,
+                SortOptions.MoviesOnly => _topLevelMovies,
                 SortOptions.AddedOn => defaultSort.OrderBy(x => x.AddedOn, _reverseOrder),
                 SortOptions.Name => defaultSort.OrderBy(x => x.Name, _reverseOrder),
                 _ => defaultSort,
@@ -118,6 +107,8 @@ else
     {
         _movieService = movieService;
         _available = [];
+        _topLevelMovies = [];
+        _topLevelCollections = [];
     }
 
     protected override async Task OnInitializedAsync()
@@ -128,6 +119,14 @@ else
         Layout.OnClickButton2 = _ => _sortOptions = SortOptions.Name;
         Layout.OnClickButton3 = _ => _sortOptions = SortOptions.AddedOn;
         Layout.OnClickButton4 = _ => _reverseOrder ^= true;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _collection = (await _movieService.GetCollection(CollectionId))!;
+        _topLevelMovies = (await _movieService.GetAllMoviesAsync()).Where(x => x.Collections.Count == 0).OrderBy(SortingOperations.OrderByEpisode);
+        _topLevelCollections = (await _movieService.GetAllCollectionsAsync()).Where(x => x.ParentCollections.Count == 0);
+        await base.OnParametersSetAsync();
     }
 
     private async Task RemoveFromCollection(Movie movie)

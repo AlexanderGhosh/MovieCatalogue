@@ -75,8 +75,7 @@
 
 	public async Task PlayRandomAudio()
 	{
-		var rand = Random.Shared.Next(0, _audioPlayer.Count);
-		await _audioPlayer.PlayAudio(rand);
+		await _audioPlayer.PlayRandomAudio();
 	}
 
 	public async Task PlayAudio(int id)
