@@ -73,7 +73,7 @@ namespace MovieApp.Web.Controllers
 
         private Thumbnail GetDefaultThumbnail()
         {
-            var image = webHost.ContentRootFileProvider.GetFileInfo(DEFAULT_IMAGE);
+            var image = webHost.WebRootFileProvider.GetFileInfo(DEFAULT_IMAGE);
             var stream = image.CreateReadStream();
             var contentType = BlobContentTypes.GetContentType(Path.GetExtension(DEFAULT_IMAGE));
             return new(stream, contentType);
