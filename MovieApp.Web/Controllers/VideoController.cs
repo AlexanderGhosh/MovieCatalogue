@@ -1,5 +1,6 @@
 ﻿using BlobStorage;
 using Microsoft.AspNetCore.Mvc;
+using MovieApp.Web.Extensions;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
 
@@ -65,6 +66,8 @@ namespace MovieApp.Web.Controllers
             var thumbnail = isCollection
                 ? await _movieSvc.GetCollectionThumbnail(videoId)
                 : await _movieSvc.GetMovieThumbnail(videoId);
+            if (thumbnail?.Stream?.IsEmptyOrDefault() is not true)
+                thumbnail = null;
             var stream = thumbnail ?? GetDefaultThumbnail();
 
             return File(stream.Stream, stream.ContentType);
