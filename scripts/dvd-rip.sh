@@ -10,6 +10,7 @@ OUTPUT="/tmp/tmp $RANDOM.mp4"
 KEEP_OUTPUT="false"
 EPISODE_LENGTH_TOLERANCE="5"
 PICKED_EPISODE=0
+TITLE_OFFSET=0
 
 log() {
     [[ "$VERBOSE" == "true" ]] && echo "$1"
@@ -69,6 +70,10 @@ while [[ $# -gt 0 ]]; do
             TITLE_LIST="$2"
             shift 2
             ;;
+        --title-offset)
+            TITLE_OFFSET="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown option: $1"
             exit 1
@@ -110,7 +115,7 @@ if [[ -n "$TITLE_LIST" ]]; then
     IFS="," read -r -a titles <<< "$TITLE_LIST"
 
     for t in "${titles[@]}"; do
-      "$0" -t "$t" -n "Title: $t" --no-eject < /dev/null
+      "$0" -t "$t" -n "Title: $((TITLE_OFFSET + t))" --no-eject < /dev/null
     done
     [[ "$NO_EJECT" != "true" ]] && eject
     exit 0
