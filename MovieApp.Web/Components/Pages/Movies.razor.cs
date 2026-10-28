@@ -50,9 +50,8 @@ namespace MovieApp.Web.Components.Pages
             {
                 var topLevelCollections = (IEnumerable<IMovieItem>)_collections.Where(x => x.ParentCollections.Count == 0);
                 var topLevelMovies = _movies.Where(x => x.Collections.Count == 0).OrderBy(SortingOperations.OrderByEpisode);
-                var defaultSort = _reverseOrder
-                    ? topLevelMovies.Concat(topLevelCollections)
-                    : topLevelCollections.Concat(topLevelMovies);
+                var defaultSort = topLevelCollections.Concat(topLevelMovies);
+                defaultSort = _reverseOrder ? defaultSort.Reverse() : defaultSort;
                 return _sortOptions switch
                 {
                     SortOptions.Default => defaultSort,
