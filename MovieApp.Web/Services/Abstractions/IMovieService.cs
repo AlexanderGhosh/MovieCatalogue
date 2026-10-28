@@ -1,5 +1,4 @@
-﻿using BlobStorage;
-using MovieApp.Web.Models;
+﻿using MovieApp.Web.Models;
 
 namespace MovieApp.Web.Services.Abstractions
 {
@@ -25,9 +24,9 @@ namespace MovieApp.Web.Services.Abstractions
         Task RemoveCollectionFromCollection(int childId, int parentId);
         Task AddCollectionToCollection(int parentId, int childId);
 
-        Task<Stream?> GetMovieThumbnail(int movieId);
-        Task SetCollectionThumbnail(int movieId, Stream thumbnail, BlobContentType contentType);
-        Task<Stream?> GetCollectionThumbnail(int collectionId);
-        Task SetMovieThumbnail(int collectionId, Stream thumbnail, BlobContentType contentType);
+        Task<Thumbnail?> GetMovieThumbnail(int movieId);
+        Task SetCollectionThumbnail(int movieId, Thumbnail thumbnail);
+        Task<Thumbnail?> GetCollectionThumbnail(int collectionId);
+        Task SetMovieThumbnail(int collectionId, Thumbnail thumbnail);
     }
 }

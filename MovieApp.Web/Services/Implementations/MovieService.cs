@@ -198,24 +198,24 @@ namespace MovieApp.Web
             await context.SaveChangesAsync();
         }
 
-        public async Task<Stream?> GetMovieThumbnail(int movieId)
+        public async Task<Thumbnail?> GetMovieThumbnail(int movieId)
         {
             await using var context = await GetContext();
             var movie = await context.Movies.FindAsync(movieId);
             if (movie?.ThumbnailBlobId is null) return null;
 
             var thumbnail = await blobStorage.DownloadAsync(movie.ThumbnailBlobId.Value);
-            return thumbnail.DataStream;
+            return thumbnail.DataStream is null ? null : new(thumbnail.DataStream, thumbnail.MetaData.ContentType);
         }
 
-        public async Task SetMovieThumbnail(int movieId, Stream thumbnail, BlobContentType contentType)
+        public async Task SetMovieThumbnail(int movieId, Thumbnail thumbnail)
         {
             await using var context = await GetContext();
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
 
             var oldBlobId = movie.ThumbnailBlobId;
-            var newBlobId = await blobStorage.UploadAsync(thumbnail, new() { ContentType = contentType });
+            var newBlobId = await blobStorage.UploadAsync(thumbnail.Stream, new() { ContentType = thumbnail.ContentType });
             movie.ThumbnailBlobId = newBlobId;
 
             try
@@ -232,24 +232,24 @@ namespace MovieApp.Web
                 await blobStorage.DeleteAsync(oldBlobId.Value);
         }
 
-        public async Task<Stream?> GetCollectionThumbnail(int collectionId)
+        public async Task<Thumbnail?> GetCollectionThumbnail(int collectionId)
         {
             await using var context = await GetContext();
             var collection = await context.Collections.FindAsync(collectionId);
             if (collection?.ThumbnailBlobId is null) return null;
 
             var thumbnail = await blobStorage.DownloadAsync(collection.ThumbnailBlobId.Value);
-            return thumbnail.DataStream;
+            return thumbnail.DataStream is null ? null : new(thumbnail.DataStream, thumbnail.MetaData.ContentType);
         }
 
-        public async Task SetCollectionThumbnail(int collectionId, Stream thumbnail, BlobContentType contentType)
+        public async Task SetCollectionThumbnail(int collectionId, Thumbnail thumbnail)
         {
             await using var context = await GetContext();
             var collection = await context.Collections.FindAsync(collectionId);
             if (collection is null) return;
             if (collection.ThumbnailBlobId is not null)
                 await blobStorage.DeleteAsync(collection.ThumbnailBlobId.Value);
-            var id = await blobStorage.UploadAsync(thumbnail, new() { ContentType = contentType });
+            var id = await blobStorage.UploadAsync(thumbnail.Stream, new() { ContentType = thumbnail.ContentType });
             collection.ThumbnailBlobId = id;
             await context.SaveChangesAsync();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlobStorage;
+using Microsoft.AspNetCore.Mvc;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
 
@@ -7,9 +8,11 @@ namespace MovieApp.Web.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class VideoController(IMovieService movieSvc) : ControllerBase
+    public class VideoController(IMovieService movieSvc, IWebHostEnvironment webHost) : ControllerBase
     {
         private readonly IMovieService _movieSvc = movieSvc;
+        private const string DEFAULT_IMAGE = "missing_thumbnail.png";
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideo(int id, [FromQuery] bool download = false)
@@ -59,14 +62,21 @@ namespace MovieApp.Web.Controllers
         [HttpGet("{videoId}/thumbnail")]
         public async Task<IActionResult> GetVideoThumbnail(int videoId, [FromQuery] bool isCollection = false)
         {
-            var stream = isCollection
+            var thumbnail = isCollection
                 ? await _movieSvc.GetCollectionThumbnail(videoId)
                 : await _movieSvc.GetMovieThumbnail(videoId);
 
-            if (stream is null)
-                return NotFound();
+            thumbnail ??= GetDefaultThumbnail();
 
-            return File(stream, "image/jpeg");
+            return File(thumbnail.Stream, thumbnail.ContentType);
+        }
+
+        private Thumbnail GetDefaultThumbnail()
+        {
+            var image = webHost.ContentRootFileProvider.GetFileInfo(DEFAULT_IMAGE);
+            var stream = image.CreateReadStream();
+            var contentType = BlobContentTypes.GetContentType(Path.GetExtension(DEFAULT_IMAGE));
+            return new(stream, contentType);
         }
     }
 }
