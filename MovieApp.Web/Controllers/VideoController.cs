@@ -65,10 +65,9 @@ namespace MovieApp.Web.Controllers
             var thumbnail = isCollection
                 ? await _movieSvc.GetCollectionThumbnail(videoId)
                 : await _movieSvc.GetMovieThumbnail(videoId);
+            var stream = thumbnail ?? GetDefaultThumbnail();
 
-            thumbnail ??= GetDefaultThumbnail();
-
-            return File(thumbnail.Stream, thumbnail.ContentType);
+            return File(stream.Stream, stream.ContentType);
         }
 
         private Thumbnail GetDefaultThumbnail()
