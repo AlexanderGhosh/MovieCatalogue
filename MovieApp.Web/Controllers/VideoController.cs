@@ -66,7 +66,7 @@ namespace MovieApp.Web.Controllers
             var thumbnail = isCollection
                 ? await _movieSvc.GetCollectionThumbnail(videoId)
                 : await _movieSvc.GetMovieThumbnail(videoId);
-            if (thumbnail?.Stream?.IsEmptyOrDefault() is not true)
+            if (thumbnail?.Stream?.IsEmptyOrDefault() is true)
                 thumbnail = null;
             var stream = thumbnail ?? GetDefaultThumbnail();
 
