@@ -4,9 +4,11 @@
 # dvd-rip.sh --tv -e 4 --l 174
 # dvd-rip.sh --titles "2,3,4,5"
 
+RUN_NAME=$RANDOM
+
 DEVICE="/dev/sr0"
 PRESET="Fast 1080p30"
-OUTPUT="/tmp/tmp $RANDOM.mp4"
+OUTPUT="/tmp/video $RUN_NAME.mp4"
 KEEP_OUTPUT="false"
 EPISODE_LENGTH_TOLERANCE="5"
 PICKED_EPISODE=0
@@ -16,7 +18,9 @@ log() {
     [[ "$VERBOSE" == "true" ]] && echo "$1"
 }
 
+ACCUMILATED_ARGS=""
 while [[ $# -gt 0 ]]; do
+    LAST_ARG="$1"
     case $1 in
         -s|--subtitle|--subtitles)
             HAS_SUBTITLES=true
@@ -78,14 +82,21 @@ while [[ $# -gt 0 ]]; do
             SCAN=1
             shift 1
             ;;
+        -d|--detached)
+            $DETACHED=1
+            shift 1#
+            continue
         *)
             echo "Unknown option: $1"
             exit "1"
             ;;
     esac
+    ACCUMILATED_ARGS += "$LAST_ARG"
 done
 
-if [[ "$SCAN" == "1" ]]; then
+[[ -z "$DETACHED" ]] && nohup "$0 $ACCUMILATED_ARGS" >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
+
+if [[ "$SCAN" == 1 ]]; then
     if [[ -z "$BEST_TITLE" ]]; then
         HandBrakeCLI --scan -t "$BEST_TITLE" -i "$DEVICE"
     else
@@ -102,7 +113,7 @@ if [[ "$IS_TV_SHOW" == "true" ]]; then
         exit 1
     fi
     log "Is a TV show with total runtime $TOTAL_RUNTIME and total episodes $TOTAL_EPISODES"
-    TITLE_FILE="/tmp/tmp $RANDOM.json"
+    TITLE_FILE="/tmp/title $RUN_NAME.json"
     ARGS=(-i "$DEVICE" -t 0 --scan --json)
     [[ -z "$KEEP_OUTPUT" ]] && ARGS+=(-k)
     HandBrakeCLI "${ARGS[@]}" 2>/dev/null | sed -n '/^JSON Title Set:/,$p' | sed 's/^JSON Title Set: //' > "$TITLE_FILE"
