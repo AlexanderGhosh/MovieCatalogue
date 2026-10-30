@@ -86,6 +86,7 @@ while [[ $# -gt 0 ]]; do
             $DETACHED=1
             shift 1#
             continue
+            ;;
         *)
             echo "Unknown option: $1"
             exit "1"
