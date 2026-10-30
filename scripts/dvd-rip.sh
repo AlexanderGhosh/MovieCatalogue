@@ -84,7 +84,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -d|--detached)
             $DETACHED=1
-            shift 1#
+            shift 1
             continue
             ;;
         *)
