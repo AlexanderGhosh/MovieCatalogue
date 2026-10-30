@@ -49,7 +49,8 @@ namespace MovieApp.Web.Controllers
             var id = Convert.ToBase64String(Guid.NewGuid().ToByteArray()); ;
             var movie = new Movie()
             {
-                Title = name ?? $"Movie {id}"
+                Title = name ?? $"Movie {id}",
+                ShowThumbnail = true
             };
 
             var content = new MovieContent()

@@ -74,12 +74,25 @@ while [[ $# -gt 0 ]]; do
             TITLE_OFFSET="$2"
             shift 2
             ;;
+        --scan)
+            SCAN=1
+            shift 1
+            ;;
         *)
             echo "Unknown option: $1"
-            exit 1
+            exit "1"
             ;;
     esac
 done
+
+if [[ "$SCAN" == "1" ]]; then
+    if [[ -z "$BEST_TITLE" ]]; then
+        HandBrakeCLI --scan -t "$BEST_TITLE" -i "$DEVICE"
+    else
+        HandBrakeCLI --scan -t 0 -i "$DEVICE"
+    fi
+    exit 1
+fi
 
 [[ -z "$DVD_NAME" ]] && DVD_NAME=$(lsblk -n -o LABEL $DEVICE | tr '[:upper:]' '[:lower:]' | tr '_' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')
 
