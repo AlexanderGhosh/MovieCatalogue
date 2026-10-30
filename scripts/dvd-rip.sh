@@ -83,7 +83,7 @@ while [[ $# -gt 0 ]]; do
             shift 1
             ;;
         -d|--detached)
-            $DETACHED=1
+            DETACHED=1
             shift 1
             continue
             ;;
@@ -95,7 +95,7 @@ while [[ $# -gt 0 ]]; do
     ACCUMILATED_ARGS += "$LAST_ARG"
 done
 
-[[ -z "$DETACHED" ]] && nohup "$0 $ACCUMILATED_ARGS" >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
+[[ -n "$DETACHED" ]] && nohup "$0 $ACCUMILATED_ARGS" >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
 
 if [[ "$SCAN" == 1 ]]; then
     if [[ -z "$BEST_TITLE" ]]; then
