@@ -15,7 +15,7 @@ PICKED_EPISODE=0
 TITLE_OFFSET=0
 
 log() {
-    [[ "$VERBOSE" == "true" ]] && echo "$1"
+    [[ "$VERBOSE" == "true" ]] && echo "LOG: $1"
 }
 
 ACCUMILATED_ARGS=""
@@ -94,8 +94,9 @@ while [[ $# -gt 0 ]]; do
     esac
     ACCUMILATED_ARGS+=" $LAST_ARG"
 done
-
+log "Run Name: $RUN_NAME"
 if [[ -n "$DETACHED" ]]; then
+    log "Running Detached"
     nohup "$0" $ACCUMILATED_ARGS >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
     exit 1
 fi
