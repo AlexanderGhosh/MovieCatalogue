@@ -102,6 +102,7 @@ namespace MovieApp.Web
             await using var context = await GetContext();
             return await context.Collections
                 .Include(x => x.Movies)
+                .Include(x => x.ChildCollections).ThenInclude(x => x.Movies)
                 .Include(x => x.ChildCollections).ThenInclude(x => x.ChildCollections)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.Id == collectionId);
