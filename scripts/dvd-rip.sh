@@ -18,9 +18,8 @@ log() {
     [[ "$VERBOSE" == "true" ]] && echo "LOG: $1"
 }
 
-ACCUMILATED_ARGS=""
+ORIGINAL_ARGS=("$@")
 while [[ $# -gt 0 ]]; do
-    LAST_ARG="$1"
     case $1 in
         -s|--subtitle|--subtitles)
             HAS_SUBTITLES=true
@@ -92,12 +91,16 @@ while [[ $# -gt 0 ]]; do
             exit "1"
             ;;
     esac
-    ACCUMILATED_ARGS+=" $LAST_ARG"
 done
+
 log "Run Name: $RUN_NAME"
 if [[ -n "$DETACHED" ]]; then
-    log "Running Detached"
-    nohup "$0" $ACCUMILATED_ARGS >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
+    log "Running Detached"    
+    CHILD_ARGS=()
+    for a in "${ORIGINAL_ARGS[@]}"; do
+        [[ "$a" != "-d" && "$a" != "--detached" ]] && CHILD_ARGS+=("$a")
+    done
+    nohup "$0" "${CHILD_ARGS[@]}" >"/tmp/log $RUN_NAME.log" 2>&1 </dev/null &
     exit 1
 fi
 
