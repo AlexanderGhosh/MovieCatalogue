@@ -76,30 +76,47 @@ window.videoInterop.getDuration = async (video) => {
 };
 
 (function () {
-    var scrollStep = 0;
+    var ZONE = 150;        // px from edge where scrolling starts
+    var MIN_SPEED = 2;     // px per tick at the zone boundary
+    var MAX_SPEED = 30;    // px per tick at the very edge, fully ramped
+    var RAMP_MS = 1000;    // time to reach full speed while held in the zone
+
+    var direction = 0;     // -1 up, 1 down, 0 stopped
+    var depth = 0;         // 0..1, how far into the zone the pointer is
+    var holdStart = 0;     // when the pointer entered the zone
     var timer = null;
 
     function tick() {
-        if (scrollStep === 0) { timer = null; return; }
-        window.scrollBy(0, scrollStep);
-        timer = setTimeout(tick, 20);
+        if (direction === 0) { timer = null; return; }
+
+        var held = Math.min((performance.now() - holdStart) / RAMP_MS, 1);
+        var speed = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * depth * (0.3 + 0.7 * held);
+
+        window.scrollBy(0, direction * speed);
+        timer = setTimeout(tick, 16);
     }
 
-    function setStep(step) {
-        scrollStep = step;
-        if (step !== 0 && timer === null) tick();
+    function setScroll(dir, d) {
+        if (dir !== direction) holdStart = performance.now();
+        direction = dir;
+        depth = d;
+        if (dir !== 0 && timer === null) tick();
     }
 
     document.addEventListener("drag", function (e) {
         var y = e.clientY;
         // Some browsers fire a final drag event with clientY = 0 on release
-        if (y === 0) { setStep(0); return; }
+        if (y === 0) { setScroll(0, 0); return; }
 
-        if (y < 150) setStep(-10);
-        else if (y > window.innerHeight - 150) setStep(10);
-        else setStep(0);
+        if (y < ZONE) {
+            setScroll(-1, (ZONE - y) / ZONE);
+        } else if (y > window.innerHeight - ZONE) {
+            setScroll(1, (y - (window.innerHeight - ZONE)) / ZONE);
+        } else {
+            setScroll(0, 0);
+        }
     });
 
-    document.addEventListener("dragend", function () { setStep(0); });
-    document.addEventListener("drop", function () { setStep(0); });
+    document.addEventListener("dragend", function () { setScroll(0, 0); });
+    document.addEventListener("drop", function () { setScroll(0, 0); });
 })();
