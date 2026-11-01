@@ -1,10 +1,46 @@
-﻿<video controls preload="metadata" width="@Width" poster="@($"/api/Video/{MovieId}/thumbnail")">
-    <source src=@($"/api/Video/{MovieId}") type="video/mp4">
+﻿@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+
+<video controls preload="metadata" width="@Width" poster="@($"/api/Video/{MovieId}/thumbnail")" @ref="VideoReference" @onpause="OnPaused_">
+    <source src="@($"/api/Video/{MovieId}")" type="video/mp4">
 </video>
 
 @code {
+    private ElementReference VideoReference;
+    private TimeSpan _lastAppliedResume;
+
     [Parameter]
     public required int MovieId { get; init; }
+
     [Parameter]
     public uint Width { get; init; } = 400;
+
+    [Parameter]
+    public TimeSpan? ResumeAt { get; init; }
+
+    [Parameter]
+    public EventCallback<OnPausedEventArgs> OnPaused { get; set; }
+    public record OnPausedEventArgs(TimeSpan PausedAt, TimeSpan TotalDuration);
+    private double _duration;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _duration = await JSRuntime.InvokeAsync<double>("videoInterop.getDuration", VideoReference);
+        if (ResumeAt is null) return;
+        if (firstRender || ResumeAt != _lastAppliedResume)
+        {
+            _lastAppliedResume = ResumeAt.Value;
+            await JSRuntime.InvokeVoidAsync("videoInterop.fastSeek", VideoReference, ResumeAt.Value.TotalSeconds);
+        }
+    }
+    private async Task OnPaused_()
+    {
+        var pausedAt = await JSRuntime.InvokeAsync<double>("videoInterop.getCurrentTime", VideoReference);
+        await OnPaused.InvokeAsync(new(TimeSpan.FromSeconds(pausedAt), TimeSpan.FromSeconds(_duration)));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await OnPaused_();
+    }
 }

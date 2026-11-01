@@ -5,6 +5,7 @@
 @if(_movie is null)
 {
     <Loading/>
+    return;
 }
 
 <PageTitle>@_movie?.Title</PageTitle>
@@ -17,7 +18,7 @@
 </style>
 <div style="background-color: black;">
     <div class="primary">
-        <MoviePlayer MovieId="@MovieId" />
+        <MoviePlayer MovieId="@MovieId" ResumeAt="_movie.PausedAt" OnPaused="MoviePaused" />
         <div>
             <p style="color: white;">@_movie?.Title</p>
             <p style="color: mediumpurple;">@_movie?.Description</p>
@@ -26,6 +27,7 @@
 </div>
 
 @code {
+    const float EndOfMovieWindow_Ratio = 0.05f;
     private readonly IMovieService _movieService;
     private Movie? _movie;
 
@@ -41,5 +43,13 @@
     {
         _movie = await _movieService.GetMovie(MovieId);
         await base.OnInitializedAsync();
+    }
+
+    private async Task MoviePaused(MoviePlayer.OnPausedEventArgs args)
+    {
+        var delta = args.TotalDuration - args.PausedAt;
+        var deltaSeconds = delta.TotalSeconds;
+        if (deltaSeconds <= EndOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds) return;
+        await _movieService.UpdateMovie(MovieId, m => m.PausedAt = args.PausedAt);
     }
 }

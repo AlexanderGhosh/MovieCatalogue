@@ -51,6 +51,9 @@ namespace MovieApp.Web.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<TimeSpan?>("PausedAt")
+                        .HasColumnType("time");
+
                     b.Property<bool>("ShowThumbnail")
                         .HasColumnType("bit");
 
