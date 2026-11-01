@@ -74,3 +74,32 @@ window.videoInterop.getDuration = async (video) => {
     if (!(await window.videoInterop.whenReady(video))) return 0;
     return Number.isFinite(video.duration) ? video.duration : 0;
 };
+
+(function () {
+    var scrollStep = 0;
+    var timer = null;
+
+    function tick() {
+        if (scrollStep === 0) { timer = null; return; }
+        window.scrollBy(0, scrollStep);
+        timer = setTimeout(tick, 20);
+    }
+
+    function setStep(step) {
+        scrollStep = step;
+        if (step !== 0 && timer === null) tick();
+    }
+
+    document.addEventListener("drag", function (e) {
+        var y = e.clientY;
+        // Some browsers fire a final drag event with clientY = 0 on release
+        if (y === 0) { setStep(0); return; }
+
+        if (y < 150) setStep(-10);
+        else if (y > window.innerHeight - 150) setStep(10);
+        else setStep(0);
+    });
+
+    document.addEventListener("dragend", function () { setStep(0); });
+    document.addEventListener("drop", function () { setStep(0); });
+})();
