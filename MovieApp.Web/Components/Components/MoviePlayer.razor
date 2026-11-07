@@ -35,8 +35,12 @@
     }
     private async Task OnPaused_()
     {
-        var pausedAt = await JSRuntime.InvokeAsync<double>("videoInterop.getCurrentTime", VideoReference);
-        await OnPaused.InvokeAsync(new(TimeSpan.FromSeconds(pausedAt), TimeSpan.FromSeconds(_duration)));
+        try
+        {
+            var pausedAt = await JSRuntime.InvokeAsync<double>("videoInterop.getCurrentTime", VideoReference);
+            await OnPaused.InvokeAsync(new(TimeSpan.FromSeconds(pausedAt), TimeSpan.FromSeconds(_duration)));
+        }
+        catch{}
     }
 
     public async ValueTask DisposeAsync()
