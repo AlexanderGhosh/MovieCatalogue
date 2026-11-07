@@ -106,6 +106,7 @@ namespace MovieApp.Web
                 .OrderBy(c => c.Name)
                 .Include(x => x.Movies)
                 .Include(x => x.ChildCollections)
+                .Include(x => x.ParentCollections)
                 .ToListAsync(ct);
         }
 
