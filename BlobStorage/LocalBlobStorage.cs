@@ -27,6 +27,9 @@ namespace BlobStorage
 
         public Task<BlobData> DownloadAsync(Guid id)
         {
+#if DEBUG 
+            return new BlobData() { MetaData = new() { ContentType = BlobContentTypes.MP4 } };
+#endif
             if (!_manifest.TryGetMetaData(id, out BlobMetaData? data))
                 throw new ArgumentException($"No blob with id: {id} can be found.", nameof(id));
 

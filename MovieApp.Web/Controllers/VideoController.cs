@@ -1,4 +1,5 @@
 ﻿using BlobStorage;
+using Microsoft.Agents.AI;
 using Microsoft.AspNetCore.Mvc;
 using MovieApp.Web.Extensions;
 using MovieApp.Web.Models;
@@ -9,7 +10,7 @@ namespace MovieApp.Web.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class VideoController(IMovieService movieSvc, IWebHostEnvironment webHost) : ControllerBase
+    public class VideoController(IMovieService movieSvc, IWebHostEnvironment webHost, IServiceProvider serviceProvider) : ControllerBase
     {
         private readonly IMovieService _movieSvc = movieSvc;
         private const string DEFAULT_IMAGE = "missing_thumbnail.png";
@@ -72,6 +73,25 @@ namespace MovieApp.Web.Controllers
             var stream = thumbnail ?? GetDefaultThumbnail();
 
             return File(stream.Stream, stream.ContentType);
+        }
+
+        [HttpPut("{videoId}/description")]
+        public async Task<IActionResult> PutVideoDescription(int videoId, [FromBody] string? description, [FromQuery] bool aiGen = false, [FromQuery] string? name = null)
+        {
+            if (aiGen)
+            {
+                name ??= (await _movieSvc.GetMovie(videoId))?.Title;
+                if (name is null)
+                    return BadRequest("Either the video cannot be found or you did not provide a name");
+                var message = $"""
+                    movie or tv show name: {name}
+                    """;
+                var agent = serviceProvider.GetRequiredKeyedService<AIAgent>(typeof(VideoDescriptionAgent));
+                var response = await agent.RunAsync(message);
+                description ??= response.Text;
+            }
+            await _movieSvc.UpdateMovie(videoId, m => m.Description = description);
+            return Ok();
         }
 
         private Thumbnail GetDefaultThumbnail()

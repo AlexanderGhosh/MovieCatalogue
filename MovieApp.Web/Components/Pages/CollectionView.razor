@@ -123,10 +123,12 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
+        if (CollectionId == _collection?.Id) return;
         _collection = (await _movieService.GetCollection(CollectionId))!;
         _topLevelMovies = (await _movieService.GetAllMoviesAsync()).Where(x => x.Collections.Count == 0).OrderBy(SortingOperations.OrderByEpisode);
         _topLevelCollections = (await _movieService.GetAllCollectionsAsync()).Where(x => x.ParentCollections.Count == 0);
         await base.OnParametersSetAsync();
+        StateHasChanged();
     }
 
     private async Task RemoveFromCollection(Movie movie)

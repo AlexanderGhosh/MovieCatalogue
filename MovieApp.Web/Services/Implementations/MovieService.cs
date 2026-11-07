@@ -170,11 +170,10 @@ namespace MovieApp.Web
             var movie = await context.Movies.FindAsync(movieId);
             if (movie is null) return;
 
-            var collection = await context.Collections.FirstOrDefaultAsync(c => c.Id == collectionId);
+            var collection = await context.Collections.Include(x => x.Movies).FirstOrDefaultAsync(c => c.Id == collectionId);
             if (collection is null)
                 return;
-
-            movie.Collections.Remove(collection);
+            collection.Movies.Remove(movie);
             await context.SaveChangesAsync();
         }
 

@@ -5,18 +5,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <UserSecretsId>912f90a4-4438-470d-a0a7-079f99a245f3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
+    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.27.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
+    <PackageReference Include="OllamaSharp" Version="5.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\agent.api-AI-79-Evaluations-2\agent.api-AI-79-Evaluations-2\src\Agent.Agentic.Abstractions\Agent.Agentic.Abstractions.csproj" />
     <ProjectReference Include="..\BlobStorage\BlobStorage.csproj" />
   </ItemGroup>
 
