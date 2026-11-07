@@ -27,6 +27,5 @@
     <File Path="scripts/dvd-rip.sh" />
     <File Path="scripts/upscale-video.sh" />
   </Folder>
-  <Project Path="../agent.api-AI-79-Evaluations-2/agent.api-AI-79-Evaluations-2/src/Agent.Agentic.Abstractions/Agent.Agentic.Abstractions.csproj" />
   <Project Path="MovieApp.Web/MovieApp.Web.csproj" Id="9daabbdd-e4fb-4eb1-ac28-fcbc41fb5698" />
 </Solution>
