@@ -6,6 +6,7 @@ on:
 jobs:
   build-test:
     uses: ./.github/workflows/build-test.yaml
+    secrets: inherit
   deploy:
     needs: build-test
     uses: ./.github/workflows/deploy.yaml

@@ -18,9 +18,9 @@ jobs:
         with:
           clean: true
       - name: Add Package Source
-        run: dotnet nuget add source --username ${OWNER} --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/$OWNER/index.json" --store-password-in-clear-text
+        run: dotnet nuget add source --username ${OWNER} --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/$OWNER/index.json"
         env:
-          OWNER: ${{ github.repository_owner  }}
+          OWNER: ${{ github.repository_owner }}
       - name: Restore Solution
         run: dotnet restore
       - name: Build Solution
