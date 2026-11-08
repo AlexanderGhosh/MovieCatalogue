@@ -28,6 +28,7 @@
 
 @code {
     const float EndOfMovieWindow_Ratio = 0.05f;
+    const float StartOfMovieWindow_Ratio = 0.05f;
     private readonly IMovieService _movieService;
     private Movie? _movie;
 
@@ -50,7 +51,7 @@
         var delta = args.TotalDuration - args.PausedAt;
         var deltaSeconds = delta.TotalSeconds;
         TimeSpan? value = args.PausedAt;
-        if (deltaSeconds <= EndOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds) value = null;
+        if (deltaSeconds <= EndOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds || deltaSeconds <= StartOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds) value = null;
         await _movieService.UpdateMovie(MovieId, m => m.PausedAt = value);
     }
 }
