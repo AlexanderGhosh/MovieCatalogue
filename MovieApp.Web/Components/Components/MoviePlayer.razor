@@ -2,7 +2,7 @@
 @inject IJSRuntime JSRuntime
 
 <video controls preload="metadata" width="@Width"
-       style="@(_playing ? "width:100%;height:auto;max-height:100vh;padding-right:1%;" : null)"
+       style="@(_playing ? "width:100%;height:auto;max-height:100vh;padding-right:5%;" : null)"
        poster="@($"/api/Video/{MovieId}/thumbnail")" @ref="VideoReference"
        @onplay="OnPlay_" @onpause="OnPaused_">
     <source src="@($"/api/Video/{MovieId}")" type="video/mp4">
@@ -33,6 +33,7 @@
         if (ResumeAt is null) return;
         if (firstRender || ResumeAt != _lastAppliedResume)
         {
+            _playing = true;
             _lastAppliedResume = ResumeAt.Value;
             await JSRuntime.InvokeVoidAsync("videoInterop.fastSeek", VideoReference, ResumeAt.Value.TotalSeconds);
         }
