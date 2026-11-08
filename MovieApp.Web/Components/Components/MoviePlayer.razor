@@ -37,6 +37,7 @@
             _lastAppliedResume = ResumeAt.Value;
             await JSRuntime.InvokeVoidAsync("videoInterop.fastSeek", VideoReference, ResumeAt.Value.TotalSeconds);
         }
+        StateHasChanged();
     }
 
     private async Task OnPaused_()
