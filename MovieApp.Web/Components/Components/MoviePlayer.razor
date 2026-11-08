@@ -40,7 +40,6 @@
 
     private async Task OnPaused_()
     {
-        _playing = false;
         try
         {
             var pausedAt = await JSRuntime.InvokeAsync<double>("videoInterop.getCurrentTime", VideoReference);
