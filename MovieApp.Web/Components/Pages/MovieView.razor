@@ -51,7 +51,7 @@
         var delta = args.TotalDuration - args.PausedAt;
         var deltaSeconds = delta.TotalSeconds;
         TimeSpan? value = args.PausedAt;
-        if (deltaSeconds <= EndOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds || deltaSeconds <= StartOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds) value = null;
+        if (deltaSeconds <= EndOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds || args.PausedAt.TotalSeconds <= StartOfMovieWindow_Ratio * args.TotalDuration.TotalSeconds) value = null;
         await _movieService.UpdateMovie(MovieId, m => m.PausedAt = value);
     }
 }
