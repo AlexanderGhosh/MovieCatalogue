@@ -1,13 +1,17 @@
 ﻿@implements IAsyncDisposable
 @inject IJSRuntime JSRuntime
 
-<video controls preload="metadata" width="@Width" poster="@($"/api/Video/{MovieId}/thumbnail")" @ref="VideoReference" @onpause="OnPaused_">
+<video controls preload="metadata" width="@Width"
+       style="@(_playing ? "width:100%;height:auto;max-height:100vh;" : null)"
+       poster="@($"/api/Video/{MovieId}/thumbnail")" @ref="VideoReference"
+       @onplay="OnPlay_" @onpause="OnPaused_">
     <source src="@($"/api/Video/{MovieId}")" type="video/mp4">
 </video>
 
 @code {
     private ElementReference VideoReference;
     private TimeSpan _lastAppliedResume;
+    private bool _playing;
 
     [Parameter]
     public required int MovieId { get; init; }
@@ -33,18 +37,23 @@
             await JSRuntime.InvokeVoidAsync("videoInterop.fastSeek", VideoReference, ResumeAt.Value.TotalSeconds);
         }
     }
+
     private async Task OnPaused_()
     {
+        _playing = false;
         try
         {
             var pausedAt = await JSRuntime.InvokeAsync<double>("videoInterop.getCurrentTime", VideoReference);
             await OnPaused.InvokeAsync(new(TimeSpan.FromSeconds(pausedAt), TimeSpan.FromSeconds(_duration)));
         }
-        catch{}
+        catch { }
     }
 
     public async ValueTask DisposeAsync()
     {
         await OnPaused_();
     }
+
+
+    private void OnPlay_() => _playing = true;
 }

@@ -1,6 +1,7 @@
-﻿using BlobStorage;
-using Microsoft.Agents.AI;
+﻿using Agent.Agentic.Abstractions.Extensions;
+using BlobStorage;
 using Microsoft.AspNetCore.Mvc;
+using MovieApp.Web.Agents;
 using MovieApp.Web.Extensions;
 using MovieApp.Web.Models;
 using MovieApp.Web.Services.Abstractions;
@@ -86,7 +87,7 @@ namespace MovieApp.Web.Controllers
                 var message = $"""
                     movie or tv show name: {name}
                     """;
-                var agent = serviceProvider.GetRequiredKeyedService<AIAgent>(typeof(VideoDescriptionAgent));
+                var agent = serviceProvider.GetRequiredAgent<VideoDescriptionAgent>();
                 var response = await agent.RunAsync(message);
                 description ??= response.Text;
             }
@@ -98,7 +99,7 @@ namespace MovieApp.Web.Controllers
         {
             var image = webHost.WebRootFileProvider.GetFileInfo(DEFAULT_IMAGE);
             var stream = image.CreateReadStream();
-            var contentType = BlobContentTypes.GetContentType(Path.GetExtension(DEFAULT_IMAGE));
+            var contentType = BlobContentTypes.FromExtension(Path.GetExtension(DEFAULT_IMAGE));
             return new(stream, contentType);
         }
     }

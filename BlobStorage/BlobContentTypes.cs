@@ -50,7 +50,7 @@ namespace BlobStorage
             };
         }
 
-        public static BlobContentType GetContentType(string extension)
+        public static BlobContentType FromExtension(string extension)
         {
             extension = extension.ToLower().Trim().TrimStart('.');
             if (ExtensionMap.TryGetValue(extension, out var contentType))

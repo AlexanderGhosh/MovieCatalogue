@@ -3,6 +3,7 @@ using Blazored.Modal;
 using BlobStorage.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
+using MovieApp.Web.Agents;
 using MovieApp.Web.Components;
 using MovieApp.Web.Services.Abstractions;
 using MovieApp.Web.Services.Implementations;
@@ -43,6 +44,7 @@ namespace MovieApp.Web
 
             });
             builder.Services.AddKeyedAgent<VideoDescriptionAgent>();
+            builder.Services.AddKeyedAgent<GeneralAgent>();
 
             builder.Services.AddControllers();
             builder.Services.AddHttpClient<VideoDescriptionAgent>();
@@ -67,34 +69,35 @@ namespace MovieApp.Web
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            //            using (var scope = app.Services.CreateAsyncScope())
-            //            {
-            //                var names = new string[]
-            //                {
-            //"11|:Ghost Busters:Ghost Busters",
-            //"59|:Les Misérables:Les Misérables Cinema",
-            //"1269|Star Trek The Next Generation:Star Trek TNG S7:E1 Decent Part II",
-            //"1353|Star Trek Deep Space Nine:Star Trek DS9 S3:E14 Heart of Stone",
-            //"1422|Star Trek Deep Space Nine:Star Trek DS9 S6:E5 Favour the Bold",
-            //"1425|Star Trek Deep Space Nine:Star Trek DS9 S6:E8 Resurrection",
-            //"2585|Battlestar Galactica:Season 4:E6 Faith",
-            //"2587|Battlestar Galactica:Season 4:E8 Sine Qua Non"
-            //                };
-            //                var controller = ActivatorUtilities.CreateInstance<VideoController>(scope.ServiceProvider);
-            //                var i = 0;
-            //                foreach (var name in names)
-            //                {
-            //                    var split = name.Split('|');
-            //                    var id = int.Parse(split[0]);
-            //                    var n = split[1];
-            //                    var res = await controller.PutVideoDescription(id, null, true, n);
-            //                    if (res is not OkResult)
-            //                    {
-            //                        _ = 0;
-            //                    }
-            //                    Console.WriteLine($"[{++i}/{names.Length}] {n} Done");
-            //                }
-            //            }
+            using (var scope = app.Services.CreateAsyncScope())
+            {
+
+                //    var names = new string[]
+                //    {
+                //"11|:Ghost Busters:Ghost Busters",
+                //"59|:Les Misérables:Les Misérables Cinema",
+                //"1269|Star Trek The Next Generation:Star Trek TNG S7:E1 Decent Part II",
+                //"1353|Star Trek Deep Space Nine:Star Trek DS9 S3:E14 Heart of Stone",
+                //"1422|Star Trek Deep Space Nine:Star Trek DS9 S6:E5 Favour the Bold",
+                //"1425|Star Trek Deep Space Nine:Star Trek DS9 S6:E8 Resurrection",
+                //"2585|Battlestar Galactica:Season 4:E6 Faith",
+                //"2587|Battlestar Galactica:Season 4:E8 Sine Qua Non"
+                //    };
+                //    var controller = ActivatorUtilities.CreateInstance<VideoController>(scope.ServiceProvider);
+                //    var i = 0;
+                //    foreach (var name in names)
+                //    {
+                //        var split = name.Split('|');
+                //        var id = int.Parse(split[0]);
+                //        var n = split[1];
+                //        var res = await controller.PutVideoDescription(id, null, true, n);
+                //        if (res is not OkResult)
+                //        {
+                //            _ = 0;
+                //        }
+                //        Console.WriteLine($"[{++i}/{names.Length}] {n} Done");
+                //    }
+            }
 
             app.Run();
         }

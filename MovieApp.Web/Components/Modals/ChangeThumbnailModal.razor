@@ -30,7 +30,7 @@
         if (_thumbnail is null) return;
         using var stream = _thumbnail.OpenReadStream();
         var extension = Path.GetExtension(_thumbnail.Name);
-        var contentType = BlobContentTypes.GetContentType(extension);
+        var contentType = BlobContentTypes.FromExtension(extension);
         var thumbnail = new Thumbnail(stream, contentType);
         switch(Mode)
         {

@@ -3,7 +3,7 @@ using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
 
-namespace MovieApp.Web
+namespace MovieApp.Web.Agents
 {
     public class VideoDescriptionAgent : IAgentDefinition
     {
