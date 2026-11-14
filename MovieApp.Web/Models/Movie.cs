@@ -11,7 +11,9 @@ public class Movie : IMovieItem
     public MovieContent? Content { get; set; }
     public bool ShowThumbnail { get; set; } = false;
     public Guid? ThumbnailBlobId { get; set; }
-    public TimeSpan? PausedAt { get; set; }
+    public TimeSpan? PausedAt { get; set; } = null;
+    public TimeSpan? IntroStart { get; set; } = null;
+    public TimeSpan? IntroEnd { get; set; } = null;
     public ICollection<MovieCollection> Collections { get; set; } = new HashSet<MovieCollection>();
     [NotMapped]
     public string Name => Title;

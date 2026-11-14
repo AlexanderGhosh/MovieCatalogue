@@ -51,6 +51,12 @@ namespace MovieApp.Web.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<TimeSpan?>("IntroEnd")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("IntroStart")
+                        .HasColumnType("time");
+
                     b.Property<TimeSpan?>("PausedAt")
                         .HasColumnType("time");
 

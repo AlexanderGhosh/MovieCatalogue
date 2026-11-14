@@ -7,7 +7,6 @@ namespace MovieApp.Web.Models
     public class MovieContent()
     {
         private readonly IBrowserFile? _file;
-        private Stream? _stream;
 
         public MovieContent(IBrowserFile file) : this()
         {
@@ -17,22 +16,24 @@ namespace MovieApp.Web.Models
         public int Id { get; set; }
         public int MovieId { get; set; }
         public Guid BlobGuid { get; set; }
+
         [NotMapped, AllowNull, NotNull]
         public Stream Stream
         {
             get
             {
-                if (_stream is not null) return _stream;
+                if (field is not null) return field;
                 if (_file is null)
                 {
-                    _stream = null;
+                    field = null;
                     return Stream.Null;
                 }
-                _stream ??= _file.OpenReadStream(_file.Size);
-                return _stream;
+                field ??= _file.OpenReadStream(_file.Size);
+                return field;
             }
-            set => _stream = value;
+            set;
         }
+
         public Movie Movie { get; set; } = default!;
     }
 }

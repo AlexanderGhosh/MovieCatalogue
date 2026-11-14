@@ -95,6 +95,17 @@ namespace MovieApp.Web.Controllers
             return Ok();
         }
 
+        [HttpPut("{videoId}/intro")]
+        public async Task<IActionResult> PutVideoIntro(int videoId, TimeSpan start, TimeSpan end)
+        {
+            await _movieSvc.UpdateMovie(videoId, m =>
+            {
+                m.IntroStart = start; 
+                m.IntroEnd = end;
+            });
+            return Ok();
+        }
+
         private Thumbnail GetDefaultThumbnail()
         {
             var image = webHost.WebRootFileProvider.GetFileInfo(DEFAULT_IMAGE);
