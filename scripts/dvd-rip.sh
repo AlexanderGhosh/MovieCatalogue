@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # dvd-rip.sh 
-# dvd-rip.sh --tv -e 4 --l 174
+# dvd-rip.sh --tv -e 4 -l 174
 # dvd-rip.sh --titles "2,3,4,5"
 
 RUN_NAME=$RANDOM

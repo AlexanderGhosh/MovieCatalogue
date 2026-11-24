@@ -10,17 +10,33 @@
 
 <PageTitle>@_movie?.Title</PageTitle>
 <style>
-    .primary{
-        display: grid ;
+    .player-layout {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         padding: 10px;
     }
+
+    @@media (max-width: 768px) and (orientation: portrait) {
+        .player-layout {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+        }
+
+        .player-title {
+            order: -1;
+        }
+
+        .player-meta {
+            display: contents;
+        }
+    }
 </style>
 <div style="background-color: black;">
-    <div class="primary">
+    <div class="player-layout">
         <MoviePlayer MovieId="@MovieId" ResumeAt="_movie.PausedAt" OnPaused="MoviePaused" />
-        <div>
-            <p style="color: white;">@_movie?.Title</p>
+        <div class="player-meta">
+            <p style="color: white;" class="player-title">@_movie?.Title</p>
             <p style="color: mediumpurple;">@_movie?.Description</p>
         </div>
     </div>
