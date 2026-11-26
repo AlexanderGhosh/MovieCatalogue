@@ -8,7 +8,7 @@ on:
     - '**.cs'
     - '**.csproj'
     - '**.razor*'
-    - '/deploy/*'
+    - 'deploy/**'
 
 jobs:
   build-test:
